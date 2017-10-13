@@ -24,89 +24,78 @@
 
 #pragma once
 
-#include "config.h"
+#include "../../pack.h"
 
 namespace tsimd {
-  namespace traits {
 
-    // C++14 traits for C++11 /////////////////////////////////////////////////
+  // 1-wide //
 
-    template <bool B, class T = void>
-    using enable_if_t = typename std::enable_if<B, T>::type;
+  // TODO
 
-    // Provide intrinsic type given a SIMD width //////////////////////////////
+  // 4-wide //
 
-    template <typename T, int W>
-    struct simd_type_from_width
-    {
-      using type = void; // NOTE(jda) - use 'void' to flag a <T,W> pair which
-                         //             is missing
-    };
+  // TODO
 
-    // 1-wide //
+  // 8-wide //
 
-    template <typename T>
-    struct simd_type_from_width<T, 1>
-    {
-      using type = T;
-    };
-
-    // 4-wide //
-
-    template <>
-    struct simd_type_from_width<float, 4>
-    {
-#if defined(__SSE__)
-      using type = __m128[2];
-#else
-      using type = float[4];
-#endif
-    };
-
-    template <>
-    struct simd_type_from_width<int, 4>
-    {
-#if defined(__SSE__)
-      using type = __m128i[2];
-#else
-      using type = int[4];
-#endif
-    };
-
-    // 8-wide //
-
-    template <>
-    struct simd_type_from_width<float, 8>
-    {
-#if defined(__AVX__) || defined(__AVX512__)
-      using type = __m256;
+  inline vfloat8 operator+(const vfloat8 &p1, const vfloat8 &p2)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_add_ps(p1, p2);
 #elif defined(__SSE__)
-      using type = __m128[2];
+    NOT_IMPLEMENTED;
 #else
-      using type = float[8];
-#endif
-    };
+    vfloat8 result;
 
-    template <>
-    struct simd_type_from_width<int, 8>
-    {
-#if defined(__AVX__) || defined(__AVX512__)
-      using type = __m256i;
+    for (int i = 0; i < W; ++i)
+      result[i] = (p1[i] + p2[i]);
+
+    return result;
+#endif
+  }
+
+  template <
+      typename OTHER_T,
+      typename = traits::enable_if_t<traits::can_convert<OTHER_T, float>>
+  >
+  inline vfloat8 operator+(const vfloat8 &p1, const OTHER_T &v)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_add_ps(p1, vfloat8(v));
 #elif defined(__SSE__)
-      using type = __m128i[2];
+    NOT_IMPLEMENTED;
 #else
-      using type = int[8];
+    vfloat8 result;
+
+    for (int i = 0; i < W; ++i)
+      result[i] = (p1[i] + v);
+
+    return result;
 #endif
-    };
+  }
 
-    // 16-wide //
+  template <
+      typename OTHER_T,
+      typename = traits::enable_if_t<traits::can_convert<OTHER_T, float>>
+  >
+  inline vfloat8 operator+(const OTHER_T &v, const vfloat8 &p1)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_add_ps(p1, vfloat8(v));
+#elif defined(__SSE__)
+    NOT_IMPLEMENTED;
+#else
+    vfloat8 result;
 
-    // TODO
+    for (int i = 0; i < W; ++i)
+      result[i] = (p1[i] + v);
 
-    // If a single type is convertable to another /////////////////////////////
+    return result;
+#endif
+  }
 
-    template <typename FROM, typename TO>
-    using can_convert = enable_if_t<std::is_convertible<TO, FROM>::value>;
+  // 16-wide //
 
-  } // ::tsimd::traits
+  // TODO
+
 } // ::tsimd
