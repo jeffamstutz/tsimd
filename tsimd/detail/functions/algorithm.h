@@ -62,14 +62,7 @@ namespace tsimd {
 
   // 4-wide //
 
-  inline bool any(const vboolf4& a)
-  {
-#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
-    return _mm_movemask_ps(a) != 0x0;
-#else
-    NOT_IMPLEMENTED;
-#endif
-  }
+  // TODO
 
   // 8-wide //
 
@@ -94,10 +87,7 @@ namespace tsimd {
 
   // 4-wide //
 
-  inline bool none(const vboolf4 &m)
-  {
-    return !any(m);
-  }
+  // TODO
 
   // 8-wide //
 
@@ -118,21 +108,14 @@ namespace tsimd {
 
   // 4-wide //
 
-  inline bool all(const vboolf4& a)
-  {
-#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
-    return _mm_movemask_ps(a) == 0xf;
-#else
-    NOT_IMPLEMENTED;
-#endif
-  }
+  // TODO
 
   // 8-wide //
 
   inline bool all(const vboolf8& a)
   {
 #if defined(__AVX512__) || defined(__AVX__)
-    return _mm256_movemask_ps(a) == static_cast<unsigned int>(0xff);
+    return _mm256_movemask_ps(a) == (unsigned int)0xff;
 #else
     NOT_IMPLEMENTED;
 #endif
@@ -150,35 +133,7 @@ namespace tsimd {
 
   // 4-wide //
 
-  inline vfloat4 select(const vboolf4& m, const vfloat4& t, const vfloat4& f)
-  {
-    vfloat4 result;
-
-    #pragma omp simd
-    for (int i = 0; i < vfloat4::static_size; ++i) {
-      if (m[i])
-        result[i] = t[i];
-      else
-        result[i] = f[i];
-    }
-
-    return result;
-  }
-
-  inline vint4 select(const vboolf4& m, const vint4& t, const vint4& f)
-  {
-    vint4 result;
-
-    #pragma omp simd
-    for (int i = 0; i < vint4::static_size; ++i) {
-      if (m[i])
-        result[i] = t[i];
-      else
-        result[i] = f[i];
-    }
-
-    return result;
-  }
+  // TODO
 
   // 8-wide //
 

@@ -37,61 +37,7 @@ namespace tsimd {
 
   // 4-wide //
 
-#if 0
-  inline vboolf4 operator==(const vfloat4 &p1, const vfloat4 &p2)
-  {
-#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
-    return _mm_castsi128_ps(_mm_cmpeq_epi32(p1, p2));
-#else
-    vboolf4 result;
-
-    #pragma omp simd
-    for (int i = 0; i < vboolf4::static_size; ++i)
-      result[i] = (p1[i] == p2[i]) ? 0xFFFFFFFF : 0x00000000;
-
-    return result;
-#endif
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator==(const vfloat4 &p1, const OTHER_T &v)
-  {
-    return p1 == vfloat4(v);
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator==(const OTHER_T &v, const vfloat4 &p1)
-  {
-    return vfloat4(v) == p1;
-  }
-
-  inline vboolf4 operator==(const vint4 &p1, const vint4 &p2)
-  {
-#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
-    return _mm_castsi128_ps(_mm_cmpeq_epi32(p1, p2));
-#else
-    vbool4 result;
-
-    #pragma omp simd
-    for (int i = 0; i < vbool4::static_size; ++i)
-      result[i] = (p1[i] == p2[i]) ? 0xFFFFFFFF : 0x00000000;
-
-    return result;
-#endif
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator==(const vint4 &p1, const OTHER_T &v)
-  {
-    return p1 == vint4(v);
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator==(const OTHER_T &v, const vint4 &p1)
-  {
-    return vint4(v) == p1;
-  }
-#endif
+  // TODO
 
   // 8-wide //
 
@@ -168,41 +114,7 @@ namespace tsimd {
 
   // 4-wide //
 
-#if 0
-  inline vboolf4 operator!=(const vfloat4 &p1, const vfloat4 &p2)
-  {
-    return !(p1 == p2);
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator!=(const vfloat4 &p1, const OTHER_T &v)
-  {
-    return p1 != vfloat4(v);
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator!=(const OTHER_T &v, const vfloat4 &p1)
-  {
-    return vfloat4(v) != p1;
-  }
-
-  inline vboolf4 operator!=(const vint4 &p1, const vint4 &p2)
-  {
-    return !(p1 == p2);
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator!=(const vint4 &p1, const OTHER_T &v)
-  {
-    return p1 != vint4(v);
-  }
-
-  template <typename OTHER_T>
-  inline vboolf4 operator!=(const OTHER_T &v, const vint4 &p1)
-  {
-    return vint4(v) != p1;
-  }
-#endif
+  // TODO
 
   // 8-wide //
 

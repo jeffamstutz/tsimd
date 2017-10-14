@@ -36,29 +36,7 @@ namespace tsimd {
 
   // 4-wide //
 
-#if 0
-  inline vboolf4 operator!(const vboolf4 &m)
-  {
-    vboolf4 result;
-
-    #pragma omp simd
-    for (int i = 0; i < 4; ++i)
-      result[i] = !m[i] ? 0xFFFFFFFF : 0x00000000;
-
-    return result;
-  }
-
-  inline vbool4 operator!(const vbool4 &m)
-  {
-    vbool4 result;
-
-    #pragma omp simd
-    for (int i = 0; i < 4; ++i)
-      result[i] = !m[i] ? 0xFFFFFFFF : 0x00000000;
-
-    return result;
-  }
-#endif
+  // TODO
 
   // 8-wide //
 
