@@ -38,60 +38,60 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline vfloat8 operator+(const vfloat8 &p1, const vfloat8 &p2)
+  inline vfloat8 operator-(const vfloat8 &p1, const vfloat8 &p2)
   {
 #if defined(__AVX512__) || defined(__AVX__)
-    return _mm256_add_ps(p1, p2);
+    return _mm256_sub_ps(p1, p2);
 #elif defined(__SSE__)
     NOT_IMPLEMENTED;
 #else
     vfloat8 result;
 
     for (int i = 0; i < vfloat8::static_size; ++i)
-      result[i] = (p1[i] + p2[i]);
+      result[i] = (p1[i] - p2[i]);
 
     return result;
 #endif
   }
 
   template <typename OTHER_T>
-  inline vfloat8 operator+(const vfloat8 &p1, const OTHER_T &v)
+  inline vfloat8 operator-(const vfloat8 &p1, const OTHER_T &v)
   {
-    return p1 + vfloat8(v);
+    return p1 - vfloat8(v);
   }
 
   template <typename OTHER_T>
-  inline vfloat8 operator+(const OTHER_T &v, const vfloat8 &p1)
+  inline vfloat8 operator-(const OTHER_T &v, const vfloat8 &p1)
   {
-    return vfloat8(v) + p1;
+    return vfloat8(v) - p1;
   }
 
-  inline vint8 operator+(const vint8 &p1, const vint8 &p2)
+  inline vint8 operator-(const vint8 &p1, const vint8 &p2)
   {
 #if defined(__AVX512__) || defined(__AVX__)
-    return vint8(_mm_add_epi32(p1.vl, p2.vl), _mm_add_epi32(p1.vh, p2.vh));
+    return vint8(_mm_sub_epi32(p1.vl, p2.vl), _mm_sub_epi32(p1.vh, p2.vh));
 #elif defined(__SSE__)
     NOT_IMPLEMENTED;
 #else
     vint8 result;
 
     for (int i = 0; i < vint8::static_size; ++i)
-      result[i] = (p1[i] + p2[i]);
+      result[i] = (p1[i] - p2[i]);
 
     return result;
 #endif
   }
 
   template <typename OTHER_T>
-  inline vint8 operator+(const vint8 &p1, const OTHER_T &v)
+  inline vint8 operator-(const vint8 &p1, const OTHER_T &v)
   {
-    return p1 + vint8(v);
+    return p1 - vint8(v);
   }
 
   template <typename OTHER_T>
-  inline vint8 operator+(const OTHER_T &v, const vint8 &p1)
+  inline vint8 operator-(const OTHER_T &v, const vint8 &p1)
   {
-    return vint8(v) + p1;
+    return vint8(v) - p1;
   }
 
   // 16-wide //
