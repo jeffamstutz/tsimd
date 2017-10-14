@@ -71,15 +71,6 @@ namespace tsimd {
 #endif
   }
 
-  inline bool any(const vbool4& a)
-  {
-#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
-    return any(_mm_castsi128_ps(a));
-#else
-    NOT_IMPLEMENTED;
-#endif
-  }
-
   // 8-wide //
 
   inline bool any(const vboolf8& a)
@@ -91,26 +82,33 @@ namespace tsimd {
 #endif
   }
 
-  inline bool any(const vbool8& a)
-  {
-#if defined(__AVX512__) || defined(__AVX__)
-    return any(_mm256_castsi256_ps(a));
-#else
-    NOT_IMPLEMENTED;
-#endif
-  }
-
   // 16-wide //
 
   // TODO
 
   // none() ///////////////////////////////////////////////////////////////////
 
-  template <typename MASK_T>
-  inline bool none(const MASK_T &m)
+  // 1-wide //
+
+  // TODO
+
+  // 4-wide //
+
+  inline bool none(const vboolf4 &m)
   {
     return !any(m);
   }
+
+  // 8-wide //
+
+  inline bool none(const vboolf8 &m)
+  {
+    return !any(m);
+  }
+
+  // 16-wide //
+
+  // TODO
 
   // all() ////////////////////////////////////////////////////////////////////
 
@@ -129,30 +127,12 @@ namespace tsimd {
 #endif
   }
 
-  inline bool all(const vbool4& a)
-  {
-#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
-    return all(_mm_castsi128_ps(a));
-#else
-    NOT_IMPLEMENTED;
-#endif
-  }
-
   // 8-wide //
 
   inline bool all(const vboolf8& a)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_movemask_ps(a) == static_cast<unsigned int>(0xff);
-#else
-    NOT_IMPLEMENTED;
-#endif
-  }
-
-  inline bool all(const vbool8& a)
-  {
-#if defined(__AVX512__) || defined(__AVX__)
-    return all(_mm256_castsi256_ps(a));
 #else
     NOT_IMPLEMENTED;
 #endif
@@ -185,7 +165,7 @@ namespace tsimd {
     return result;
   }
 
-  inline vint4 select(const vbool4& m, const vint4& t, const vint4& f)
+  inline vint4 select(const vboolf4& m, const vint4& t, const vint4& f)
   {
     vint4 result;
 
@@ -223,13 +203,11 @@ namespace tsimd {
 #endif
   }
 
-  inline vint8 select(const vbool8& m, const vint8& t, const vint8& f)
+  inline vint8 select(const vboolf8& m, const vint8& t, const vint8& f)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_castps_si256(
-        _mm256_blendv_ps(_mm256_castsi256_ps(f),
-                         _mm256_castsi256_ps(t),
-                         _mm256_castsi256_ps(m))
+        _mm256_blendv_ps(_mm256_castsi256_ps(f), _mm256_castsi256_ps(t), m)
     );
 #else
     vint8 result;
