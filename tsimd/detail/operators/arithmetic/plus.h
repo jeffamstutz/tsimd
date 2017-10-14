@@ -54,44 +54,44 @@ namespace tsimd {
 #endif
   }
 
-  template <
-      typename OTHER_T,
-      typename = traits::enable_if_t<traits::can_convert<OTHER_T, float>>
-  >
+  template <typename OTHER_T>
   inline vfloat8 operator+(const vfloat8 &p1, const OTHER_T &v)
   {
+    return p1 + vfloat8(v);
+  }
+
+  template <typename OTHER_T>
+  inline vfloat8 operator+(const OTHER_T &v, const vfloat8 &p1)
+  {
+    return p1 + vfloat8(v);
+  }
+
+  inline vint8 operator+(const vint8 &p1, const vint8 &p2)
+  {
 #if defined(__AVX512__) || defined(__AVX__)
-    return _mm256_add_ps(p1, vfloat8(v));
+    return vint8(_mm_add_epi32(p1.vl, p2.vl), _mm_add_epi32(p1.vh, p2.vh));
 #elif defined(__SSE__)
     NOT_IMPLEMENTED;
 #else
-    vfloat8 result;
+    vint8 result;
 
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] + v);
+      result[i] = (p1[i] + p2[i]);
 
     return result;
 #endif
   }
 
-  template <
-      typename OTHER_T,
-      typename = traits::enable_if_t<traits::can_convert<OTHER_T, float>>
-  >
-  inline vfloat8 operator+(const OTHER_T &v, const vfloat8 &p1)
+  template <typename OTHER_T>
+  inline vint8 operator+(const vint8 &p1, const OTHER_T &v)
   {
-#if defined(__AVX512__) || defined(__AVX__)
-    return _mm256_add_ps(p1, vfloat8(v));
-#elif defined(__SSE__)
-    NOT_IMPLEMENTED;
-#else
-    vfloat8 result;
+    return p1 + vint8(v);
+  }
 
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] + v);
-
-    return result;
-#endif
+  template <typename OTHER_T>
+  inline vint8 operator+(const OTHER_T &v, const vint8 &p1)
+  {
+    return p1 + vint8(v);
   }
 
   // 16-wide //

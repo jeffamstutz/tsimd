@@ -36,13 +36,19 @@ namespace tsimd {
 
     enum {static_size = W};
     using value_t = T;
-    using intrinsic_t = typename traits::simd_type_from_width<T, W>::type;
+    using intrinsic_t = typename traits::simd_type<T, W>::type;
+    using half_intrinsic_t = typename traits::half_simd_type<T, W>::type;
 
     // Construction //
 
     pack() = default;
     pack(value_t value);
     pack(intrinsic_t value);
+
+#if 0 // NOTE: can this be culled for types that don't make sense?
+    template <int, typename = traits::enable_if_t<W == 8>>
+#endif
+    pack(half_intrinsic_t a, half_intrinsic_t b) : vl(a), vh(b) {}
 
     // Array access //
 
@@ -65,6 +71,7 @@ namespace tsimd {
     {
       value_t data[W];
       intrinsic_t v;
+      struct { half_intrinsic_t vl,vh; };
     };
 
     // Interface checks //
@@ -72,6 +79,9 @@ namespace tsimd {
     static_assert(W == 1 || W == 4 || W == 8 || W == 16,
                   "SIMD width must be 1, 4, 8, or 16!");
   };
+
+  template <int W = DEFAULT_WIDTH>
+  using mask = pack<int, W>;
 
   /* 1-wide shortcuts */
   using vfloat1  = pack<float, 1>;
@@ -113,8 +123,15 @@ namespace tsimd {
   using vboolf16  = vbool16;
   using vboold16  = vllong16;
 
-  template <int W = DEFAULT_WIDTH>
-  using mask = pack<int, W>;
+  /* default shortcuts */
+  using vfloat  = pack<float, DEFAULT_WIDTH>;
+  using vdouble = pack<double, DEFAULT_WIDTH>;
+  using vint    = pack<int, DEFAULT_WIDTH>;
+  using vuint   = pack<unsigned int, DEFAULT_WIDTH/2>;
+  using vllong  = pack<long long, DEFAULT_WIDTH/2>;
+  using vbool   = pack<int, DEFAULT_WIDTH>;
+  using vboolf  = vbool;
+  using vboold  = vllong;
 
   // pack<> inlined members ///////////////////////////////////////////////////
 

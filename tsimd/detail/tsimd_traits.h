@@ -37,7 +37,7 @@ namespace tsimd {
     // Provide intrinsic type given a SIMD width //////////////////////////////
 
     template <typename T, int W>
-    struct simd_type_from_width
+    struct simd_type
     {
       using type = void; // NOTE(jda) - use 'void' to flag a <T,W> pair which
                          //             is missing
@@ -46,7 +46,7 @@ namespace tsimd {
     // 1-wide //
 
     template <typename T>
-    struct simd_type_from_width<T, 1>
+    struct simd_type<T, 1>
     {
       using type = T;
     };
@@ -54,20 +54,20 @@ namespace tsimd {
     // 4-wide //
 
     template <>
-    struct simd_type_from_width<float, 4>
+    struct simd_type<float, 4>
     {
 #if defined(__SSE__)
-      using type = __m128[2];
+      using type = __m128;
 #else
       using type = float[4];
 #endif
     };
 
     template <>
-    struct simd_type_from_width<int, 4>
+    struct simd_type<int, 4>
     {
 #if defined(__SSE__)
-      using type = __m128i[2];
+      using type = __m128i;
 #else
       using type = int[4];
 #endif
@@ -76,7 +76,7 @@ namespace tsimd {
     // 8-wide //
 
     template <>
-    struct simd_type_from_width<float, 8>
+    struct simd_type<float, 8>
     {
 #if defined(__AVX__) || defined(__AVX512__)
       using type = __m256;
@@ -88,7 +88,7 @@ namespace tsimd {
     };
 
     template <>
-    struct simd_type_from_width<int, 8>
+    struct simd_type<int, 8>
     {
 #if defined(__AVX__) || defined(__AVX512__)
       using type = __m256i;
@@ -96,6 +96,63 @@ namespace tsimd {
       using type = __m128i[2];
 #else
       using type = int[8];
+#endif
+    };
+
+    // 16-wide //
+
+    // TODO
+
+    // Provide intrinsic type half the size of given width ////////////////////
+
+    template <typename T, int W>
+    struct half_simd_type
+    {
+      using type = void; // NOTE(jda) - use 'void' to flag a <T,W> pair which
+                         //             is missing
+    };
+
+    // 1-wide //
+
+    template <>
+    struct half_simd_type<int, 1> // NOTE: no float equivalent!
+    {
+      using type = short;
+    };
+
+    // 4-wide //
+
+    template <>
+    struct half_simd_type<float, 4>
+    {
+      using type = float[2];
+    };
+
+    template <>
+    struct half_simd_type<int, 4>
+    {
+      using type = int[2];
+    };
+
+    // 8-wide //
+
+    template <>
+    struct half_simd_type<float, 8>
+    {
+#if defined(__AVX__) || defined(__AVX512__) || defined(__SSE__)
+      using type = __m128;
+#else
+      using type = float[4];
+#endif
+    };
+
+    template <>
+    struct half_simd_type<int, 8>
+    {
+#if defined(__AVX__) || defined(__AVX512__) || defined(__SSE__)
+      using type = __m128i;
+#else
+      using type = int[4];
 #endif
     };
 

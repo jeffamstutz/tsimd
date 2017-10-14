@@ -63,13 +63,9 @@ inline void writePPM(const std::string &fileName,
 
 namespace tsimd {
 
-using vfloat = tsimd::pack<float>;
-using vint   = tsimd::pack<int>;
-using vmask  = tsimd::mask<>;
-
 static vint programIndex(0);
 
-inline vint mandel(const vmask &_active,
+inline vint mandel(const vbool &_active,
                    const vfloat &c_re,
                    const vfloat &c_im,
                    int maxIters)
