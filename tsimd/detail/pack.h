@@ -89,8 +89,8 @@ namespace tsimd {
   using vint1    = pack<int, 1>;
   using vuint1   = pack<unsigned int, 1>;
   using vllong1  = pack<long long, 1>;
-  using vbool1   = pack<int, 1>;
-  using vboolf1  = vbool1;
+  using vbool1   = vint1;
+  using vboolf1  = vfloat1;
   using vboold1  = vllong1;
 
   /* 4-wide shortcuts */
@@ -99,8 +99,8 @@ namespace tsimd {
   using vint4    = pack<int, 4>;
   using vuint4   = pack<unsigned int, 4>;
   using vllong4  = pack<long long, 4>;
-  using vbool4   = pack<int, 4>;
-  using vboolf4  = vbool4;
+  using vbool4   = vint4;
+  using vboolf4  = vfloat4;
   using vboold4  = vllong4;
 
   /* 8-wide shortcuts */
@@ -109,8 +109,8 @@ namespace tsimd {
   using vint8    = pack<int, 8>;
   using vuint8   = pack<unsigned int, 8>;
   using vllong8  = pack<long long, 8>;
-  using vbool8   = pack<int, 8>;
-  using vboolf8  = vbool8;
+  using vbool8   = vint8;
+  using vboolf8  = vfloat8;
   using vboold8  = vllong8;
 
   /* 16-wide shortcuts */
@@ -119,8 +119,8 @@ namespace tsimd {
   using vint16    = pack<int, 16>;
   using vuint16   = pack<unsigned int, 16>;
   using vllong16  = pack<long long, 16>;
-  using vbool16   = pack<int, 16>;
-  using vboolf16  = vbool16;
+  using vbool16   = vint16;
+  using vboolf16  = vfloat16;
   using vboold16  = vllong16;
 
   /* default shortcuts */
@@ -129,8 +129,8 @@ namespace tsimd {
   using vint    = pack<int, DEFAULT_WIDTH>;
   using vuint   = pack<unsigned int, DEFAULT_WIDTH/2>;
   using vllong  = pack<long long, DEFAULT_WIDTH/2>;
-  using vbool   = pack<int, DEFAULT_WIDTH>;
-  using vboolf  = vbool;
+  using vbool   = vint;
+  using vboolf  = vfloat;
   using vboold  = vllong;
 
   // pack<> inlined members ///////////////////////////////////////////////////

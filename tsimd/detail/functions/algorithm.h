@@ -86,15 +86,20 @@ namespace tsimd {
     return result;
   }
 
-  template <typename T, int W>
-  inline pack<T, W> select(const mask<W> &m,
-                           const pack<T, W> &t,
-                           const pack<T, W> &f)
+  // select() /////////////////////////////////////////////////////////////////
+
+  // 1-wide //
+
+  // TODO
+
+  // 4-wide //
+
+  inline vfloat4 select(const vboolf4& m, const vfloat4& t, const vfloat4& f)
   {
-    pack<T, W> result;
+    vfloat4 result;
 
     #pragma omp simd
-    for (int i = 0; i < W; ++i) {
+    for (int i = 0; i < vfloat4::static_size; ++i) {
       if (m[i])
         result[i] = t[i];
       else
@@ -103,5 +108,70 @@ namespace tsimd {
 
     return result;
   }
+
+  inline vint4 select(const vbool4& m, const vint4& t, const vint4& f)
+  {
+    vint4 result;
+
+    #pragma omp simd
+    for (int i = 0; i < vint4::static_size; ++i) {
+      if (m[i])
+        result[i] = t[i];
+      else
+        result[i] = f[i];
+    }
+
+    return result;
+  }
+
+  // 8-wide //
+
+  inline vfloat8 select(const vboolf8& m, const vfloat8& t, const vfloat8& f)
+  {
+#if defined(__AVX512__)
+    return _mm256_mask_blend_ps(m, f, t);
+#elif defined(__AVX__)
+    return _mm256_blendv_ps(f, t, m);
+#else
+    vfloat8 result;
+
+    #pragma omp simd
+    for (int i = 0; i < vfloat8::static_size; ++i) {
+      if (m[i])
+        result[i] = t[i];
+      else
+        result[i] = f[i];
+    }
+
+    return result;
+#endif
+  }
+
+  inline vint8 select(const vbool8& m, const vint8& t, const vint8& f)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_castps_si256(
+        _mm256_blendv_ps(_mm256_castsi256_ps(f),
+                         _mm256_castsi256_ps(t),
+                         _mm256_castsi256_ps(m))
+    );
+#else
+    vint8 result;
+
+    #pragma omp simd
+    for (int i = 0; i < vint8::static_size; ++i) {
+      if (m[i])
+        result[i] = t[i];
+      else
+        result[i] = f[i];
+    }
+
+    return result;
+#endif
+  }
+
+  // 16-wide //
+
+  // TODO
 
 } // ::tsimd
