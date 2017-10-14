@@ -54,37 +54,113 @@ namespace tsimd {
         fcn(p[i]);
   }
 
-  template <int W>
-  inline bool any(const mask<W> &m)
+  // any() ////////////////////////////////////////////////////////////////////
+
+  // 1-wide //
+
+  // TODO
+
+  // 4-wide //
+
+  inline bool any(const vboolf4& a)
   {
-    bool result = false;
-
-    #pragma omp simd
-    for (int i = 0; i < W; ++i)
-      if (m[i])
-        result = true;
-
-    return result;
+#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
+    return _mm_movemask_ps(a) != 0x0;
+#else
+    NOT_IMPLEMENTED;
+#endif
   }
 
-  template <int W>
-  inline bool none(const mask<W> &m)
+  inline bool any(const vbool4& a)
+  {
+#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
+    return any(_mm_castsi128_ps(a));
+#else
+    NOT_IMPLEMENTED;
+#endif
+  }
+
+  // 8-wide //
+
+  inline bool any(const vboolf8& a)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return !_mm256_testz_ps(a, a);
+#else
+    NOT_IMPLEMENTED;
+#endif
+  }
+
+  inline bool any(const vbool8& a)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return any(_mm256_castsi256_ps(a));
+#else
+    NOT_IMPLEMENTED;
+#endif
+  }
+
+  // 16-wide //
+
+  // TODO
+
+  // none() ///////////////////////////////////////////////////////////////////
+
+  template <typename MASK_T>
+  inline bool none(const MASK_T &m)
   {
     return !any(m);
   }
 
-  template <int W>
-  inline bool all(const mask<W> &m)
+  // all() ////////////////////////////////////////////////////////////////////
+
+  // 1-wide //
+
+  // TODO
+
+  // 4-wide //
+
+  inline bool all(const vboolf4& a)
   {
-    bool result = true;
-
-    #pragma omp simd
-    for (int i = 0; i < W; ++i)
-      if (!m[i])
-        result = false;
-
-    return result;
+#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
+    return _mm_movemask_ps(a) == 0xf;
+#else
+    NOT_IMPLEMENTED;
+#endif
   }
+
+  inline bool all(const vbool4& a)
+  {
+#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
+    return all(_mm_castsi128_ps(a));
+#else
+    NOT_IMPLEMENTED;
+#endif
+  }
+
+  // 8-wide //
+
+  inline bool all(const vboolf8& a)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_movemask_ps(a) == static_cast<unsigned int>(0xff);
+#else
+    NOT_IMPLEMENTED;
+#endif
+  }
+
+  inline bool all(const vbool8& a)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return all(_mm256_castsi256_ps(a));
+#else
+    NOT_IMPLEMENTED;
+#endif
+  }
+
+  // 16-wide //
+
+  // TODO
 
   // select() /////////////////////////////////////////////////////////////////
 
