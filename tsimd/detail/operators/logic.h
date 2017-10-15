@@ -38,7 +38,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] < p2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] < p2[i]) ? vtrue : vfalse;
 
     return result;
   }
@@ -52,7 +52,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] < v) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] < v) ? vtrue : vfalse;
 
     return result;
   }
@@ -74,7 +74,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] <= p2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] <= p2[i]) ? vtrue : vfalse;
 
     return result;
   }
@@ -88,7 +88,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] <= v) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] <= v) ? vtrue : vfalse;
 
     return result;
   }
@@ -110,7 +110,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] > p2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] > p2[i]) ? vtrue : vfalse;
 
     return result;
   }
@@ -124,7 +124,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] > v) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] > v) ? vtrue : vfalse;
 
     return result;
   }
@@ -146,7 +146,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] >= p2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] >= p2[i]) ? vtrue : vfalse;
 
     return result;
   }
@@ -160,7 +160,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] >= v) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] >= v) ? vtrue : vfalse;
 
     return result;
   }
@@ -182,7 +182,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (m1[i] && m2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (m1[i] && m2[i]) ? vtrue : vfalse;
 
     return result;
   }
@@ -196,7 +196,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (m1[i] || m2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (m1[i] || m2[i]) ? vtrue : vfalse;
 
     return result;
   }

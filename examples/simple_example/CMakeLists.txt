@@ -22,14 +22,4 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-option(TSIMD_ENABLE_ISPC "Enable ISPC examples" OFF)
-
-if(TSIMD_ENABLE_ISPC)
-  add_definitions(-DTSIMD_ENABLE_ISPC)
-endif()
-
-include(ispc)
-
-tsimd_configure_ispc_isa()
-
-subdirs(simple_example mandelbrot)
+add_executable(simple_example simple_example.cpp)

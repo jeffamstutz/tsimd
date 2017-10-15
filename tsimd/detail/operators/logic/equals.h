@@ -47,14 +47,12 @@ namespace tsimd {
     return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_EQ);
 #elif defined(__AVX__)
     return _mm256_cmp_ps(p1, p2, _CMP_EQ_OQ);
-#elif defined(__SSE__)
-    NOT_IMPLEMENTED;
 #else
     vboolf8 result;
 
     #pragma omp simd
     for (int i = 0; i < vboolf8::static_size; ++i)
-      result[i] = (p1[i] == p2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] == p2[i]) ? vtrue : vfalse;
 
     return result;
 #endif
@@ -77,14 +75,12 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX__)
     return vboolf8(_mm_castsi128_ps(_mm_cmpeq_epi32(p1.vl, p2.vl)),
                    _mm_castsi128_ps(_mm_cmpeq_epi32(p1.vh, p2.vh)));
-#elif defined(__SSE__)
-    NOT_IMPLEMENTED;
 #else
     vboolf8 result;
 
     #pragma omp simd
     for (int i = 0; i < vboolf8::static_size; ++i)
-      result[i] = (p1[i] == p2[i]) ? 0xFFFFFFFF : 0x00000000;
+      result[i] = (p1[i] == p2[i]) ? vtrue : vfalse;
 
     return result;
 #endif

@@ -22,41 +22,89 @@
 // DEALINGS IN THE SOFTWARE.                                                  //
 // ========================================================================== //
 
-#pragma once
+#include <iostream>
 
-#include "../../pack.h"
+#include "tsimd/tsimd.h"
 
-namespace tsimd {
+using namespace tsimd;
 
-  // unary operator!() ////////////////////////////////////////////////////////
+template <typename PACK_T>
+inline void print(PACK_T &p)
+{
+  std::cout << "{" << p[0];
+  foreach(p, [](typename PACK_T::value_t &v, int i) {
+    if (i != 0)
+      std::cout << ", " << v;
+  });
 
-  // 1-wide //
+  std::cout << "}" << std::endl;
+}
 
-  // TODO
+int main()
+{
+  // test foreach() and construction //
 
-  // 4-wide //
+  std::cout << "test foreach() and construction" << std::endl;
 
-  // TODO
-
-  // 8-wide //
-
-  inline vboolf8 operator!(const vboolf8 &m)
   {
-#if defined(__AVX512__) || defined(__AVX__)
-    return _mm256_xor_ps(m, vboolf8(vtrue));
-#else
-    vboolf8 result;
+    vfloat v1(2.f);
 
-    #pragma omp simd
-    for (int i = 0; i < 8; ++i)
-      result[i] = !m[i] ? vtrue : vfalse;
-
-    return result;
-#endif
+    print(v1);
   }
 
-  // 16-wide //
+  std::cout << std::endl;
 
-  // TODO
+  // test operator+() //
 
-} // ::tsimd
+  std::cout << "test operator+()" << std::endl;
+
+  {
+    vfloat v1(1.f), v2(2.f);
+
+    std::cout << "#1: " << all((v1 + v2)  == vfloat(3.f)) << std::endl;
+    std::cout << "#2: " << all((v1 + 2.f) == vfloat(3.f)) << std::endl;
+    std::cout << "#3: " << all((2.f + v1) == vfloat(3.f)) << std::endl;
+  }
+
+  std::cout << std::endl;
+
+  // test any() //
+
+  std::cout << "test any()" << std::endl;
+
+  {
+    vbool m(vfalse);
+
+    print(m);
+
+    std::cout << "#1: " << !tsimd::any(m) << std::endl;
+    m[0] = vtrue;
+    std::cout << "#2: " << tsimd::any(m) << std::endl;
+  }
+
+  std::cout << std::endl;
+
+  // test operator==() //
+
+  std::cout << "test operator==()" << std::endl;
+
+  {
+    vint v1(1);
+    vint v2(2);
+
+    auto b1 = v1 != v2;
+    print(b1);
+
+    std::cout << "#1: " << tsimd::all(v1 != v2) << std::endl;
+    std::cout << "#2: " << tsimd::all(1  != v2) << std::endl;
+    std::cout << "#3: " << tsimd::all(v2 != 1) << std::endl;
+
+    v1[0] = 2;
+
+    std::cout << "#4: " << !tsimd::all(v1 != v2) << std::endl;
+  }
+
+  std::cout << std::endl;
+
+  return 0;
+}

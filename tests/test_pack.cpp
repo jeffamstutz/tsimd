@@ -33,6 +33,9 @@ using tsimd::vfloat;
 using tsimd::vint;
 using vmask = tsimd::vbool;
 
+using tsimd::vtrue;
+using tsimd::vfalse;
+
 /* TODO: add tests for -->
  *         - operator<<()
  *         - operator>>()
@@ -291,25 +294,25 @@ TEST_CASE("binary operator>=()")
 
 TEST_CASE("binary operator&&()")
 {
-  vmask m1(true);
-  vmask m2(false);
+  vmask m1(vtrue);
+  vmask m2(vfalse);
 
   REQUIRE(tsimd::none(m1 && m2));
 }
 
 TEST_CASE("binary operator||()")
 {
-  vmask m1(true);
-  vmask m2(false);
+  vmask m1(vtrue);
+  vmask m2(vfalse);
 
   REQUIRE(tsimd::all(m1 || m2));
 }
 
 TEST_CASE("unary operator!()")
 {
-  vmask v(true);
+  vmask v(vtrue);
 
-  REQUIRE(tsimd::all(!v == vmask(false)));
+  REQUIRE(tsimd::all(!v == vmask(vfalse)));
 }
 
 TEST_CASE("unary operator-()")
@@ -400,27 +403,27 @@ TEST_CASE("foreach_active()")
 
 TEST_CASE("any()")
 {
-  vmask m(0);
+  vmask m(vfalse);
   REQUIRE(!tsimd::any(m));
-  m[0] = 1;
+  m[0] = vtrue;
   REQUIRE(tsimd::any(m));
 }
 
 TEST_CASE("none()")
 {
-  vmask m(0);
+  vmask m(vfalse);
   REQUIRE(tsimd::none(m));
-  m[0] = 1;
+  m[0] = vtrue;
   REQUIRE(!tsimd::none(m));
 }
 
 TEST_CASE("all()")
 {
-  vmask m(0);
+  vmask m(vfalse);
   REQUIRE(!tsimd::all(m));
-  m[0] = 1;
+  m[0] = vtrue;
   REQUIRE(!tsimd::all(m));
-  foreach(m, [](float &l, int) { l = 1; });
+  foreach(m, [](float &l, int) { l = vtrue; });
   REQUIRE(tsimd::all(m));
 }
 
