@@ -79,8 +79,8 @@ namespace tsimd {
   template <>
   inline void store(const vfloat8& v, void *_dst, const vboolf8& mask)
   {
-#if 0//defined(__AVX512__) || defined(__AVX__)
-    _mm256_mask_store_ps((float*)_dst, mask, v);
+#if defined(__AVX512__) || defined(__AVX__)
+    _mm256_maskstore_ps((float*)_dst, _mm256_castps_si256(mask), v);
 #else
     auto *dst = (typename vfloat8::value_t*) _dst;
 
@@ -108,8 +108,10 @@ namespace tsimd {
   template <>
   inline void store(const vint8& v, void *_dst, const vboolf8& mask)
   {
-#if 0//defined(__AVX512__) || defined(__AVX__)
-    _mm256_maskstore_ps((float*)ptr,(__m256i)mask,_mm256_castsi256_ps(v));
+#if defined(__AVX512__) || defined(__AVX__)
+    _mm256_maskstore_ps((float*)_dst,
+                        _mm256_castps_si256(mask),
+                        _mm256_castsi256_ps(v));
 #else
     auto *dst = (typename vint8::value_t*) _dst;
 

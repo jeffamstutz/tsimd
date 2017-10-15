@@ -65,6 +65,9 @@ namespace tsimd {
     operator const intrinsic_t &() const { return v; }
     operator       intrinsic_t &()       { return v; }
 
+    operator const value_t *() const { return &data[0]; }
+    operator       value_t *()       { return &data[0]; }
+
     // Data //
 
     union
