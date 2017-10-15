@@ -65,8 +65,14 @@ namespace tsimd {
     operator const intrinsic_t &() const { return v; }
     operator       intrinsic_t &()       { return v; }
 
-    operator const value_t *() const { return &data[0]; }
-    operator       value_t *()       { return &data[0]; }
+    operator const T*() const { return data; }
+    operator       T*()       { return data; }
+
+    T* begin();
+    T* end();
+
+    const T* cbegin() const;
+    const T* cend()   const;
 
     // Data //
 
@@ -185,6 +191,30 @@ namespace tsimd {
       result[i] = data[i];
 
     return result;
+  }
+
+  template <typename T, int W>
+  inline T* pack<T, W>::begin()
+  {
+    return data;
+  }
+
+  template <typename T, int W>
+  inline T* pack<T, W>::end()
+  {
+    return data + W;
+  }
+
+  template <typename T, int W>
+  inline const T* pack<T, W>::cbegin() const
+  {
+    return data;
+  }
+
+  template <typename T, int W>
+  inline const T* pack<T, W>::cend() const
+  {
+    return data + W;
   }
 
 } // ::tsimd

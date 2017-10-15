@@ -31,13 +31,12 @@ using namespace tsimd;
 template <typename PACK_T>
 inline void print(PACK_T &p)
 {
-  std::cout << "{" << p[0];
-  foreach(p, [](typename PACK_T::value_t &v, int i) {
-    if (i != 0)
-      std::cout << ", " << v;
-  });
+  std::cout << "{";
 
-  std::cout << "}" << std::endl;
+  for (auto &v : p)
+    std::cout << " " << v;
+
+  std::cout << " }" << std::endl;
 }
 
 int main()
