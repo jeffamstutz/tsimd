@@ -31,6 +31,7 @@
 
 using tsimd::vfloat;
 using tsimd::vint;
+using tsimd::vbool;
 using vmask = tsimd::vbool;
 
 using tsimd::vtrue;
@@ -380,24 +381,23 @@ TEST_CASE("foreach()")
   REQUIRE(tsimd::all(v1 == v2));
 }
 
-#if 0
+#if 0 //NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("foreach_active()")
 {
-  tsimd::mask<4> m(0);
-  m[0] = 1;
-  m[2] = 1;
+  vbool m(vfalse);
 
-  tsimd::pack<int, 4> v(0);
+  m[0] = vtrue;
+  m[2] = vtrue;
 
-  tsimd::pack<int, 4> expected;
+  vint v1(0);
+
+  vint expected(0);
   expected[0] = 2;
-  expected[1] = 0;
   expected[2] = 2;
-  expected[3] = 0;
 
-  tsimd::foreach_active(m, v, [](int &v){ v = 2; });
+  tsimd::foreach_active(m, v1, [](int &v){ v = 2; });
 
-  REQUIRE(tsimd::all(v == expected));
+  REQUIRE(tsimd::all(v1 == expected));
 }
 #endif
 
@@ -427,25 +427,23 @@ TEST_CASE("all()")
   REQUIRE(tsimd::all(m));
 }
 
-#if 0
+#if 0 //NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("select()")
 {
-  tsimd::mask<4> m(0);
-  m[0] = 1;
-  m[2] = 1;
+  vbool m(vfalse);
+  m[0] = vtrue;
+  m[2] = vtrue;
 
-  tsimd::pack<int, 4> v1(0);
-  tsimd::pack<int, 4> v2(2);
+  vint v1(0);
+  vint v2(2);
 
   REQUIRE(tsimd::all(v1 != v2));
 
   auto result = tsimd::select(m, v1, v2);
 
-  tsimd::pack<int, 4> expected;
+  vint expected(2);
   expected[0] = 0;
-  expected[1] = 2;
   expected[2] = 0;
-  expected[3] = 2;
 
   REQUIRE(tsimd::all(result == expected));
   REQUIRE(tsimd::any(v1     != expected));

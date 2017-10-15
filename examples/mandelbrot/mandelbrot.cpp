@@ -190,7 +190,7 @@ void mandelbrot(float x0, float y0,
 
 namespace omp {
 
-//#pragma omp declare simd
+#pragma omp declare simd
 template <typename T>
 inline int mandel(T c_re, T c_im, int count)
 {
@@ -285,7 +285,7 @@ int main()
   const int maxIters = 256;
   std::vector<int> buf(width*height);
 
-  tsimd::foreach(tsimd::programIndex, [](int &v, int i) { v = i; });
+  std::iota(tsimd::programIndex.begin(), tsimd::programIndex.end(), 0);
   embc::foreach_v(embc::programIndex, [](int &v, int i) { v = i; });
 
   auto bencher = pico_bench::Benchmarker<milliseconds>{16, seconds{4}};

@@ -23,6 +23,7 @@
 // ========================================================================== //
 
 #include <iostream>
+#include <numeric>
 
 #include "tsimd/tsimd.h"
 
@@ -104,6 +105,41 @@ int main()
   }
 
   std::cout << std::endl;
+
+  // test std::iota(vec) //
+
+  std::cout << "test std::iota(vec)" << std::endl;
+
+  {
+    vint v1(0);
+    std::iota(v1.begin(), v1.end(), 0);
+    print(v1);
+  }
+
+  std::cout << std::endl;
+
+  // test foreach_active() //
+
+  std::cout << "test foreach_active()" << std::endl;
+
+  {
+    vbool m(vfalse);
+
+    m[0] = vtrue;
+    m[2] = vtrue;
+
+    vint v(0);
+
+    vint expected(0);
+    expected[0] = 2;
+    expected[2] = 2;
+
+    tsimd::foreach_active(m, v, [](int &v){ v = 2; });
+
+    print(m);
+    print(v);
+    print(expected);
+  }
 
   return 0;
 }
