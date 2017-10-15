@@ -24,94 +24,120 @@
 
 #pragma once
 
-#include "../pack.h"
-
-#include "memory/load.h"
+#include "../../pack.h"
 
 namespace tsimd {
 
-  // gather() //
-
-  template <typename PACK_T, typename OFFSET_T>
-  inline PACK_T gather(void* _src, const pack<OFFSET_T, PACK_T::static_size> &o)
-  {
-    auto *src = (typename PACK_T::value_t*) _src;
-    PACK_T result;
-
-    #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      result[i] = src[o[i]];
-
-    return result;
-  }
-
-  template <typename PACK_T, typename OFFSET_T>
-  inline PACK_T gather(void* _src,
-                       const pack<OFFSET_T, PACK_T::static_size> &o,
-                       const mask<PACK_T::static_size> &m)
-  {
-    auto *src = (typename PACK_T::value_t*) _src;
-    PACK_T result;
-
-    #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      if(m[i])
-        result[i] = src[o[i]];
-
-    return result;
-  }
-
-  // store() //
+  template <typename PACK_T>
+  inline PACK_T load(void* _src);
 
   template <typename PACK_T>
-  inline void store(const PACK_T &p, void* _dst)
+  inline PACK_T load(void* _src, const vboolf8& mask);
+
+  // load() //
+
+  // 1-wide //
+
+  // TODO
+
+  // 4-wide //
+
+  // TODO
+
+  template <>
+  inline vint4 load<vint4>(void* _src)
   {
-    auto *dst = (typename PACK_T::value_t*) _dst;
+#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
+    return _mm_load_si128((__m128i*)_src);
+#else
+    auto *src = (typename vint4::value_t*)_src;
+    vint4 result;
 
     #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      dst[i] = p[i];
+    for (int i = 0; i < 4; ++i)
+      result[i] = src[i];
+
+    return result;
+#endif
   }
 
-  template <typename PACK_T>
-  inline void store(const PACK_T &p,
-                    void* _dst,
-                    const mask<PACK_T::static_size> &m)
+  // 8-wide //
+
+  template <>
+  inline vfloat8 load<vfloat8>(void* _src)
   {
-    auto *dst = (typename PACK_T::value_t*) _dst;
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_load_ps((float*)_src);
+#else
+    auto *src = (typename vfloat8::value_t*)_src;
+    vfloat8 result;
 
     #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
+    for (int i = 0; i < vfloat8::static_size; ++i)
+      result[i] = src[i];
+
+    return result;
+#endif
+  }
+
+  template <>
+  inline vint8 load<vint8>(void* _src)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_castps_si256(_mm256_load_ps((float*)_src));
+#else
+    auto *src = (typename vint8::value_t*)_src;
+    vint8 result;
+
+    #pragma omp simd
+    for (int i = 0; i < 8; ++i)
+      result[i] = src[i];
+
+    return result;
+#endif
+  }
+
+  template <>
+  inline vfloat8 load<vfloat8>(void* _src, const vboolf8& mask)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_mask_load_ps (_mm256_setzero_ps(),
+                                _mm256_castps_si256(mask),
+                                (float*)_src);
+#else
+    auto *src = (typename vfloat8::value_t*) _src;
+    vfloat8 result;
+
+    #pragma omp simd
+    for (float i = 0; i < 8; ++i)
       if (m[i])
-        dst[i] = p[i];
+        result[i] = src[i];
+
+    return result;
+#endif
   }
 
-  // scatter() //
-
-  template <typename PACK_T, typename OFFSET_T>
-  inline void scatter(const PACK_T &p,
-                      void* _dst,
-                      const pack<OFFSET_T, PACK_T::static_size> &o)
+  template <>
+  inline vint8 load<vint8>(void* _src, const vboolf8& mask)
   {
-    auto *dst = (typename PACK_T::value_t*) _dst;
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_castps_si256(_mm256_maskload_ps((float*)_src,
+                               _mm256_castps_si256(mask));
+#else
+    auto *src = (typename vint8::value_t*) _src;
+    vint8 result;
 
     #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      dst[o[i]] = p[i];
-  }
-
-  template <typename PACK_T, typename OFFSET_T>
-  inline void scatter(const PACK_T &p,
-                      void* _dst,
-                      const pack<OFFSET_T, PACK_T::static_size> &o,
-                      const mask<PACK_T::static_size> &m)
-  {
-    auto *dst = (typename PACK_T::value_t*) _dst;
-
-    #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
+    for (int i = 0; i < 8; ++i)
       if (m[i])
-        dst[o[i]] = p[i];
+        result[i] = src[i];
+
+    return result;
+#endif
   }
+
+  // 16-wide //
+
+  // TODO
 
 } // ::tsimd
