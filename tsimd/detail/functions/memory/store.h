@@ -24,70 +24,104 @@
 
 #pragma once
 
-#include "../pack.h"
-
-#include "memory/load.h"
-#include "memory/store.h"
+#include "../../pack.h"
 
 namespace tsimd {
 
-  // gather() //
+  template <typename PACK_T>
+  inline void store(const PACK_T &p, void* _dst);
 
-  template <typename PACK_T, typename OFFSET_T>
-  inline PACK_T gather(void* _src, const pack<OFFSET_T, PACK_T::static_size> &o)
+  template <typename PACK_T>
+  inline void store(const PACK_T &p,
+                    void* _dst,
+                    const mask<PACK_T::static_size> &m);
+
+  // load() //
+
+  // 1-wide //
+
+  // TODO
+
+  // 4-wide //
+
+  // TODO
+
+  template <>
+  inline void store(const vfloat4& v, void *_dst)
   {
-    auto *src = (typename PACK_T::value_t*) _src;
-    PACK_T result;
+#if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
+    _mm_store_ps((float*)_dst, v);
+#else
+    auto *dst = (typename vfloat4::value_t*) _dst;
 
     #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      result[i] = src[o[i]];
-
-    return result;
+    for (int i = 0; i < 4; ++i)
+      dst[i] = v[i];
+#endif
   }
 
-  template <typename PACK_T, typename OFFSET_T>
-  inline PACK_T gather(void* _src,
-                       const pack<OFFSET_T, PACK_T::static_size> &o,
-                       const mask<PACK_T::static_size> &m)
+  // 8-wide //
+
+  template <>
+  inline void store(const vfloat8& v, void *_dst)
   {
-    auto *src = (typename PACK_T::value_t*) _src;
-    PACK_T result;
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_store_ps((float*)_dst, v);
+#else
+    auto *dst = (typename vfloat8::value_t*) _dst;
 
     #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      if(m[i])
-        result[i] = src[o[i]];
-
-    return result;
+    for (int i = 0; i < 8; ++i)
+      dst[i] = v[i];
+#endif
   }
 
-  // scatter() //
-
-  template <typename PACK_T, typename OFFSET_T>
-  inline void scatter(const PACK_T &p,
-                      void* _dst,
-                      const pack<OFFSET_T, PACK_T::static_size> &o)
+  template <>
+  inline void store(const vfloat8& v, void *_dst, const vboolf8& mask)
   {
-    auto *dst = (typename PACK_T::value_t*) _dst;
+#if 0//defined(__AVX512__) || defined(__AVX__)
+    _mm256_mask_store_ps((float*)_dst, mask, v);
+#else
+    auto *dst = (typename vfloat8::value_t*) _dst;
 
     #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      dst[o[i]] = p[i];
+    for (int i = 0; i < 8; ++i)
+      if (mask[i])
+        dst[i] = v[i];
+#endif
   }
 
-  template <typename PACK_T, typename OFFSET_T>
-  inline void scatter(const PACK_T &p,
-                      void* _dst,
-                      const pack<OFFSET_T, PACK_T::static_size> &o,
-                      const mask<PACK_T::static_size> &m)
+  template <>
+  inline void store(const vint8& v, void *_dst)
   {
-    auto *dst = (typename PACK_T::value_t*) _dst;
+#if defined(__AVX512__) || defined(__AVX__)
+    _mm256_store_ps((float*)_dst, _mm256_castsi256_ps(v));
+#else
+    auto *dst = (typename vint8::value_t*) _dst;
 
     #pragma omp simd
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      if (m[i])
-        dst[o[i]] = p[i];
+    for (int i = 0; i < 8; ++i)
+      dst[i] = v[i];
+#endif
   }
+
+  template <>
+  inline void store(const vint8& v, void *_dst, const vboolf8& mask)
+  {
+#if 0//defined(__AVX512__) || defined(__AVX__)
+    _mm256_maskstore_ps((float*)ptr,(__m256i)mask,_mm256_castsi256_ps(v));
+#else
+    auto *dst = (typename vint8::value_t*) _dst;
+
+    #pragma omp simd
+    for (int i = 0; i < 8; ++i)
+      if (mask[i])
+        dst[i] = v[i];
+#endif
+  }
+
+  // 16-wide //
+
+  // TODO
 
 } // ::tsimd
