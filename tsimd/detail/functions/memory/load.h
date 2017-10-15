@@ -100,7 +100,7 @@ namespace tsimd {
   template <>
   inline vfloat8 load<vfloat8>(void* _src, const vboolf8& mask)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if 0//defined(__AVX512__) || defined(__AVX__)
     return _mm256_mask_load_ps (_mm256_setzero_ps(),
                                 _mm256_castps_si256(mask),
                                 (float*)_src);
@@ -109,8 +109,8 @@ namespace tsimd {
     vfloat8 result;
 
     #pragma omp simd
-    for (float i = 0; i < 8; ++i)
-      if (m[i])
+    for (int i = 0; i < 8; ++i)
+      if (mask[i])
         result[i] = src[i];
 
     return result;
@@ -120,7 +120,7 @@ namespace tsimd {
   template <>
   inline vint8 load<vint8>(void* _src, const vboolf8& mask)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if 0//defined(__AVX512__) || defined(__AVX__)
     return _mm256_castps_si256(_mm256_maskload_ps((float*)_src,
                                _mm256_castps_si256(mask));
 #else
@@ -129,7 +129,7 @@ namespace tsimd {
 
     #pragma omp simd
     for (int i = 0; i < 8; ++i)
-      if (m[i])
+      if (mask[i])
         result[i] = src[i];
 
     return result;
