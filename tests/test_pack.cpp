@@ -466,6 +466,24 @@ TEST_CASE("unmasked load()")
   REQUIRE(tsimd::all(v1 == 5));
 }
 
+#if 0 //NOTE: currently crashing on IVB for no obvious reason...
+TEST_CASE("masked load()")
+{
+  std::vector<int> values(DEFAULT_WIDTH);
+  std::fill(values.begin(), values.end(), 5);
+
+  vbool m(vfalse);
+  m[2] = vtrue;
+
+  vint v1(0);
+  v1 = tsimd::load<vint>(values.data(), m);
+
+  vint expected(5);
+  expected[2] = 0;
+  REQUIRE(tsimd::all(v1 == expected));
+}
+#endif
+
 TEST_CASE("unmasked gather()")
 {
   std::vector<int> values(DEFAULT_WIDTH);

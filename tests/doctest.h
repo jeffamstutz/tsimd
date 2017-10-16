@@ -62,7 +62,9 @@
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wunused-local-typedef"
-#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#if !defined(__has_warning) || __has_warning("-Wzero-as-null-pointer-constant")
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
 #pragma clang diagnostic ignored "-Wc++11-long-long"
 #endif // __clang__
 
@@ -103,8 +105,8 @@
 
 #define DOCTEST_VERSION_MAJOR 1
 #define DOCTEST_VERSION_MINOR 2
-#define DOCTEST_VERSION_PATCH 1
-#define DOCTEST_VERSION_STR "1.2.1"
+#define DOCTEST_VERSION_PATCH 5
+#define DOCTEST_VERSION_STR "1.2.5"
 
 #define DOCTEST_VERSION                                                                            \
     (DOCTEST_VERSION_MAJOR * 10000 + DOCTEST_VERSION_MINOR * 100 + DOCTEST_VERSION_PATCH)
@@ -460,11 +462,18 @@ typedef basic_ostream<char, char_traits<char> > ostream;
 #include <cstddef>
 #else  // _LIBCPP_VERSION
 namespace std
-{ typedef decltype(nullptr) nullptr_t; }
+{
+typedef decltype(nullptr) nullptr_t;
+}
 #endif // _LIBCPP_VERSION
 #endif // DOCTEST_CONFIG_WITH_NULLPTR
 
 #ifndef DOCTEST_CONFIG_DISABLE
+
+#ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
+#include <type_traits>
+#endif // DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
+
 namespace doctest
 {
 namespace detail
@@ -572,10 +581,12 @@ public:
     // GCC 4.9/5/6 report Wstrict-overflow when optimizations are ON and it got inlined in the vector class somewhere...
     // see commit 574ef95f0cd379118be5011704664e4b5351f1e0 and build https://travis-ci.org/onqtam/doctest/builds/230671611
     DOCTEST_NOINLINE String& operator=(const String& other) {
-        if(!isOnStack())
-            delete[] data.ptr;
+        if(this != &other) {
+            if(!isOnStack())
+                delete[] data.ptr;
 
-        copy(other);
+            copy(other);
+        }
 
         return *this;
     }
@@ -649,123 +660,13 @@ namespace detail
     }  // namespace static_assert_impl
 #endif // DOCTEST_CONFIG_WITH_STATIC_ASSERT
 
-    namespace traits
-    {
-        template <typename T>
-        struct remove_const
-        { typedef T type; };
+    template <bool CONDITION, typename TYPE = void>
+    struct enable_if
+    {};
 
-        template <typename T>
-        struct remove_const<const T>
-        { typedef T type; };
-
-        template <typename T>
-        struct remove_volatile
-        { typedef T type; };
-
-        template <typename T>
-        struct remove_volatile<volatile T>
-        { typedef T type; };
-
-        template <typename T>
-        struct remove_cv
-        { typedef typename remove_volatile<typename remove_const<T>::type>::type type; };
-
-        template <typename T>
-        struct is_pointer_helper
-        { static const bool value = false; };
-
-        template <typename T>
-        struct is_pointer_helper<T*>
-        // cppcheck-suppress unusedStructMember
-        { static const bool value = true; };
-
-        template <typename T>
-        struct is_pointer
-        // cppcheck-suppress unusedStructMember
-        { static const bool value = is_pointer_helper<typename remove_cv<T>::type>::value; };
-
-        template <bool CONDITION, typename TYPE = void>
-        struct enable_if
-        {};
-
-        template <typename TYPE>
-        struct enable_if<true, TYPE>
-        { typedef TYPE type; };
-
-        template <typename T>
-        struct remove_reference
-        { typedef T type; };
-
-        template <typename T>
-        struct remove_reference<T&>
-        { typedef T type; };
-
-        template <typename T, typename AT_1 = void>
-        class is_constructible_impl
-        {
-        private:
-            template <typename C_T, typename C_AT_1>
-            static bool test(typename enable_if< //!OCLINT avoid private static members
-                             sizeof(C_T) ==
-                             sizeof(C_T(static_cast<C_AT_1>(
-                                     *static_cast<typename remove_reference<C_AT_1>::type*>(
-                                             0))))>::type*);
-
-            template <typename, typename>
-            static int test(...); //!OCLINT avoid private static members
-
-        public:
-            static const bool value = sizeof(test<T, AT_1>(0)) == sizeof(bool);
-        };
-
-        template <typename T>
-        class is_constructible_impl<T, void>
-        {
-        private:
-            template <typename C_T>
-            static C_T testFun(C_T); //!OCLINT avoid private static members
-
-            template <typename C_T>
-            static bool test(typename enable_if< //!OCLINT avoid private static members
-                             sizeof(C_T) == sizeof(testFun(C_T()))>::type*);
-
-            template <typename>
-            static int test(...); //!OCLINT avoid private static members
-
-        public:
-            static const bool value = sizeof(test<T>(0)) == sizeof(bool);
-        };
-
-// is_constructible<> taken from here: http://stackoverflow.com/a/40443701/3162383
-// for GCC/Clang gives the same results as std::is_constructible<> - see here: https://wandbox.org/permlink/bNWr7Ii2fuz4Vf7A
-// modifications:
-// - reworked to support only 1 argument (mainly because of MSVC...)
-// - removed pointer support
-// MSVC support:
-// - for versions before 2012 read the CAUTION comment below
-// currently intended for use only in the Approx() helper for strong typedefs of double - see issue #62
-#ifndef _MSC_VER
-        template <typename T, typename AT_1 = void>
-        class is_constructible
-        {
-        public:
-            static const bool value = is_pointer<typename remove_reference<T>::type>::value ?
-                                              false :
-                                              is_constructible_impl<T, AT_1>::value;
-        };
-#elif defined(_MSC_VER) && (_MSC_VER >= 1700)
-        template <typename T, typename AT_1>
-        struct is_constructible
-        { static const bool value = __is_constructible(T, AT_1); };
-#elif defined(_MSC_VER)
-        // !!! USE WITH CAUTION !!!
-        // will always return false - unable to implement this for versions of MSVC older than 2012 for now...
-        template <typename T, typename AT_1>
-        struct is_constructible
-        { static const bool value = false; };
-#endif // _MSC_VER
-    }  // namespace traits
+    template <typename TYPE>
+    struct enable_if<true, TYPE>
+    { typedef TYPE type; };
 
     template <typename T>
     struct deferred_false
@@ -805,7 +706,7 @@ namespace detail
     struct has_insertion_operator : has_insertion_operator_impl::has_insertion_operator<T>
     {};
 
-    DOCTEST_INTERFACE void my_memcpy(void* dest, const void* src, unsigned num);
+    DOCTEST_INTERFACE void     my_memcpy(void* dest, const void* src, unsigned num);
     DOCTEST_INTERFACE unsigned my_strlen(const char* in);
 
     DOCTEST_INTERFACE std::ostream* createStream();
@@ -842,7 +743,8 @@ namespace detail
     }
 
     class NullType
-    {};
+    {
+    };
 
     template <class T, class U>
     struct Typelist
@@ -1016,13 +918,14 @@ public:
         return approx;
     }
 
+#ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
     template <typename T>
     explicit Approx(const T& value,
-                    typename detail::traits::enable_if<
-                            detail::traits::is_constructible<double, T>::value>::type* =
+                    typename detail::enable_if<std::is_constructible<double, T>::value>::type* =
                             static_cast<T*>(detail::getNull())) {
         *this = Approx(static_cast<double>(value));
     }
+#endif // DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
 
     // clang-format off
     // overloads for double - the first one is necessary as it is in the implementation part of doctest
@@ -1040,8 +943,9 @@ public:
     friend bool operator> (double lhs, Approx const& rhs) { return lhs > rhs.m_value && lhs != rhs; }
     friend bool operator> (Approx const& lhs, double rhs) { return lhs.m_value > rhs && lhs != rhs; }
 
+#ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
 #define DOCTEST_APPROX_PREFIX \
-    template <typename T> friend typename detail::traits::enable_if<detail::traits::is_constructible<double, T>::value, bool>::type
+    template <typename T> friend typename detail::enable_if<std::is_constructible<double, T>::value, bool>::type
 
     DOCTEST_APPROX_PREFIX operator==(const T& lhs, const Approx& rhs) { return operator==(double(lhs), rhs); }
     DOCTEST_APPROX_PREFIX operator==(const Approx& lhs, const T& rhs) { return operator==(rhs, lhs); }
@@ -1056,33 +960,37 @@ public:
     DOCTEST_APPROX_PREFIX operator> (const T& lhs, const Approx& rhs) { return double(lhs) > rhs.m_value && lhs != rhs; }
     DOCTEST_APPROX_PREFIX operator> (const Approx& lhs, const T& rhs) { return lhs.m_value > double(rhs) && lhs != rhs; }
 #undef DOCTEST_APPROX_PREFIX
+#endif // DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
+
     // clang-format on
 
     Approx& epsilon(double newEpsilon) {
-        m_epsilon = (newEpsilon);
+        m_epsilon = newEpsilon;
         return *this;
     }
 
+#ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
     template <typename T>
-    typename detail::traits::enable_if<detail::traits::is_constructible<double, T>::value,
-                                       Approx&>::type
-    epsilon(const T& newEpsilon) {
+    typename detail::enable_if<std::is_constructible<double, T>::value, Approx&>::type epsilon(
+            const T& newEpsilon) {
         m_epsilon = static_cast<double>(newEpsilon);
         return *this;
     }
+#endif //  DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
 
     Approx& scale(double newScale) {
-        m_scale = (newScale);
+        m_scale = newScale;
         return *this;
     }
 
+#ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
     template <typename T>
-    typename detail::traits::enable_if<detail::traits::is_constructible<double, T>::value,
-                                       Approx&>::type
-    scale(const T& newScale) {
+    typename detail::enable_if<std::is_constructible<double, T>::value, Approx&>::type scale(
+            const T& newScale) {
         m_scale = static_cast<double>(newScale);
         return *this;
     }
+#endif // DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
 
     String toString() const;
 
@@ -1234,7 +1142,8 @@ namespace detail
     // clang-format on
 
     struct TestFailureException
-    {};
+    {
+    };
 
     DOCTEST_INTERFACE bool checkIfShouldThrow(assertType::Enum assert_type);
     DOCTEST_INTERFACE void fastAssertThrowIfFlagSet(int flags);
@@ -1367,7 +1276,7 @@ namespace detail
 #ifndef DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
 #define DOCTEST_COMPARISON_RETURN_TYPE bool
 #else // DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
-#define DOCTEST_COMPARISON_RETURN_TYPE typename traits::enable_if<can_use_op<L>::value || can_use_op<R>::value, bool>::type
+#define DOCTEST_COMPARISON_RETURN_TYPE typename enable_if<can_use_op<L>::value || can_use_op<R>::value, bool>::type
     inline bool eq(const char* lhs, const char* rhs) { return String(lhs) == String(rhs); }
     inline bool ne(const char* lhs, const char* rhs) { return String(lhs) != String(rhs); }
     inline bool lt(const char* lhs, const char* rhs) { return String(lhs) <  String(rhs); }
@@ -1382,7 +1291,7 @@ namespace detail
     template <typename L, typename R> DOCTEST_COMPARISON_RETURN_TYPE gt(const DOCTEST_REF_WRAP(L) lhs, const DOCTEST_REF_WRAP(R) rhs) { return lhs >  rhs; }
     template <typename L, typename R> DOCTEST_COMPARISON_RETURN_TYPE le(const DOCTEST_REF_WRAP(L) lhs, const DOCTEST_REF_WRAP(R) rhs) { return lhs <= rhs; }
     template <typename L, typename R> DOCTEST_COMPARISON_RETURN_TYPE ge(const DOCTEST_REF_WRAP(L) lhs, const DOCTEST_REF_WRAP(R) rhs) { return lhs >= rhs; }
-// clang-format on
+    // clang-format on
 
 #ifndef DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
 #define DOCTEST_CMP_EQ(l, r) l == r
@@ -1626,7 +1535,7 @@ namespace detail
 
         void setResult(const Result& res) { m_result = res; }
 
-        template <int         comparison, typename L, typename R>
+        template <int comparison, typename L, typename R>
         DOCTEST_NOINLINE void binary_assert(const DOCTEST_REF_WRAP(L) lhs,
                                             const DOCTEST_REF_WRAP(R) rhs) {
             m_result.m_passed = RelationalComparator<comparison, L, R>()(lhs, rhs);
@@ -1661,7 +1570,7 @@ namespace detail
         };
     } // namespace assertAction
 
-    template <int        comparison, typename L, typename R>
+    template <int comparison, typename L, typename R>
     DOCTEST_NOINLINE int fast_binary_assert(assertType::Enum assert_type, const char* file,
                                             int line, const char* expr,
                                             const DOCTEST_REF_WRAP(L) lhs,
@@ -1728,9 +1637,9 @@ namespace detail
         return res;
     }
 
-    struct DOCTEST_INTERFACE IExceptionTranslator //!OCLINT destructor of virtual class
+    struct DOCTEST_INTERFACE IExceptionTranslator
     {
-        virtual ~IExceptionTranslator();
+        virtual ~IExceptionTranslator() {}
         virtual bool translate(String&) const = 0;
     };
 
@@ -1823,8 +1732,11 @@ namespace detail
     DOCTEST_INTERFACE void toStream(std::ostream* stream, int long long unsigned in);
 #endif // DOCTEST_CONFIG_WITH_LONG_LONG
 
-    struct IContextScope //!OCLINT destructor of virtual class
-    { virtual void build(std::ostream*) = 0; };
+    struct IContextScope
+    {
+        virtual ~IContextScope() {}
+        virtual void build(std::ostream*) = 0;
+    };
 
     DOCTEST_INTERFACE void addToContexts(IContextScope* ptr);
     DOCTEST_INTERFACE void popFromContexts();
@@ -1835,8 +1747,11 @@ namespace detail
     {
         friend class ContextScope;
 
-        struct ICapture //!OCLINT destructor of virtual class
-        { virtual void toStream(std::ostream*) const = 0; };
+        struct ICapture
+        {
+            virtual ~ICapture() {}
+            virtual void toStream(std::ostream*) const = 0;
+        };
 
         template <typename T>
         struct Capture : ICapture //!OCLINT destructor of virtual class
@@ -1846,7 +1761,7 @@ namespace detail
             explicit Capture(const T* in)
                     : capture(in) {}
             virtual void toStream(std::ostream* stream) const { // override
-                doctest::detail::toStream(stream, *capture);
+                detail::toStream(stream, *capture);
             }
         };
 
@@ -1891,6 +1806,8 @@ namespace detail
             my_memcpy(stackChunks, other.stackChunks,
                       unsigned(int(sizeof(Chunk)) * DOCTEST_CONFIG_NUM_CAPTURES_ON_STACK));
         }
+
+        ContextBuilder& operator=(const ContextBuilder&); // NOLINT
 
     public:
         // cppcheck-suppress uninitMemberVar
@@ -1945,7 +1862,7 @@ namespace detail
 #endif // DOCTEST_CONFIG_WITH_RVALUE_REFERENCES
     };
 
-    class ContextScope : public IContextScope //!OCLINT destructor of virtual class
+    class ContextScope : public IContextScope
     {
         ContextBuilder contextBuilder;
         bool           built;
@@ -1971,18 +1888,18 @@ namespace detail
 
     class DOCTEST_INTERFACE MessageBuilder
     {
-        std::ostream*                     m_stream;
-        const char*                       m_file;
-        int                               m_line;
-        doctest::detail::assertType::Enum m_severity;
+        std::ostream*    m_stream;
+        const char*      m_file;
+        int              m_line;
+        assertType::Enum m_severity;
 
     public:
-        MessageBuilder(const char* file, int line, doctest::detail::assertType::Enum severity);
+        MessageBuilder(const char* file, int line, assertType::Enum severity);
         ~MessageBuilder();
 
         template <typename T>
         MessageBuilder& operator<<(const T& in) {
-            doctest::detail::toStream(m_stream, in);
+            toStream(m_stream, in);
             return *this;
         }
 
@@ -2133,7 +2050,9 @@ public:
     namespace                                                                                      \
     {                                                                                              \
         struct der : base                                                                          \
-        { void f(); };                                                                             \
+        {                                                                                          \
+            void f();                                                                              \
+        };                                                                                         \
         static void func() {                                                                       \
             der v;                                                                                 \
             v.f();                                                                                 \
@@ -2167,7 +2086,9 @@ public:
     namespace doctest                                                                              \
     {                                                                                              \
         namespace detail                                                                           \
-        { DOCTEST_TYPE_TO_STRING_IMPL(__VA_ARGS__) }                                               \
+        {                                                                                          \
+            DOCTEST_TYPE_TO_STRING_IMPL(__VA_ARGS__)                                               \
+        }                                                                                          \
     }                                                                                              \
     typedef int DOCTEST_ANONYMOUS(_DOCTEST_ANON_FOR_SEMICOLON_)
 #else // DOCTEST_CONFIG_WITH_VARIADIC_MACROS
@@ -2180,7 +2101,9 @@ public:
     namespace doctest                                                                              \
     {                                                                                              \
         namespace detail                                                                           \
-        { DOCTEST_TYPE_TO_STRING_IMPL(x) }                                                         \
+        {                                                                                          \
+            DOCTEST_TYPE_TO_STRING_IMPL(x)                                                         \
+        }                                                                                          \
     }                                                                                              \
     typedef int DOCTEST_ANONYMOUS(_DOCTEST_ANON_FOR_SEMICOLON_)
 #endif // DOCTEST_CONFIG_WITH_VARIADIC_MACROS
@@ -2192,7 +2115,7 @@ public:
     struct DOCTEST_CAT(anon, FUNCTOR)                                                              \
     {                                                                                              \
         template <int Index, typename Type>                                                        \
-        void          operator()() {                                                               \
+        void operator()() {                                                                        \
             doctest::detail::regTest(                                                              \
                     doctest::detail::TestCase(anon<Type>, __FILE__, __LINE__,                      \
                                               doctest_detail_test_suite_ns::getCurrentTestSuite(), \
@@ -2231,7 +2154,7 @@ public:
         (int line)                                                                                 \
                 : m_line(line) {}                                                                  \
         template <int Index, typename Type>                                                        \
-        void          operator()() {                                                               \
+        void operator()() {                                                                        \
             doctest::detail::regTest(                                                              \
                     doctest::detail::TestCase(anon<Type>, __FILE__, __LINE__,                      \
                                               doctest_detail_test_suite_ns::getCurrentTestSuite(), \
@@ -2284,7 +2207,7 @@ public:
     {                                                                                              \
         namespace doctest_detail_test_suite_ns                                                     \
         {                                                                                          \
-            inline DOCTEST_NOINLINE doctest::detail::TestSuite& getCurrentTestSuite() {            \
+            static DOCTEST_NOINLINE doctest::detail::TestSuite& getCurrentTestSuite() {            \
                 static doctest::detail::TestSuite data;                                            \
                 static bool                       inited = false;                                  \
                 if(!inited) {                                                                      \
@@ -2456,7 +2379,7 @@ constexpr T to_lvalue = x;
                     DOCTEST_TOSTR(DOCTEST_HANDLE_BRACED_VA_ARGS(as)));                             \
             try {                                                                                  \
                 expr;                                                                              \
-            } catch(DOCTEST_HANDLE_BRACED_VA_ARGS(as)) {                                           \
+            } catch(const DOCTEST_HANDLE_BRACED_VA_ARGS(as)&) {                                    \
                 _DOCTEST_RB.m_threw    = true;                                                     \
                 _DOCTEST_RB.m_threw_as = true;                                                     \
             } catch(...) { _DOCTEST_RB.unexpectedExceptionOccurred(); }                            \
@@ -2797,15 +2720,15 @@ constexpr T to_lvalue = x;
 #define DOCTEST_IMPLEMENT_FIXTURE(der, base, func, name)                                           \
     namespace                                                                                      \
     {                                                                                              \
-        template <typename T>                                                                      \
+        template <typename DOCTEST_UNUSED_TEMPLATE_TYPE>                                           \
         struct der : base                                                                          \
         { void f(); };                                                                             \
     }                                                                                              \
-    template <typename T>                                                                          \
-    inline void der<T>::f()
+    template <typename DOCTEST_UNUSED_TEMPLATE_TYPE>                                               \
+    inline void der<DOCTEST_UNUSED_TEMPLATE_TYPE>::f()
 
 #define DOCTEST_CREATE_AND_REGISTER_FUNCTION(f, name)                                              \
-    template <typename T>                                                                          \
+    template <typename DOCTEST_UNUSED_TEMPLATE_TYPE>                                               \
     static inline void f()
 
 // for registering tests
@@ -2851,7 +2774,7 @@ constexpr T to_lvalue = x;
 #define DOCTEST_TEST_SUITE_END typedef int DOCTEST_ANONYMOUS(_DOCTEST_ANON_FOR_SEMICOLON_)
 
 #define DOCTEST_REGISTER_EXCEPTION_TRANSLATOR(signature)                                           \
-    template <typename T>                                                                          \
+    template <typename DOCTEST_UNUSED_TEMPLATE_TYPE>                                               \
     static inline doctest::String DOCTEST_ANONYMOUS(_DOCTEST_ANON_TRANSLATOR_)(signature)
 
 #define DOCTEST_INFO(x) ((void)0)
@@ -3027,6 +2950,13 @@ constexpr T to_lvalue = x;
 // BDD style macros
 // clang-format off
 #define DOCTEST_SCENARIO(name)  TEST_CASE("  Scenario: " name)
+#ifdef DOCTEST_CONFIG_WITH_VARIADIC_MACROS
+#define DOCTEST_SCENARIO_TEMPLATE(name, T, ...)  TEST_CASE_TEMPLATE("  Scenario: " name, T, __VA_ARGS__)
+#else // DOCTEST_CONFIG_WITH_VARIADIC_MACROS
+#define DOCTEST_SCENARIO_TEMPLATE(name, T, types) TEST_CASE_TEMPLATE("  Scenario: " name, T, types)
+#endif // DOCTEST_CONFIG_WITH_VARIADIC_MACROS
+#define DOCTEST_SCENARIO_TEMPLATE_DEFINE(name, T, id) DOCTEST_TEST_CASE_TEMPLATE_DEFINE("  Scenario: " name, T, id)
+
 #define DOCTEST_GIVEN(name)     SUBCASE("   Given: " name)
 #define DOCTEST_WHEN(name)      SUBCASE("    When: " name)
 #define DOCTEST_AND_WHEN(name)  SUBCASE("And when: " name)
@@ -3091,6 +3021,8 @@ constexpr T to_lvalue = x;
 #define REQUIRE_NOTHROW_MESSAGE DOCTEST_REQUIRE_NOTHROW_MESSAGE
 
 #define SCENARIO DOCTEST_SCENARIO
+#define SCENARIO_TEMPLATE DOCTEST_SCENARIO_TEMPLATE
+#define SCENARIO_TEMPLATE_DEFINE DOCTEST_SCENARIO_TEMPLATE_DEFINE
 #define GIVEN DOCTEST_GIVEN
 #define WHEN DOCTEST_WHEN
 #define AND_WHEN DOCTEST_AND_WHEN
@@ -3216,7 +3148,9 @@ namespace detail
 #pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
 #pragma clang diagnostic ignored "-Wmissing-braces"
 #pragma clang diagnostic ignored "-Wmissing-field-initializers"
-#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#if !defined(__has_warning) || __has_warning("-Wzero-as-null-pointer-constant")
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
 #pragma clang diagnostic ignored "-Wc++11-long-long"
 #endif // __clang__
 
@@ -3284,7 +3218,7 @@ namespace detail
 #define DOCTEST_LOG_START()                                                                        \
     do {                                                                                           \
         if(!contextState->hasLoggedCurrentTestStart) {                                             \
-            doctest::detail::logTestStart(*contextState->currentTest);                             \
+            logTestStart(*contextState->currentTest);                                              \
             contextState->hasLoggedCurrentTestStart = true;                                        \
         }                                                                                          \
     } while(false)
@@ -3329,7 +3263,7 @@ namespace detail
     // case insensitive strcmp
     int stricmp(char const* a, char const* b) {
         for(;; a++, b++) {
-            int d = tolower(*a) - tolower(*b);
+            const int d = tolower(*a) - tolower(*b);
             if(d != 0 || !*a)
                 return d;
         }
@@ -3339,7 +3273,7 @@ namespace detail
         const char* csrc  = static_cast<const char*>(src);
         char*       cdest = static_cast<char*>(dest);
         for(unsigned i = 0; i < num; ++i)
-            cdest[i]   = csrc[i];
+            cdest[i] = csrc[i];
     }
 
     // not using std::strlen() because of valgrind errors when optimizations are turned on
@@ -3403,7 +3337,7 @@ namespace detail
     }
 
     std::ostream* createStream() { return new std::ostringstream(); }
-    String getStreamResult(std::ostream* in) {
+    String        getStreamResult(std::ostream* in) {
         return static_cast<std::ostringstream*>(in)->str().c_str(); // NOLINT
     }
     void freeStream(std::ostream* in) { delete in; }
@@ -3516,9 +3450,9 @@ String::String(const char* in) {
 }
 
 String& String::operator+=(const String& other) {
-    unsigned my_old_size = size();
-    unsigned other_size  = other.size();
-    unsigned total_size  = my_old_size + other_size;
+    const unsigned my_old_size = size();
+    const unsigned other_size  = other.size();
+    const unsigned total_size  = my_old_size + other_size;
     if(isOnStack()) {
         if(total_size < len) {
             // append to the current stack space
@@ -3572,11 +3506,13 @@ String::String(String&& other) {
 }
 
 String& String::operator=(String&& other) {
-    if(!isOnStack())
-        delete[] data.ptr;
-    detail::my_memcpy(buf, other.buf, len);
-    other.buf[0] = '\0';
-    other.setLast();
+    if(this != &other) {
+        if(!isOnStack())
+            delete[] data.ptr;
+        detail::my_memcpy(buf, other.buf, len);
+        other.buf[0] = '\0';
+        other.setLast();
+    }
     return *this;
 }
 #endif // DOCTEST_CONFIG_WITH_RVALUE_REFERENCES
@@ -3719,7 +3655,7 @@ int  Context::run() { return 0; }
 
 #define DOCTEST_PRINTF_COLORED(buffer, color)                                                      \
     do {                                                                                           \
-        doctest::detail::Color col(color);                                                         \
+        Color col(color);                                                                          \
         std::printf("%s", buffer);                                                                 \
     } while((void)0, 0)
 
@@ -3834,7 +3770,7 @@ namespace detail
     bool TestCase::operator<(const TestCase& other) const {
         if(m_line != other.m_line)
             return m_line < other.m_line;
-        int file_cmp = std::strcmp(m_file, other.m_file);
+        const int file_cmp = std::strcmp(m_file, other.m_file);
         if(file_cmp != 0)
             return file_cmp < 0;
         return m_template_id < other.m_template_id;
@@ -4122,9 +4058,9 @@ namespace detail
 #ifdef _MSC_VER
         // this is needed because MSVC gives different case for drive letters
         // for __FILE__ when evaluated in a header and a source file
-        int res = stricmp(lhs->m_file, rhs->m_file);
+        const int res = stricmp(lhs->m_file, rhs->m_file);
 #else  // _MSC_VER
-        int res = std::strcmp(lhs->m_file, rhs->m_file);
+        const int res = std::strcmp(lhs->m_file, rhs->m_file);
 #endif // _MSC_VER
         if(res != 0)
             return res;
@@ -4136,7 +4072,7 @@ namespace detail
         const TestCase* lhs = *static_cast<TestCase* const*>(a);
         const TestCase* rhs = *static_cast<TestCase* const*>(b);
 
-        int res = std::strcmp(lhs->m_test_suite, rhs->m_test_suite);
+        const int res = std::strcmp(lhs->m_test_suite, rhs->m_test_suite);
         if(res != 0)
             return res;
         return fileOrderComparator(a, b);
@@ -4147,7 +4083,7 @@ namespace detail
         const TestCase* lhs = *static_cast<TestCase* const*>(a);
         const TestCase* rhs = *static_cast<TestCase* const*>(b);
 
-        int res_name = std::strcmp(lhs->m_name, rhs->m_name);
+        const int res_name = std::strcmp(lhs->m_name, rhs->m_name);
         if(res_name != 0)
             return res_name;
         return suiteOrderComparator(a, b);
@@ -4226,7 +4162,7 @@ namespace detail
 #ifndef DOCTEST_CONFIG_COLORS_NONE
                             code
 #endif // DOCTEST_CONFIG_COLORS_NONE
-                    ) {
+    ) {
         const ContextState* p = contextState;
         if(p->no_colors)
             return;
@@ -4284,8 +4220,6 @@ namespace detail
 #undef DOCTEST_SET_ATTR
 #endif // DOCTEST_CONFIG_COLORS_WINDOWS
     }
-
-    IExceptionTranslator::~IExceptionTranslator() {}
 
     std::vector<const IExceptionTranslator*>& getExceptionTranslators() {
         static std::vector<const IExceptionTranslator*> data;
@@ -4350,7 +4284,11 @@ namespace detail
 #endif // DOCTEST_CONFIG_WITH_LONG_LONG
 
     void addToContexts(IContextScope* ptr) { contextState->contexts.push_back(ptr); }
-    void                              popFromContexts() { contextState->contexts.pop_back(); }
+    void popFromContexts() { contextState->contexts.pop_back(); }
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable : 4996) // std::uncaught_exception is deprecated in C++17
+#endif
     void useContextIfExceptionOccurred(IContextScope* ptr) {
         if(std::uncaught_exception()) {
             std::ostringstream stream;
@@ -4358,6 +4296,9 @@ namespace detail
             contextState->exceptionalContexts.push_back(stream.str());
         }
     }
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
     void printSummary();
 
@@ -4745,7 +4686,7 @@ namespace detail
                              getAssertString(assert_type), decomposition);
         }
 
-        bool isWarn = assert_type & assertType::is_warn;
+        const bool isWarn = assert_type & assertType::is_warn;
         DOCTEST_PRINTF_COLORED(loc, Color::LightGrey);
         DOCTEST_PRINTF_COLORED(msg,
                                passed ? Color::BrightGreen : isWarn ? Color::Yellow : Color::Red);
@@ -4779,7 +4720,7 @@ namespace detail
         if(!threw)
             DOCTEST_SNPRINTF(info2, DOCTEST_COUNTOF(info2), "didn't throw at all\n");
 
-        bool isWarn = assert_type & assertType::is_warn;
+        const bool isWarn = assert_type & assertType::is_warn;
         DOCTEST_PRINTF_COLORED(loc, Color::LightGrey);
         DOCTEST_PRINTF_COLORED(msg,
                                threw ? Color::BrightGreen : isWarn ? Color::Yellow : Color::Red);
@@ -4819,7 +4760,7 @@ namespace detail
             DOCTEST_SNPRINTF(info3, DOCTEST_COUNTOF(info3), "  %s\n", exception.c_str());
         }
 
-        bool isWarn = assert_type & assertType::is_warn;
+        const bool isWarn = assert_type & assertType::is_warn;
         DOCTEST_PRINTF_COLORED(loc, Color::LightGrey);
         DOCTEST_PRINTF_COLORED(msg,
                                threw_as ? Color::BrightGreen : isWarn ? Color::Yellow : Color::Red);
@@ -4856,7 +4797,7 @@ namespace detail
             DOCTEST_SNPRINTF(info3, DOCTEST_COUNTOF(info3), "  %s\n", exception.c_str());
         }
 
-        bool isWarn = assert_type & assertType::is_warn;
+        const bool isWarn = assert_type & assertType::is_warn;
         DOCTEST_PRINTF_COLORED(loc, Color::LightGrey);
         DOCTEST_PRINTF_COLORED(msg,
                                threw ? isWarn ? Color::Yellow : Color::Red : Color::BrightGreen);
@@ -4939,8 +4880,7 @@ namespace detail
             throwException();
     }
 
-    MessageBuilder::MessageBuilder(const char* file, int line,
-                                   doctest::detail::assertType::Enum severity)
+    MessageBuilder::MessageBuilder(const char* file, int line, assertType::Enum severity)
             : m_stream(createStream())
             , m_file(file)
             , m_line(line)
@@ -4949,10 +4889,10 @@ namespace detail
     bool MessageBuilder::log() {
         DOCTEST_LOG_START();
 
-        bool is_warn = m_severity & doctest::detail::assertType::is_warn;
+        const bool isWarn = m_severity & assertType::is_warn;
 
         // warn is just a message in this context so we dont treat it as an assert
-        if(!is_warn) {
+        if(!isWarn) {
             contextState->numAssertionsForCurrentTestcase++;
             addFailedAssert(m_severity);
         }
@@ -4962,10 +4902,10 @@ namespace detail
                          lineForOutput(m_line));
         char msg[DOCTEST_SNPRINTF_BUFFER_LENGTH];
         DOCTEST_SNPRINTF(msg, DOCTEST_COUNTOF(msg), " %s!\n",
-                         is_warn ? "MESSAGE" : getFailString(m_severity));
+                         isWarn ? "MESSAGE" : getFailString(m_severity));
 
         DOCTEST_PRINTF_COLORED(loc, Color::LightGrey);
-        DOCTEST_PRINTF_COLORED(msg, is_warn ? Color::Yellow : Color::Red);
+        DOCTEST_PRINTF_COLORED(msg, isWarn ? Color::Yellow : Color::Red);
 
         String info = getStreamResult(m_stream);
         if(info.size()) {
@@ -4980,7 +4920,7 @@ namespace detail
         printToDebugConsole(String(loc) + msg + "  " + info.c_str() + "\n" + context.c_str() +
                             "\n");
 
-        return isDebuggerActive() && !contextState->no_breaks && !is_warn; // break into debugger
+        return isDebuggerActive() && !contextState->no_breaks && !isWarn; // break into debugger
     }
 
     void MessageBuilder::react() {
@@ -5037,7 +4977,7 @@ namespace detail
                 }
                 if(noBadCharsFound && argv[i][0] == '-') {
                     temp += my_strlen(pattern);
-                    unsigned len = my_strlen(temp);
+                    const unsigned len = my_strlen(temp);
                     if(len) {
                         res = temp;
                         return true;
@@ -5056,7 +4996,7 @@ namespace detail
         if(!parseOptionImpl(argc, argv, pattern, res))
             return parseOptionImpl(argc, argv, pattern + 3, res); // 3 for "dt-"
         return true;
-#else // DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
+#else  // DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
         return parseOptionImpl(argc, argv, pattern, res);
 #endif // DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
     }
@@ -5211,7 +5151,7 @@ namespace detail
             std::printf("test suites with unskipped test cases passing the current filters: %u\n",
                         p->numTestSuitesPassingFilters);
         } else {
-            bool anythingFailed = p->numFailed > 0 || p->numFailedAssertions > 0;
+            const bool anythingFailed = p->numFailed > 0 || p->numFailedAssertions > 0;
 
             char buff[DOCTEST_SNPRINTF_BUFFER_LENGTH];
 
@@ -5224,10 +5164,9 @@ namespace detail
             DOCTEST_PRINTF_COLORED(buff, Color::None);
             DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), "%6d passed",
                              p->numTestsPassingFilters - p->numFailed);
-            DOCTEST_PRINTF_COLORED(buff,
-                                   (p->numTestsPassingFilters == 0 || anythingFailed) ?
-                                           Color::None :
-                                           Color::Green);
+            DOCTEST_PRINTF_COLORED(buff, (p->numTestsPassingFilters == 0 || anythingFailed) ?
+                                                 Color::None :
+                                                 Color::Green);
             DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), " | ");
             DOCTEST_PRINTF_COLORED(buff, Color::None);
             DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), "%6u failed", p->numFailed);
@@ -5236,8 +5175,8 @@ namespace detail
             DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), " | ");
             DOCTEST_PRINTF_COLORED(buff, Color::None);
             if(p->no_skipped_summary == false) {
-                int numSkipped = static_cast<unsigned>(getRegisteredTests().size()) -
-                                 p->numTestsPassingFilters;
+                const int numSkipped = static_cast<unsigned>(getRegisteredTests().size()) -
+                                       p->numTestsPassingFilters;
                 DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), "%6d skipped", numSkipped);
                 DOCTEST_PRINTF_COLORED(buff, numSkipped == 0 ? Color::None : Color::Yellow);
             }
@@ -5251,8 +5190,8 @@ namespace detail
             DOCTEST_PRINTF_COLORED(buff, Color::None);
             DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), "%6d passed",
                              p->numAssertions - p->numFailedAssertions);
-            DOCTEST_PRINTF_COLORED(
-                    buff, (p->numAssertions == 0 || anythingFailed) ? Color::None : Color::Green);
+            DOCTEST_PRINTF_COLORED(buff, (p->numAssertions == 0 || anythingFailed) ? Color::None :
+                                                                                     Color::Green);
             DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), " | ");
             DOCTEST_PRINTF_COLORED(buff, Color::None);
             DOCTEST_SNPRINTF(buff, DOCTEST_COUNTOF(buff), "%6d failed", p->numFailedAssertions);
@@ -5356,7 +5295,7 @@ void Context::parseArgs(int argc, const char* const* argv, bool withDefaults) {
     DOCTEST_PARSE_AS_BOOL_OR_FLAG(dt-no-path-filenames, dt-npf, no_path_in_filenames, false);
     DOCTEST_PARSE_AS_BOOL_OR_FLAG(dt-no-line-numbers, dt-nln, no_line_numbers, false);
     DOCTEST_PARSE_AS_BOOL_OR_FLAG(dt-no-skipped-summary, dt-nss, no_skipped_summary, false);
-// clang-format on
+    // clang-format on
 
 #undef DOCTEST_PARSE_STR_OPTION
 #undef DOCTEST_PARSE_INT_OPTION

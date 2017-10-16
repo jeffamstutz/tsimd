@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <numeric>
+#include <vector>
 
 #include "tsimd/tsimd.h"
 
@@ -42,8 +43,6 @@ inline void print(PACK_T &p)
 
 int main()
 {
-  // test foreach() and construction //
-
   std::cout << "test foreach() and construction" << std::endl;
 
   {
@@ -53,8 +52,6 @@ int main()
   }
 
   std::cout << std::endl;
-
-  // test operator+() //
 
   std::cout << "test operator+()" << std::endl;
 
@@ -67,8 +64,6 @@ int main()
   }
 
   std::cout << std::endl;
-
-  // test any() //
 
   std::cout << "test any()" << std::endl;
 
@@ -83,8 +78,6 @@ int main()
   }
 
   std::cout << std::endl;
-
-  // test operator==() //
 
   std::cout << "test operator==()" << std::endl;
 
@@ -106,8 +99,6 @@ int main()
 
   std::cout << std::endl;
 
-  // test std::iota(vec) //
-
   std::cout << "test std::iota(vec)" << std::endl;
 
   {
@@ -117,8 +108,6 @@ int main()
   }
 
   std::cout << std::endl;
-
-  // test foreach_active() //
 
   std::cout << "test foreach_active()" << std::endl;
 
@@ -139,6 +128,23 @@ int main()
     print(m);
     print(v);
     print(expected);
+  }
+
+  std::cout << std::endl;
+
+  std::cout << "test masked load()" << std::endl;
+
+  {
+    std::vector<int> values(DEFAULT_WIDTH);
+    std::fill(values.begin(), values.end(), 5);
+
+    vbool m(vfalse);
+    m[2] = vtrue;
+
+    vint v1(0);
+    v1 = tsimd::load<vint>(values.data(), m);
+
+    print(v1);
   }
 
   return 0;

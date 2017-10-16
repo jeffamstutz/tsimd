@@ -275,8 +275,8 @@ int main()
 {
   using namespace std::chrono;
 
-  const unsigned int width  = 1200;
-  const unsigned int height = 800;
+  const unsigned int width  = 1024;
+  const unsigned int height = 768;
   const float x0 = -2;
   const float x1 = 1;
   const float y0 = -1;
@@ -288,7 +288,7 @@ int main()
   std::iota(tsimd::programIndex.begin(), tsimd::programIndex.end(), 0);
   embc::foreach_v(embc::programIndex, [](int &v, int i) { v = i; });
 
-  auto bencher = pico_bench::Benchmarker<milliseconds>{16, seconds{4}};
+  auto bencher = pico_bench::Benchmarker<milliseconds>{64, seconds{10}};
 
   std::cout << "starting benchmarks (results in 'ms')... " << '\n';
 
