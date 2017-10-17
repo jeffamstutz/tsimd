@@ -72,3 +72,5 @@ macro(tsimd_configure_compiler)
         "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
   endif()
 endmacro()
+
+include(clang-format)

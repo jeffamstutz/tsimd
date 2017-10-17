@@ -23,7 +23,7 @@
 ## ========================================================================== ##
 
 add_executable(test_pack
-  doctest.h
+  doctest/doctest.h
   test_pack.cpp
 )
 
