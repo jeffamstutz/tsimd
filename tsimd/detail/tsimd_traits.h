@@ -34,6 +34,10 @@ namespace tsimd {
     template <bool B, class T = void>
     using enable_if_t = typename std::enable_if<B, T>::type;
 
+    // Defined a struct to get around type conversion problems ////////////////
+
+    struct dummy_type {};
+
     // Provide intrinsic type given a SIMD width //////////////////////////////
 
     template <typename T, int W>
@@ -48,7 +52,7 @@ namespace tsimd {
     template <typename T>
     struct simd_type<T, 1>
     {
-      using type = T;
+      using type = dummy_type;
     };
 
     // 4-wide //
@@ -115,9 +119,15 @@ namespace tsimd {
     // 1-wide //
 
     template <>
-    struct half_simd_type<int, 1>  // NOTE: no float equivalent!
+    struct half_simd_type<int, 1>
     {
       using type = short;
+    };
+
+    template <>
+    struct half_simd_type<float, 1>
+    {
+      using type = dummy_type;
     };
 
     // 4-wide //

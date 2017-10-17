@@ -28,24 +28,36 @@
 
 namespace tsimd {
 
+  // load() ///////////////////////////////////////////////////////////////////
+
   template <typename PACK_T>
   TSIMD_INLINE PACK_T load(const void *_src);
 
   template <typename PACK_T>
   TSIMD_INLINE PACK_T load(const void *_src, const vboolf8 &mask);
 
-  // load() //
-
   // 1-wide //
 
-  // TODO
+#if 0
+  template <typename T>
+  TSIMD_INLINE pack<T, 1> load(const void *_src)
+  {
+    return *((T*)_src);
+  }
+
+  template <typename T>
+  TSIMD_INLINE pack<T, 1> load(const void *_src, const vboolf1 &mask)
+  {
+    return mask[0] ? *((T*)_src) : T();
+  }
+#endif
 
   // 4-wide //
 
   // TODO
 
   template <>
-  TSIMD_INLINE vint4 load<vint4>(const void *_src)
+  TSIMD_INLINE vint4 load(const void *_src)
   {
 #if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
     return _mm_load_si128((const __m128i *)_src);
@@ -63,7 +75,7 @@ namespace tsimd {
   // 8-wide //
 
   template <>
-  TSIMD_INLINE vfloat8 load<vfloat8>(const void *_src)
+  TSIMD_INLINE vfloat8 load(const void *_src)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_load_ps((const float *)_src);
@@ -79,7 +91,7 @@ namespace tsimd {
   }
 
   template <>
-  TSIMD_INLINE vfloat8 load<vfloat8>(const void *_src, const vboolf8 &mask)
+  TSIMD_INLINE vfloat8 load(const void *_src, const vboolf8 &mask)
   {
 #if 0  // defined(__AVX512__)
     return _mm256_mask_load_ps(_mm256_setzero_ps(), mask, (float*)_src);
@@ -98,7 +110,7 @@ namespace tsimd {
   }
 
   template <>
-  TSIMD_INLINE vint8 load<vint8>(const void *_src)
+  TSIMD_INLINE vint8 load(const void *_src)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_castps_si256(_mm256_load_ps((const float *)_src));
@@ -114,7 +126,7 @@ namespace tsimd {
   }
 
   template <>
-  TSIMD_INLINE vint8 load<vint8>(const void *_src, const vboolf8 &mask)
+  TSIMD_INLINE vint8 load(const void *_src, const vboolf8 &mask)
   {
 #if 0  // defined(__AVX512__)
     return _mm256_castps_si256(_mm256_maskload_ps((float*)_src, mask));

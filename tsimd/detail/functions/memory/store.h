@@ -28,6 +28,8 @@
 
 namespace tsimd {
 
+  // store() //////////////////////////////////////////////////////////////////
+
   template <typename PACK_T>
   TSIMD_INLINE void store(const PACK_T &p, void *_dst);
 
@@ -36,11 +38,20 @@ namespace tsimd {
                           void *_dst,
                           const mask<PACK_T::static_size> &m);
 
-  // load() //
-
   // 1-wide //
 
-  // TODO
+  template <typename T>
+  TSIMD_INLINE void store(const pack<T, 1> &v, void *_dst)
+  {
+    *((T*)_dst) = v[0];
+  }
+
+  template <typename T>
+  TSIMD_INLINE void store(const pack<T, 1> &v, void *_dst, const vboolf1 &mask)
+  {
+    if (mask[0])
+      *((T*)_dst) = v[0];
+  }
 
   // 4-wide //
 

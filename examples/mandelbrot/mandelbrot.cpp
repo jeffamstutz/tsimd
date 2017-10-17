@@ -67,6 +67,8 @@ namespace tsimd {
 
   static vint programIndex(0);
 
+  // varying == DEFAULT_WIDTH //
+
   inline vint mandel(const vbool &_active,
                      const vfloat &c_re,
                      const vfloat &c_im,
@@ -105,7 +107,7 @@ namespace tsimd {
     float dy = (y1 - y0) / height;
 
     for (int j = 0; j < height; j++) {
-      for (int i = 0; i < width; i += DEFAULT_WIDTH) {
+      for (int i = 0; i < width; i += vfloat::static_size) {
         vfloat x = x0 + (i + programIndex.as<float>()) * dx;
         vfloat y = y0 + j * dy;
 
@@ -113,6 +115,64 @@ namespace tsimd {
 
         int base_index = (j * width + i);
         auto result    = mandel(active, x, y, maxIters);
+
+        tsimd::store(result, output + base_index, active);
+      }
+    }
+  }
+
+  // varying == 1 //
+
+  inline vint1 mandel1(const vbool1 &_active,
+                       const vfloat1 &c_re,
+                       const vfloat1 &c_im,
+                       int maxIters)
+  {
+    #if 1
+    vfloat1 z_re = c_re;
+    vfloat1 z_im = c_im;
+    vint1 vi(0);
+
+    for (int i = 0; i < maxIters; ++i) {
+      auto active = _active & ((z_re * z_re + z_im * z_im) <= 4.f);
+      if (tsimd::none(active))
+        break;
+
+      vfloat1 new_re = z_re * z_re - z_im * z_im;
+      vfloat1 new_im = 2.f * z_re * z_im;
+      z_re          = c_re + new_re;
+      z_im          = c_im + new_im;
+
+      vi = tsimd::select(active, vi + 1, vi);
+    }
+
+    return vi;
+    #else
+    return 1;
+    #endif
+  }
+
+  void mandelbrot1(float x0,
+                   float y0,
+                   float x1,
+                   float y1,
+                   int width,
+                   int height,
+                   int maxIters,
+                   int output[])
+  {
+    float dx = (x1 - x0) / width;
+    float dy = (y1 - y0) / height;
+
+    for (int j = 0; j < height; j++) {
+      for (int i = 0; i < width; i++) {
+        vfloat1 x = x0 + (i * dx);
+        vfloat1 y = y0 + j * dy;
+
+        auto active = x < width;
+
+        int base_index = (j * width + i);
+        auto result    = mandel1(active, x, y, maxIters);
 
         tsimd::store(result, output + base_index, active);
       }
@@ -350,7 +410,19 @@ int main()
   std::cout << '\n' << "ispc " << stats << '\n';
 #endif
 
-  // tsimd run ////////////////////////////////////////////////////////////////
+  // tsimd_1 run //////////////////////////////////////////////////////////////
+
+  std::fill(buf.begin(), buf.end(), 0);
+
+  stats = bencher([&]() {
+    tsimd::mandelbrot1(x0, y0, x1, y1, width, height, maxIters, buf.data());
+  });
+
+  const float tsimd1_min = stats.min().count();
+
+  std::cout << '\n' << "tsimd_1 " << stats << '\n';
+
+  // tsimd_n run //////////////////////////////////////////////////////////////
 
   std::fill(buf.begin(), buf.end(), 0);
 
@@ -358,9 +430,9 @@ int main()
     tsimd::mandelbrot(x0, y0, x1, y1, width, height, maxIters, buf.data());
   });
 
-  const float tsimd_min = stats.min().count();
+  const float tsimdn_min = stats.min().count();
 
-  std::cout << '\n' << "tsimd " << stats << '\n';
+  std::cout << '\n' << "tsimd_n " << stats << '\n';
 
   // embree run ///////////////////////////////////////////////////////////////
 
@@ -381,29 +453,19 @@ int main()
   // scalar //
 
   std::cout << '\n'
-            << "--> scalar was " << tsimd_min / scalar_min
-            << "x the speed of tsimd" << '\n';
-
-  std::cout << '\n'
             << "--> scalar was " << omp_min / scalar_min << "x the speed of omp"
             << '\n';
 
   std::cout << '\n'
+            << "--> scalar was " << tsimd1_min / scalar_min
+            << "x the speed of tsimd_1" << '\n';
+
+  std::cout << '\n'
+            << "--> scalar was " << tsimdn_min / scalar_min
+            << "x the speed of tsimd_n" << '\n';
+
+  std::cout << '\n'
             << "--> scalar was " << embree_min / scalar_min
-            << "x the speed of embc" << '\n';
-
-  // tsimd //
-
-  std::cout << '\n'
-            << "--> tsimd was " << scalar_min / tsimd_min
-            << "x the speed of scalar" << '\n';
-
-  std::cout << '\n'
-            << "--> tsimd was " << omp_min / tsimd_min << "x the speed of omp"
-            << '\n';
-
-  std::cout << '\n'
-            << "--> tsimd was " << embree_min / tsimd_min
             << "x the speed of embc" << '\n';
 
   // omp //
@@ -413,12 +475,52 @@ int main()
             << '\n';
 
   std::cout << '\n'
-            << "--> omp was " << tsimd_min / omp_min << "x the speed of tsimd"
-            << '\n';
+            << "--> omp was " << tsimd1_min / omp_min
+            << "x the speed of tsimd_1" << '\n';
+
+  std::cout << '\n'
+            << "--> omp was " << tsimdn_min / omp_min
+            << "x the speed of tsimd_n" << '\n';
 
   std::cout << '\n'
             << "--> omp was " << embree_min / omp_min << "x the speed of embc"
             << '\n';
+
+  // tsimd_1 //
+
+  std::cout << '\n'
+            << "--> tsimd_1 was " << scalar_min / tsimd1_min
+            << "x the speed of scalar" << '\n';
+
+  std::cout << '\n'
+            << "--> tsimd_1 was " << omp_min / tsimd1_min
+            << "x the speed of omp" << '\n';
+
+  std::cout << '\n'
+            << "--> tsimd_1 was " << tsimdn_min / tsimd1_min
+            << "x the speed of tsimd_n" << '\n';
+
+  std::cout << '\n'
+            << "--> tsimd_1 was " << embree_min / tsimd1_min
+            << "x the speed of embc" << '\n';
+
+  // tsimd_n //
+
+  std::cout << '\n'
+            << "--> tsimd_n was " << scalar_min / tsimdn_min
+            << "x the speed of scalar" << '\n';
+
+  std::cout << '\n'
+            << "--> tsimd_n was " << omp_min / tsimdn_min
+            << "x the speed of omp" << '\n';
+
+  std::cout << '\n'
+            << "--> tsimd_n was " << tsimd1_min / tsimdn_min
+            << "x the speed of tsimd_1" << '\n';
+
+  std::cout << '\n'
+            << "--> tsimd_n was " << embree_min / tsimdn_min
+            << "x the speed of embc" << '\n';
 
   // embree //
 
@@ -427,8 +529,12 @@ int main()
             << "x the speed of scalar" << '\n';
 
   std::cout << '\n'
-            << "--> embc was " << tsimd_min / embree_min
-            << "x the speed of tsimd" << '\n';
+            << "--> embc was " << tsimd1_min / embree_min
+            << "x the speed of tsimd_1" << '\n';
+
+  std::cout << '\n'
+            << "--> embc was " << tsimdn_min / embree_min
+            << "x the speed of tsimd_n" << '\n';
 
   std::cout << '\n'
             << "--> embc was " << omp_min / embree_min << "x the speed of omp"
@@ -442,8 +548,12 @@ int main()
             << "x the speed of scalar" << '\n';
 
   std::cout << '\n'
-            << "--> ispc was " << tsimd_min / ispc_min << "x the speed of tsimd"
-            << '\n';
+            << "--> ispc was " << tsimd1_min / ispc_min
+            << "x the speed of tsimd_1" << '\n';
+
+  std::cout << '\n'
+            << "--> ispc was " << tsimdn_min / ispc_min
+            << "x the speed of tsimd_n" << '\n';
 
   std::cout << '\n'
             << "--> ispc was " << omp_min / ispc_min << "x the speed of omp"

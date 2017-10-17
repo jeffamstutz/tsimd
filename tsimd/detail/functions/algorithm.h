@@ -58,7 +58,10 @@ namespace tsimd {
 
   // 1-wide //
 
-  // TODO
+  TSIMD_INLINE bool any(const vboolf1 &a)
+  {
+    return a[0];
+  }
 
   // 4-wide //
 
@@ -91,7 +94,10 @@ namespace tsimd {
 
   // 1-wide //
 
-  // TODO
+  TSIMD_INLINE bool all(const vboolf1 &a)
+  {
+    return any(a);
+  }
 
   // 4-wide //
 
@@ -116,7 +122,13 @@ namespace tsimd {
 
   // 1-wide //
 
-  // TODO
+  template <typename T>
+  TSIMD_INLINE pack<T, 1> select(const vboolf1 &m,
+                                 const pack<T, 1> &t,
+                                 const pack<T, 1> &f)
+  {
+    return m[0] ? t[0] : f[0];
+  }
 
   // 4-wide //
 
