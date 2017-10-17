@@ -42,7 +42,7 @@ namespace tsimd {
     // Construction //
 
     pack() = default;
-    pack(T value);  // NOTE(jda) - this should probable be marked 'explicit'...
+    explicit pack(T value);
     pack(intrinsic_t value);
 
 #if 0  // NOTE: can this be culled for types that don't make sense?
@@ -115,7 +115,11 @@ namespace tsimd {
   using vint1    = pack<int, 1>;
   using vuint1   = pack<unsigned int, 1>;
   using vllong1  = pack<long long, 1>;
+#if 0
   using vboolf1  = pack<mask_t, 1>;
+#else
+  using vboolf1  = pack<int, 1>;
+#endif
   using vbool1   = vboolf1;
   using vboold1  = vllong1;
 

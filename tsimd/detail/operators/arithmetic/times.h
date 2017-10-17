@@ -33,19 +33,19 @@ namespace tsimd {
   template <typename T>
   TSIMD_INLINE pack<T, 1> operator*(const pack<T, 1> &p1, const pack<T, 1> &p2)
   {
-    return p1[0] * p2[0];
+    return pack<T, 1>(p1[0] * p2[0]);
   }
 
   template <typename T, typename OTHER_T>
   TSIMD_INLINE pack<T, 1> operator*(const pack<T, 1> &p1, const OTHER_T &v)
   {
-    return p1[0] * v;
+    return pack<T, 1>(p1[0] * v);
   }
 
   template <typename T, typename OTHER_T>
   TSIMD_INLINE pack<T, 1> operator*(const OTHER_T &v, const pack<T, 1> &p1)
   {
-    return v * p1[0];
+    return pack<T, 1>(v * p1[0]);
   }
 
   // 4-wide //

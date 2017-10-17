@@ -109,7 +109,7 @@ namespace tsimd {
     for (int j = 0; j < height; j++) {
       for (int i = 0; i < width; i += vfloat::static_size) {
         vfloat x = x0 + (i + programIndex.as<float>()) * dx;
-        vfloat y = y0 + j * dy;
+        vfloat y = vfloat(y0 + j * dy);
 
         auto active = x < width;
 
@@ -166,8 +166,8 @@ namespace tsimd {
 
     for (int j = 0; j < height; j++) {
       for (int i = 0; i < width; i++) {
-        vfloat1 x = x0 + (i * dx);
-        vfloat1 y = y0 + j * dy;
+        vfloat1 x = vfloat1(x0 + (i * dx));
+        vfloat1 y = vfloat1(y0 + j * dy);
 
         auto active = x < width;
 

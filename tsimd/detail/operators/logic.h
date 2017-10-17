@@ -27,44 +27,9 @@
 #include "../pack.h"
 
 #include "logic/equals.h"
+#include "logic/less_than.h"
 
 namespace tsimd {
-
-  // binary operator<() //
-
-  template <typename T, int W>
-  TSIMD_INLINE mask<W> operator<(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    mask<W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] < p2[i]) ? vtrue : vfalse;
-
-    return result;
-  }
-
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       mask<W>>::type
-  operator<(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    mask<W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] < v) ? vtrue : vfalse;
-
-    return result;
-  }
-
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       mask<W>>::type
-  operator<(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) < p1;
-  }
 
   // binary operator<=() //
 

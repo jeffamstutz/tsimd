@@ -127,7 +127,7 @@ namespace tsimd {
                                  const pack<T, 1> &t,
                                  const pack<T, 1> &f)
   {
-    return m[0] ? t[0] : f[0];
+    return pack<T, 1>(m[0] ? t[0] : f[0]);
   }
 
   // 4-wide //
