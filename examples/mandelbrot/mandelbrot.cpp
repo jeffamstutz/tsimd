@@ -77,7 +77,7 @@ namespace tsimd {
     vint vi(0);
 
     for (int i = 0; i < maxIters; ++i) {
-      auto active = _active && ((z_re * z_re + z_im * z_im) <= 4.f);
+      auto active = _active & ((z_re * z_re + z_im * z_im) <= 4.f);
       if (tsimd::none(active))
         break;
 

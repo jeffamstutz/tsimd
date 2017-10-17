@@ -24,9 +24,9 @@
 
 #pragma once
 
-#include <type_traits>
-
 #include "../pack.h"
+
+#include "bitwise/and.h"
 
 namespace tsimd {
 

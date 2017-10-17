@@ -25,6 +25,7 @@
 #pragma once
 
 #include "../pack.h"
+
 #include "logic/equals.h"
 
 namespace tsimd {
