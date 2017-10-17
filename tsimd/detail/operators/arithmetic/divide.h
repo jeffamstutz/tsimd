@@ -47,7 +47,7 @@ namespace tsimd {
 #else
     vfloat8 result;
 
-    for (int i = 0; i < vfloat8::static_size; ++i)
+    for (int i = 0; i < 8; ++i)
       result[i] = (p1[i] / p2[i]);
 
     return result;
@@ -70,7 +70,7 @@ namespace tsimd {
   {
     vint8 result;
 
-    for (int i = 0; i < vint8::static_size; ++i)
+    for (int i = 0; i < 8; ++i)
       result[i] = (p1[i] / p2[i]);
 
     return result;

@@ -81,24 +81,11 @@ namespace tsimd {
 
   // none() ///////////////////////////////////////////////////////////////////
 
-  // 1-wide //
-
-  // TODO
-
-  // 4-wide //
-
-  // TODO
-
-  // 8-wide //
-
-  TSIMD_INLINE bool none(const vboolf8 &m)
+  template <typename MASK_T>
+  TSIMD_INLINE bool none(const MASK_T &m)
   {
     return !any(m);
   }
-
-  // 16-wide //
-
-  // TODO
 
   // all() ////////////////////////////////////////////////////////////////////
 
@@ -148,8 +135,7 @@ namespace tsimd {
 #else
     vfloat8 result;
 
-#pragma omp simd
-    for (int i = 0; i < vfloat8::static_size; ++i) {
+    for (int i = 0; i < 8; ++i) {
       if (m[i])
         result[i] = t[i];
       else
@@ -168,8 +154,7 @@ namespace tsimd {
 #else
     vint8 result;
 
-#pragma omp simd
-    for (int i = 0; i < vint8::static_size; ++i) {
+    for (int i = 0; i < 8; ++i) {
       if (m[i])
         result[i] = t[i];
       else

@@ -50,8 +50,7 @@ namespace tsimd {
 #else
     vboolf8 result;
 
-#pragma omp simd
-    for (int i = 0; i < vboolf8::static_size; ++i)
+    for (int i = 0; i < 8; ++i)
       result[i] = (p1[i] == p2[i]) ? vtrue : vfalse;
 
     return result;
@@ -80,8 +79,7 @@ namespace tsimd {
 #else
     vboolf8 result;
 
-#pragma omp simd
-    for (int i = 0; i < vboolf8::static_size; ++i)
+    for (int i = 0; i < 8; ++i)
       result[i] = (p1[i] == p2[i]) ? vtrue : vfalse;
 
     return result;

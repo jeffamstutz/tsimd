@@ -53,7 +53,6 @@ namespace tsimd {
     auto *src = (typename vint4::value_t *)_src;
     vint4 result;
 
-#pragma omp simd
     for (int i = 0; i < 4; ++i)
       result[i] = src[i];
 
@@ -72,8 +71,7 @@ namespace tsimd {
     auto *src = (typename vfloat8::value_t *)_src;
     vfloat8 result;
 
-#pragma omp simd
-    for (int i = 0; i < vfloat8::static_size; ++i)
+    for (int i = 0; i < 8; ++i)
       result[i] = src[i];
 
     return result;
@@ -91,7 +89,6 @@ namespace tsimd {
     auto *src = (typename vfloat8::value_t *)_src;
     vfloat8 result;
 
-#pragma omp simd
     for (int i = 0; i < 8; ++i)
       if (mask[i])
         result[i] = src[i];
@@ -109,7 +106,6 @@ namespace tsimd {
     auto *src = (typename vint8::value_t *)_src;
     vint8 result;
 
-#pragma omp simd
     for (int i = 0; i < 8; ++i)
       result[i] = src[i];
 
@@ -129,7 +125,6 @@ namespace tsimd {
     auto *src = (typename vint8::value_t *)_src;
     vint8 result;
 
-#pragma omp simd
     for (int i = 0; i < 8; ++i)
       if (mask[i])
         result[i] = src[i];

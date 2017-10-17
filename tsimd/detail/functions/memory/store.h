@@ -54,7 +54,6 @@ namespace tsimd {
 #else
     auto *dst = (typename vfloat4::value_t *)_dst;
 
-#pragma omp simd
     for (int i = 0; i < 4; ++i)
       dst[i] = v[i];
 #endif
@@ -70,7 +69,6 @@ namespace tsimd {
 #else
     auto *dst = (typename vfloat8::value_t *)_dst;
 
-#pragma omp simd
     for (int i = 0; i < 8; ++i)
       dst[i] = v[i];
 #endif
@@ -84,7 +82,6 @@ namespace tsimd {
 #else
     auto *dst = (typename vfloat8::value_t *)_dst;
 
-#pragma omp simd
     for (int i = 0; i < 8; ++i)
       if (mask[i])
         dst[i] = v[i];
@@ -94,12 +91,13 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vint8 &v, void *_dst)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__)
+    _mm256_store_si256((__m256i*)_dst, v);
+#elif defined(__AVX__)
     _mm256_store_ps((float *)_dst, _mm256_castsi256_ps(v));
 #else
     auto *dst = (typename vint8::value_t *)_dst;
 
-#pragma omp simd
     for (int i = 0; i < 8; ++i)
       dst[i] = v[i];
 #endif
@@ -108,13 +106,14 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vint8 &v, void *_dst, const vboolf8 &mask)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__)
+    _mm256_maskstore_epi32((int*)_dst, mask, v);
+#elif defined(__AVX__)
     _mm256_maskstore_ps(
         (float *)_dst, _mm256_castps_si256(mask), _mm256_castsi256_ps(v));
 #else
     auto *dst = (typename vint8::value_t *)_dst;
 
-#pragma omp simd
     for (int i = 0; i < 8; ++i)
       if (mask[i])
         dst[i] = v[i];
