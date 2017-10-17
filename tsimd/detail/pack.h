@@ -34,10 +34,7 @@ namespace tsimd {
   {
     // Compile-time info //
 
-    enum
-    {
-      static_size = W
-    };
+    enum { static_size = W };
     using value_t          = typename std::decay<T>::type;
     using intrinsic_t      = typename traits::simd_type<T, W>::type;
     using half_intrinsic_t = typename traits::half_simd_type<T, W>::type;
@@ -65,23 +62,13 @@ namespace tsimd {
 
     // Data conversions //
 
-    operator const intrinsic_t &() const
-    {
-      return v;
-    }
-    operator intrinsic_t &()
-    {
-      return v;
-    }
+    operator const intrinsic_t &() const;
+    operator intrinsic_t &();
 
-    operator const T *() const
-    {
-      return data;
-    }
-    operator T *()
-    {
-      return data;
-    }
+    operator const T *() const;
+    operator T *();
+
+    // Iteratoration //
 
     T *begin();
     T *end();
@@ -107,18 +94,20 @@ namespace tsimd {
                   "SIMD width must be 1, 4, 8, or 16!");
   };
 
-  // mask types and true/false value aliases //
-
-  template <int W = DEFAULT_WIDTH>
-  using mask = pack<float, W>;
+  // mask types and true/false value aliases //////////////////////////////////
 
   using mask_t = float;
+
+  template <int W = DEFAULT_WIDTH>
+  using mask = pack<mask_t, W>;
 
   static const auto vtrue_v  = 0xFFFFFFFF;
   static const auto vfalse_v = 0x00000000;
 
   static const mask_t vtrue  = reinterpret_cast<const mask_t &>(vtrue_v);
   static const mask_t vfalse = reinterpret_cast<const mask_t &>(vfalse_v);
+
+  // pack<> aliases ///////////////////////////////////////////////////////////
 
   /* 1-wide shortcuts */
   using vfloat1  = pack<float, 1>;
@@ -170,8 +159,7 @@ namespace tsimd {
   using vboolf  = vfloat;
   using vboold  = vllong;
 
-  // pack<> TSIMD_INLINEd members
-  // ///////////////////////////////////////////////////
+  // pack<> inlined members ///////////////////////////////////////////////////
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(T value)
@@ -210,6 +198,30 @@ namespace tsimd {
       result[i] = data[i];
 
     return result;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator const intrinsic_t &() const
+  {
+    return v;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator intrinsic_t &()
+  {
+    return v;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator const T *() const
+  {
+    return data;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator T *()
+  {
+    return data;
   }
 
   template <typename T, int W>
