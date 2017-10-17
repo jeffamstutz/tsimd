@@ -26,24 +26,24 @@
 
 #include "../pack.h"
 
-#include "arithmetic/plus.h"
-#include "arithmetic/minus.h"
-#include "arithmetic/times.h"
 #include "arithmetic/divide.h"
+#include "arithmetic/minus.h"
+#include "arithmetic/plus.h"
+#include "arithmetic/times.h"
 
 namespace tsimd {
 
   // binary operator+=() //
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>& operator+=(pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE pack<T, W> &operator+=(pack<T, W> &p1, const pack<T, W> &p2)
   {
     return p1 = (p1 + p2);
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, pack<T, W>&>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       pack<T, W> &>::type
   operator+=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 + pack<T, W>(v));
@@ -52,14 +52,14 @@ namespace tsimd {
   // binary operator-=() //
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>& operator-=(pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE pack<T, W> &operator-=(pack<T, W> &p1, const pack<T, W> &p2)
   {
     return p1 = (p1 - p2);
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, pack<T, W>&>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       pack<T, W> &>::type
   operator-=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 - pack<T, W>(v));
@@ -68,14 +68,14 @@ namespace tsimd {
   // binary operator*=() //
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>& operator*=(pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const pack<T, W> &p2)
   {
     return p1 = (p1 * p2);
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, pack<T, W>&>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       pack<T, W> &>::type
   operator*=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 * pack<T, W>(v));
@@ -84,14 +84,14 @@ namespace tsimd {
   // binary operator/=() //
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>& operator/=(pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE pack<T, W> &operator/=(pack<T, W> &p1, const pack<T, W> &p2)
   {
     return p1 = (p1 / p2);
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, pack<T, W>&>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       pack<T, W> &>::type
   operator/=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 / pack<T, W>(v));
@@ -104,7 +104,7 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] % p2[i]);
 
@@ -112,13 +112,13 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, pack<T, W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       pack<T, W>>::type
   operator%(const pack<T, W> &p1, const OTHER_T &v)
   {
     pack<T, W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] % v);
 
@@ -126,8 +126,8 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, pack<T, W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       pack<T, W>>::type
   operator%(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) % p1;
@@ -136,14 +136,14 @@ namespace tsimd {
   // binary operator%=() //
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>& operator%=(pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const pack<T, W> &p2)
   {
     return p1 = (p1 % p2);
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, pack<T, W>&>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       pack<T, W> &>::type
   operator%=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 % pack<T, W>(v));
@@ -156,11 +156,11 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = -p[i];
 
     return result;
   }
 
-} // ::tsimd
+}  // namespace tsimd

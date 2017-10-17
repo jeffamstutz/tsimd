@@ -39,8 +39,8 @@ namespace tsimd {
     template <typename T, int W>
     struct simd_type
     {
-      using type = void; // NOTE(jda) - use 'void' to flag a <T,W> pair which
-                         //             is missing
+      using type = void;  // NOTE(jda) - use 'void' to flag a <T,W> pair which
+                          //             is missing
     };
 
     // 1-wide //
@@ -108,14 +108,14 @@ namespace tsimd {
     template <typename T, int W>
     struct half_simd_type
     {
-      using type = void; // NOTE(jda) - use 'void' to flag a <T,W> pair which
-                         //             is missing
+      using type = void;  // NOTE(jda) - use 'void' to flag a <T,W> pair which
+                          //             is missing
     };
 
     // 1-wide //
 
     template <>
-    struct half_simd_type<int, 1> // NOTE: no float equivalent!
+    struct half_simd_type<int, 1>  // NOTE: no float equivalent!
     {
       using type = short;
     };
@@ -165,5 +165,5 @@ namespace tsimd {
     template <typename FROM, typename TO>
     using can_convert = enable_if_t<std::is_convertible<TO, FROM>::value>;
 
-  } // ::tsimd::traits
-} // ::tsimd
+  }  // namespace traits
+}  // namespace tsimd

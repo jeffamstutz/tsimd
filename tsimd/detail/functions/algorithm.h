@@ -29,9 +29,9 @@
 namespace tsimd {
 
   template <typename T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach(pack<T, W> &p, FCN_T &&fcn)
+  TSIMD_INLINE void foreach (pack<T, W> &p, FCN_T && fcn)
   {
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       fcn(p[i], i);
   }
@@ -39,7 +39,7 @@ namespace tsimd {
   template <int W, typename FCN_T>
   TSIMD_INLINE void foreach_active(const mask<W> &m, FCN_T &&fcn)
   {
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       if (m[i])
         fcn(i);
@@ -48,7 +48,7 @@ namespace tsimd {
   template <typename T, int W, typename FCN_T>
   TSIMD_INLINE void foreach_active(const mask<W> &m, pack<T, W> &p, FCN_T &&fcn)
   {
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       if (m[i])
         fcn(p[i]);
@@ -66,7 +66,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  TSIMD_INLINE bool any(const vboolf8& a)
+  TSIMD_INLINE bool any(const vboolf8 &a)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return !_mm256_testz_ps(a, a);
@@ -112,7 +112,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  TSIMD_INLINE bool all(const vboolf8& a)
+  TSIMD_INLINE bool all(const vboolf8 &a)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_movemask_ps(a) == (unsigned int)0xff;
@@ -137,7 +137,9 @@ namespace tsimd {
 
   // 8-wide //
 
-  TSIMD_INLINE vfloat8 select(const vboolf8& m, const vfloat8& t, const vfloat8& f)
+  TSIMD_INLINE vfloat8 select(const vboolf8 &m,
+                              const vfloat8 &t,
+                              const vfloat8 &f)
   {
 #if defined(__AVX512__)
     return _mm256_mask_blend_ps(m, f, t);
@@ -146,7 +148,7 @@ namespace tsimd {
 #else
     vfloat8 result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < vfloat8::static_size; ++i) {
       if (m[i])
         result[i] = t[i];
@@ -158,16 +160,15 @@ namespace tsimd {
 #endif
   }
 
-  TSIMD_INLINE vint8 select(const vboolf8& m, const vint8& t, const vint8& f)
+  TSIMD_INLINE vint8 select(const vboolf8 &m, const vint8 &t, const vint8 &f)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_castps_si256(
-        _mm256_blendv_ps(_mm256_castsi256_ps(f), _mm256_castsi256_ps(t), m)
-    );
+        _mm256_blendv_ps(_mm256_castsi256_ps(f), _mm256_castsi256_ps(t), m));
 #else
     vint8 result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < vint8::static_size; ++i) {
       if (m[i])
         result[i] = t[i];
@@ -183,4 +184,4 @@ namespace tsimd {
 
   // TODO
 
-} // ::tsimd
+}  // namespace tsimd

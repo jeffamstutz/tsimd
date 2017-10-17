@@ -47,7 +47,7 @@ namespace tsimd {
 #else
     vboolf8 result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < 8; ++i)
       result[i] = !m[i] ? vtrue : vfalse;
 
@@ -59,4 +59,4 @@ namespace tsimd {
 
   // TODO
 
-} // ::tsimd
+}  // namespace tsimd

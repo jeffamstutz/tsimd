@@ -58,7 +58,7 @@ int main()
   {
     vfloat v1(1.f), v2(2.f);
 
-    std::cout << "#1: " << all((v1 + v2)  == vfloat(3.f)) << std::endl;
+    std::cout << "#1: " << all((v1 + v2) == vfloat(3.f)) << std::endl;
     std::cout << "#2: " << all((v1 + 2.f) == vfloat(3.f)) << std::endl;
     std::cout << "#3: " << all((2.f + v1) == vfloat(3.f)) << std::endl;
   }
@@ -89,7 +89,7 @@ int main()
     print(b1);
 
     std::cout << "#1: " << tsimd::all(v1 != v2) << std::endl;
-    std::cout << "#2: " << tsimd::all(1  != v2) << std::endl;
+    std::cout << "#2: " << tsimd::all(1 != v2) << std::endl;
     std::cout << "#3: " << tsimd::all(v2 != 1) << std::endl;
 
     v1[0] = 2;
@@ -123,7 +123,7 @@ int main()
     expected[0] = 2;
     expected[2] = 2;
 
-    tsimd::foreach_active(m, v, [](int &v){ v = 2; });
+    tsimd::foreach_active(m, v, [](int &v) { v = 2; });
 
     print(m);
     print(v);

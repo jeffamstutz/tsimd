@@ -53,7 +53,7 @@ TEST_CASE("binary operator+()")
 {
   vfloat v1(1.f), v2(2.f);
 
-  REQUIRE(tsimd::all((v1 + v2)  == vfloat(3.f)));
+  REQUIRE(tsimd::all((v1 + v2) == vfloat(3.f)));
   REQUIRE(tsimd::all((v1 + 2.f) == vfloat(3.f)));
   REQUIRE(tsimd::all((2.f + v1) == vfloat(3.f)));
 
@@ -79,7 +79,7 @@ TEST_CASE("binary operator-()")
 {
   vfloat v1(2.f), v2(1.f);
 
-  REQUIRE(tsimd::all((v1 - v2)  == vfloat(1.f)));
+  REQUIRE(tsimd::all((v1 - v2) == vfloat(1.f)));
   REQUIRE(tsimd::all((v1 - 2.f) == vfloat(0.f)));
   REQUIRE(tsimd::all((4.f - v1) == vfloat(2.f)));
 
@@ -105,7 +105,7 @@ TEST_CASE("binary operator*()")
 {
   vfloat v1(2.f), v2(1.f);
 
-  REQUIRE(tsimd::all((v1 * v2)  == vfloat(2.f)));
+  REQUIRE(tsimd::all((v1 * v2) == vfloat(2.f)));
   REQUIRE(tsimd::all((v1 * 2.f) == vfloat(4.f)));
   REQUIRE(tsimd::all((2.f * v1) == vfloat(4.f)));
 
@@ -132,8 +132,8 @@ TEST_CASE("binary operator/()")
   vint v1(4), v2(2);
 
   REQUIRE(tsimd::all((v1 / v2) == vint(2)));
-  REQUIRE(tsimd::all((v1 / 2)  == vint(2)));
-  REQUIRE(tsimd::all((8 / v1)  == vint(2)));
+  REQUIRE(tsimd::all((v1 / 2) == vint(2)));
+  REQUIRE(tsimd::all((8 / v1) == vint(2)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1.f / 1.f), float>::value;
@@ -158,8 +158,8 @@ TEST_CASE("binary operator%()")
   vint v1(4), v2(3);
 
   REQUIRE(tsimd::all((v1 % v2) == vint(1)));
-  REQUIRE(tsimd::all((v1 % 8)  == vint(4)));
-  REQUIRE(tsimd::all((8 % v1)  == vint(0)));
+  REQUIRE(tsimd::all((v1 % 8) == vint(4)));
+  REQUIRE(tsimd::all((8 % v1) == vint(0)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1 % 1), int>::value;
@@ -189,8 +189,8 @@ TEST_CASE("binary operator<<()")
   vint v2(1);
 
   REQUIRE(tsimd::all((v1 << v2) == vint(2)));
-  REQUIRE(tsimd::all((v1 << 1)  == vint(2)));
-  REQUIRE(tsimd::all((1 << v1)  == vint(2)));
+  REQUIRE(tsimd::all((v1 << 1) == vint(2)));
+  REQUIRE(tsimd::all((1 << v1) == vint(2)));
 }
 
 TEST_CASE("binary operator>>()")
@@ -199,8 +199,8 @@ TEST_CASE("binary operator>>()")
   vint v2(1);
 
   REQUIRE(tsimd::all((v1 >> v2) == vint(1)));
-  REQUIRE(tsimd::all((v1 >> 1)  == vint(1)));
-  REQUIRE(tsimd::all((4 >> v1)  == vint(1)));
+  REQUIRE(tsimd::all((v1 >> 1) == vint(1)));
+  REQUIRE(tsimd::all((4 >> v1) == vint(1)));
 }
 
 TEST_CASE("binary operator^()")
@@ -209,8 +209,8 @@ TEST_CASE("binary operator^()")
   vint v2(2);
 
   REQUIRE(tsimd::all((v1 ^ v2) == vint(3)));
-  REQUIRE(tsimd::all((v1 ^ 2)  == vint(3)));
-  REQUIRE(tsimd::all((2 ^ v1)  == vint(3)));
+  REQUIRE(tsimd::all((v1 ^ 2) == vint(3)));
+  REQUIRE(tsimd::all((2 ^ v1) == vint(3)));
 }
 
 TEST_SUITE_END();
@@ -225,13 +225,13 @@ TEST_CASE("binary operator==()")
   vint v2(1);
 
   REQUIRE(tsimd::all(v1 == v2));
-  REQUIRE(tsimd::all(1  == v1));
+  REQUIRE(tsimd::all(1 == v1));
   REQUIRE(tsimd::all(v1 == 1));
 
   v1[0] = 2;
 
   REQUIRE(!tsimd::all(v1 == v2));
-  REQUIRE(!tsimd::all(1  == v1));
+  REQUIRE(!tsimd::all(1 == v1));
   REQUIRE(!tsimd::all(v1 == 1));
 }
 
@@ -241,7 +241,7 @@ TEST_CASE("binary operator==()")
   vint v2(2);
 
   REQUIRE(tsimd::all(v1 != v2));
-  REQUIRE(tsimd::all(1  != v2));
+  REQUIRE(tsimd::all(1 != v2));
   REQUIRE(tsimd::all(v2 != 1));
 
   v1[0] = 2;
@@ -255,7 +255,7 @@ TEST_CASE("binary operator<()")
   vint v2(2);
 
   REQUIRE(tsimd::all(v1 < v2));
-  REQUIRE(tsimd::all(1  < v2));
+  REQUIRE(tsimd::all(1 < v2));
   REQUIRE(tsimd::all(v1 < 2));
 }
 
@@ -267,7 +267,7 @@ TEST_CASE("binary operator<=()")
   v1[0] = 2;
 
   REQUIRE(tsimd::all(v1 <= v2));
-  REQUIRE(tsimd::all(1  <= v2));
+  REQUIRE(tsimd::all(1 <= v2));
   REQUIRE(tsimd::all(v1 <= 2));
 }
 
@@ -277,7 +277,7 @@ TEST_CASE("binary operator>()")
   vint v2(1);
 
   REQUIRE(tsimd::all(v1 > v2));
-  REQUIRE(tsimd::all(2  > v2));
+  REQUIRE(tsimd::all(2 > v2));
   REQUIRE(tsimd::all(v1 > 1));
 }
 
@@ -289,7 +289,7 @@ TEST_CASE("binary operator>=()")
   v2[0] = 0;
 
   REQUIRE(tsimd::all(v1 >= v2));
-  REQUIRE(tsimd::all(1  >= v2));
+  REQUIRE(tsimd::all(1 >= v2));
   REQUIRE(tsimd::all(v1 >= 2));
 }
 
@@ -376,12 +376,13 @@ TEST_CASE("foreach()")
   vfloat v1(0.f);
   vfloat v2(1.f);
 
-  foreach(v1, [](float &l, int) { l = 1; });
+  foreach (v1, [](float &l, int) { l = 1; })
+    ;
 
   REQUIRE(tsimd::all(v1 == v2));
 }
 
-#if 0 //NOTE: currently crashing on IVB for no obvious reason...
+#if 0  // NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("foreach_active()")
 {
   vbool m(vfalse);
@@ -423,11 +424,12 @@ TEST_CASE("all()")
   REQUIRE(!tsimd::all(m));
   m[0] = vtrue;
   REQUIRE(!tsimd::all(m));
-  foreach(m, [](float &l, int) { l = vtrue; });
+  foreach (m, [](float &l, int) { l = vtrue; })
+    ;
   REQUIRE(tsimd::all(m));
 }
 
-#if 0 //NOTE: currently crashing on IVB for no obvious reason...
+#if 0  // NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("select()")
 {
   vbool m(vfalse);
@@ -466,7 +468,7 @@ TEST_CASE("unmasked load()")
   REQUIRE(tsimd::all(v1 == 5));
 }
 
-#if 0 //NOTE: currently crashing on IVB for no obvious reason...
+#if 0  // NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("masked load()")
 {
   std::vector<int> values(DEFAULT_WIDTH);
@@ -506,9 +508,7 @@ TEST_CASE("unmasked store()")
 
   tsimd::store(v1, values.data());
 
-  std::for_each(values.begin(), values.end(), [](int v) {
-    REQUIRE(v == 7);
-  });
+  std::for_each(values.begin(), values.end(), [](int v) { REQUIRE(v == 7); });
 }
 
 TEST_CASE("unmasked scatter()")
@@ -523,9 +523,7 @@ TEST_CASE("unmasked scatter()")
 
   tsimd::scatter(v1, values.data(), offset);
 
-  std::for_each(values.begin(), values.end(), [](int v) {
-    REQUIRE(v == 5);
-  });
+  std::for_each(values.begin(), values.end(), [](int v) { REQUIRE(v == 5); });
 }
 
 TEST_SUITE_END();

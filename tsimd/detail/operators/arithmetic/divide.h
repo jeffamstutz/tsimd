@@ -92,4 +92,4 @@ namespace tsimd {
 
   // TODO
 
-} // ::tsimd
+}  // namespace tsimd

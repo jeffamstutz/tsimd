@@ -34,12 +34,13 @@ namespace tsimd {
   // gather() //
 
   template <typename PACK_T, typename OFFSET_T>
-  TSIMD_INLINE PACK_T gather(void* _src, const pack<OFFSET_T, PACK_T::static_size> &o)
+  TSIMD_INLINE PACK_T gather(void *_src,
+                             const pack<OFFSET_T, PACK_T::static_size> &o)
   {
-    auto *src = (typename PACK_T::value_t*) _src;
+    auto *src = (typename PACK_T::value_t *)_src;
     PACK_T result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < PACK_T::static_size; ++i)
       result[i] = src[o[i]];
 
@@ -47,16 +48,16 @@ namespace tsimd {
   }
 
   template <typename PACK_T, typename OFFSET_T>
-  TSIMD_INLINE PACK_T gather(void* _src,
-                       const pack<OFFSET_T, PACK_T::static_size> &o,
-                       const mask<PACK_T::static_size> &m)
+  TSIMD_INLINE PACK_T gather(void *_src,
+                             const pack<OFFSET_T, PACK_T::static_size> &o,
+                             const mask<PACK_T::static_size> &m)
   {
-    auto *src = (typename PACK_T::value_t*) _src;
+    auto *src = (typename PACK_T::value_t *)_src;
     PACK_T result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < PACK_T::static_size; ++i)
-      if(m[i])
+      if (m[i])
         result[i] = src[o[i]];
 
     return result;
@@ -66,28 +67,28 @@ namespace tsimd {
 
   template <typename PACK_T, typename OFFSET_T>
   TSIMD_INLINE void scatter(const PACK_T &p,
-                      void* _dst,
-                      const pack<OFFSET_T, PACK_T::static_size> &o)
+                            void *_dst,
+                            const pack<OFFSET_T, PACK_T::static_size> &o)
   {
-    auto *dst = (typename PACK_T::value_t*) _dst;
+    auto *dst = (typename PACK_T::value_t *)_dst;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < PACK_T::static_size; ++i)
       dst[o[i]] = p[i];
   }
 
   template <typename PACK_T, typename OFFSET_T>
   TSIMD_INLINE void scatter(const PACK_T &p,
-                      void* _dst,
-                      const pack<OFFSET_T, PACK_T::static_size> &o,
-                      const mask<PACK_T::static_size> &m)
+                            void *_dst,
+                            const pack<OFFSET_T, PACK_T::static_size> &o,
+                            const mask<PACK_T::static_size> &m)
   {
-    auto *dst = (typename PACK_T::value_t*) _dst;
+    auto *dst = (typename PACK_T::value_t *)_dst;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < PACK_T::static_size; ++i)
       if (m[i])
         dst[o[i]] = p[i];
   }
 
-} // ::tsimd
+}  // namespace tsimd

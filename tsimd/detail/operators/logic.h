@@ -36,7 +36,7 @@ namespace tsimd {
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] < p2[i]) ? vtrue : vfalse;
 
@@ -44,13 +44,13 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator<(const pack<T, W> &p1, const OTHER_T &v)
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] < v) ? vtrue : vfalse;
 
@@ -58,8 +58,8 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator<(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) < p1;
@@ -72,7 +72,7 @@ namespace tsimd {
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] <= p2[i]) ? vtrue : vfalse;
 
@@ -80,13 +80,13 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator<=(const pack<T, W> &p1, const OTHER_T &v)
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] <= v) ? vtrue : vfalse;
 
@@ -94,8 +94,8 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator<=(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) <= p1;
@@ -108,7 +108,7 @@ namespace tsimd {
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] > p2[i]) ? vtrue : vfalse;
 
@@ -116,13 +116,13 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator>(const pack<T, W> &p1, const OTHER_T &v)
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] > v) ? vtrue : vfalse;
 
@@ -130,8 +130,8 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator>(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) > p1;
@@ -144,7 +144,7 @@ namespace tsimd {
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] >= p2[i]) ? vtrue : vfalse;
 
@@ -152,13 +152,13 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator>=(const pack<T, W> &p1, const OTHER_T &v)
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] >= v) ? vtrue : vfalse;
 
@@ -166,8 +166,8 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename
-  std::enable_if<std::is_convertible<OTHER_T, T>::value, mask<W>>::type
+  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
+                                       mask<W>>::type
   operator>=(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) >= p1;
@@ -180,7 +180,7 @@ namespace tsimd {
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (m1[i] && m2[i]) ? vtrue : vfalse;
 
@@ -194,11 +194,11 @@ namespace tsimd {
   {
     mask<W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = (m1[i] || m2[i]) ? vtrue : vfalse;
 
     return result;
   }
 
-} // ::tsimd
+}  // namespace tsimd

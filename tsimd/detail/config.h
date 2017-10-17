@@ -24,41 +24,41 @@
 
 #pragma once
 
-#if defined (__AVX512F__)
-#  include <zmmintrin.h>
-#  define DEFAULT_WIDTH 16
+#if defined(__AVX512F__)
+#include <zmmintrin.h>
+#define DEFAULT_WIDTH 16
 #endif
 
 #if defined(__AVX__)
-#  include <immintrin.h>
-#  if !defined(DEFAULT_WIDTH)
-#    define DEFAULT_WIDTH 8
-#  endif
+#include <immintrin.h>
+#if !defined(DEFAULT_WIDTH)
+#define DEFAULT_WIDTH 8
+#endif
 #endif
 
 #if defined(__SSE__)
-#  include <xmmintrin.h>
-#  if !defined(DEFAULT_WIDTH)
-#    define DEFAULT_WIDTH 4
-#  endif
+#include <xmmintrin.h>
+#if !defined(DEFAULT_WIDTH)
+#define DEFAULT_WIDTH 4
+#endif
 #endif
 
 #if !defined(DEFAULT_WIDTH)
-#  define DEFAULT_WIDTH 1
+#define DEFAULT_WIDTH 1
 #endif
 
 #if defined(__AVX512F__)
-#  define AVX_ZERO_UPPER()
-#elif defined (__AVX__)
-#  define AVX_ZERO_UPPER() _mm256_zeroupper()
+#define AVX_ZERO_UPPER()
+#elif defined(__AVX__)
+#define AVX_ZERO_UPPER() _mm256_zeroupper()
 #else
-#  define AVX_ZERO_UPPER()
+#define AVX_ZERO_UPPER()
 #endif
 
 #ifdef _WIN32
-#  define TSIMD_ALIGN(...) __declspec(align(__VA_ARGS__))
+#define TSIMD_ALIGN(...) __declspec(align(__VA_ARGS__))
 #else
-#  define TSIMD_ALIGN(...) __attribute__((aligned(__VA_ARGS__)))
+#define TSIMD_ALIGN(...) __attribute__((aligned(__VA_ARGS__)))
 #endif
 
 #define TSIMD_INLINE inline

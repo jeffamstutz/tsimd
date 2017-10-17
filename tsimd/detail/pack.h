@@ -34,26 +34,29 @@ namespace tsimd {
   {
     // Compile-time info //
 
-    enum {static_size = W};
-    using value_t = typename std::decay<T>::type;
-    using intrinsic_t = typename traits::simd_type<T, W>::type;
+    enum
+    {
+      static_size = W
+    };
+    using value_t          = typename std::decay<T>::type;
+    using intrinsic_t      = typename traits::simd_type<T, W>::type;
     using half_intrinsic_t = typename traits::half_simd_type<T, W>::type;
 
     // Construction //
 
     pack() = default;
-    pack(T value); // NOTE(jda) - this should probable be marked 'explicit'...
+    pack(T value);  // NOTE(jda) - this should probable be marked 'explicit'...
     pack(intrinsic_t value);
 
-#if 0 // NOTE: can this be culled for types that don't make sense?
+#if 0  // NOTE: can this be culled for types that don't make sense?
     template <int, typename = traits::enable_if_t<W == 8>>
 #endif
     pack(half_intrinsic_t a, half_intrinsic_t b) : vl(a), vh(b) {}
 
     // Array access //
 
-    const T& operator[](int i) const;
-          T& operator[](int i);
+    const T &operator[](int i) const;
+    T &operator[](int i);
 
     // Cast //
 
@@ -62,17 +65,29 @@ namespace tsimd {
 
     // Data conversions //
 
-    operator const intrinsic_t &() const { return v; }
-    operator       intrinsic_t &()       { return v; }
+    operator const intrinsic_t &() const
+    {
+      return v;
+    }
+    operator intrinsic_t &()
+    {
+      return v;
+    }
 
-    operator const T*() const { return data; }
-    operator       T*()       { return data; }
+    operator const T *() const
+    {
+      return data;
+    }
+    operator T *()
+    {
+      return data;
+    }
 
-    T* begin();
-    T* end();
+    T *begin();
+    T *end();
 
-    const T* cbegin() const;
-    const T* cend()   const;
+    const T *cbegin() const;
+    const T *cend() const;
 
     // Data //
 
@@ -80,7 +95,10 @@ namespace tsimd {
     {
       T data[W];
       intrinsic_t v;
-      struct { half_intrinsic_t vl,vh; };
+      struct
+      {
+        half_intrinsic_t vl, vh;
+      };
     };
 
     // Interface checks //
@@ -99,8 +117,8 @@ namespace tsimd {
   static const auto vtrue_v  = 0xFFFFFFFF;
   static const auto vfalse_v = 0x00000000;
 
-  static const mask_t vtrue  = reinterpret_cast<const mask_t&>(vtrue_v);
-  static const mask_t vfalse = reinterpret_cast<const mask_t&>(vfalse_v);
+  static const mask_t vtrue  = reinterpret_cast<const mask_t &>(vtrue_v);
+  static const mask_t vfalse = reinterpret_cast<const mask_t &>(vfalse_v);
 
   /* 1-wide shortcuts */
   using vfloat1  = pack<float, 1>;
@@ -146,19 +164,20 @@ namespace tsimd {
   using vfloat  = pack<float, DEFAULT_WIDTH>;
   using vdouble = pack<double, DEFAULT_WIDTH>;
   using vint    = pack<int, DEFAULT_WIDTH>;
-  using vuint   = pack<unsigned int, DEFAULT_WIDTH/2>;
-  using vllong  = pack<long long, DEFAULT_WIDTH/2>;
+  using vuint   = pack<unsigned int, DEFAULT_WIDTH / 2>;
+  using vllong  = pack<long long, DEFAULT_WIDTH / 2>;
   using vbool   = pack<mask_t, DEFAULT_WIDTH>;
   using vboolf  = vfloat;
   using vboold  = vllong;
 
-  // pack<> TSIMD_INLINEd members ///////////////////////////////////////////////////
+  // pack<> TSIMD_INLINEd members
+  // ///////////////////////////////////////////////////
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(T value)
   {
-    #pragma omp simd
-    for(int i = 0; i < W; ++i)
+#pragma omp simd
+    for (int i = 0; i < W; ++i)
       data[i] = value;
   }
 
@@ -169,13 +188,13 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE const T& pack<T, W>::operator[](int i) const
+  TSIMD_INLINE const T &pack<T, W>::operator[](int i) const
   {
     return data[i];
   }
 
   template <typename T, int W>
-  TSIMD_INLINE T& pack<T, W>::operator[](int i)
+  TSIMD_INLINE T &pack<T, W>::operator[](int i)
   {
     return data[i];
   }
@@ -186,7 +205,7 @@ namespace tsimd {
   {
     pack<OTHER_T, W> result;
 
-    #pragma omp simd
+#pragma omp simd
     for (int i = 0; i < W; ++i)
       result[i] = data[i];
 
@@ -194,27 +213,27 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE T* pack<T, W>::begin()
+  TSIMD_INLINE T *pack<T, W>::begin()
   {
     return data;
   }
 
   template <typename T, int W>
-  TSIMD_INLINE T* pack<T, W>::end()
+  TSIMD_INLINE T *pack<T, W>::end()
   {
     return data + W;
   }
 
   template <typename T, int W>
-  TSIMD_INLINE const T* pack<T, W>::cbegin() const
+  TSIMD_INLINE const T *pack<T, W>::cbegin() const
   {
     return data;
   }
 
   template <typename T, int W>
-  TSIMD_INLINE const T* pack<T, W>::cend() const
+  TSIMD_INLINE const T *pack<T, W>::cend() const
   {
     return data + W;
   }
 
-} // ::tsimd
+}  // namespace tsimd
