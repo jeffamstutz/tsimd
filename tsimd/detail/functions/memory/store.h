@@ -106,7 +106,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vint8 &v, void *_dst, const vboolf8 &mask)
   {
-#if defined(__AVX512__) || defined(__AVX2__)
+#if 0//defined(__AVX512__) || defined(__AVX2__)
     _mm256_maskstore_epi32((int*)_dst, mask, v);
 #elif defined(__AVX__)
     _mm256_maskstore_ps(
