@@ -162,7 +162,7 @@ namespace tsimd {
 
   TSIMD_INLINE vint8 select(const vboolf8 &m, const vint8 &t, const vint8 &f)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_castps_si256(
         _mm256_blendv_ps(_mm256_castsi256_ps(f), _mm256_castsi256_ps(t), m));
 #else

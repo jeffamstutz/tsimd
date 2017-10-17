@@ -72,7 +72,9 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf8 operator==(const vint8 &p1, const vint8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__)
+    return _mm256_castsi256_ps(_mm256_cmpeq_epi32(p1, p2));
+#elif defined(__AVX__)
     return vboolf8(_mm_castsi128_ps(_mm_cmpeq_epi32(p1.vl, p2.vl)),
                    _mm_castsi128_ps(_mm_cmpeq_epi32(p1.vh, p2.vh)));
 #else

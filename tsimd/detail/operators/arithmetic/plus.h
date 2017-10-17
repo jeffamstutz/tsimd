@@ -68,7 +68,9 @@ namespace tsimd {
 
   TSIMD_INLINE vint8 operator+(const vint8 &p1, const vint8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__)
+    return _mm256_add_epi32(p1, p2);
+#elif defined(__AVX__)
     return vint8(_mm_add_epi32(p1.vl, p2.vl), _mm_add_epi32(p1.vh, p2.vh));
 #elif defined(__SSE__)
     NOT_IMPLEMENTED;
