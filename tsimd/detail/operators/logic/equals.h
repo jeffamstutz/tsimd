@@ -41,7 +41,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline vboolf8 operator==(const vfloat8 &p1, const vfloat8 &p2)
+  TSIMD_INLINE vboolf8 operator==(const vfloat8 &p1, const vfloat8 &p2)
   {
 #if defined(__AVX512__)
     return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_EQ);
@@ -59,18 +59,18 @@ namespace tsimd {
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator==(const vfloat8 &p1, const OTHER_T &v)
+  TSIMD_INLINE vboolf8 operator==(const vfloat8 &p1, const OTHER_T &v)
   {
     return p1 == vfloat8(v);
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator==(const OTHER_T &v, const vfloat8 &p1)
+  TSIMD_INLINE vboolf8 operator==(const OTHER_T &v, const vfloat8 &p1)
   {
     return vfloat8(v) == p1;
   }
 
-  inline vboolf8 operator==(const vint8 &p1, const vint8 &p2)
+  TSIMD_INLINE vboolf8 operator==(const vint8 &p1, const vint8 &p2)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return vboolf8(_mm_castsi128_ps(_mm_cmpeq_epi32(p1.vl, p2.vl)),
@@ -87,13 +87,13 @@ namespace tsimd {
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator==(const vint8 &p1, const OTHER_T &v)
+  TSIMD_INLINE vboolf8 operator==(const vint8 &p1, const OTHER_T &v)
   {
     return p1 == vint8(v);
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator==(const OTHER_T &v, const vint8 &p1)
+  TSIMD_INLINE vboolf8 operator==(const OTHER_T &v, const vint8 &p1)
   {
     return vint8(v) == p1;
   }
@@ -114,36 +114,36 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline vboolf8 operator!=(const vfloat8 &p1, const vfloat8 &p2)
+  TSIMD_INLINE vboolf8 operator!=(const vfloat8 &p1, const vfloat8 &p2)
   {
     return !(p1 == p2);
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator!=(const vfloat8 &p1, const OTHER_T &v)
+  TSIMD_INLINE vboolf8 operator!=(const vfloat8 &p1, const OTHER_T &v)
   {
     return p1 != vfloat8(v);
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator!=(const OTHER_T &v, const vfloat8 &p1)
+  TSIMD_INLINE vboolf8 operator!=(const OTHER_T &v, const vfloat8 &p1)
   {
     return vfloat8(v) != p1;
   }
 
-  inline vboolf8 operator!=(const vint8 &p1, const vint8 &p2)
+  TSIMD_INLINE vboolf8 operator!=(const vint8 &p1, const vint8 &p2)
   {
     return !(p1 == p2);
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator!=(const vint8 &p1, const OTHER_T &v)
+  TSIMD_INLINE vboolf8 operator!=(const vint8 &p1, const OTHER_T &v)
   {
     return p1 != vint8(v);
   }
 
   template <typename OTHER_T>
-  inline vboolf8 operator!=(const OTHER_T &v, const vint8 &p1)
+  TSIMD_INLINE vboolf8 operator!=(const OTHER_T &v, const vint8 &p1)
   {
     return vint8(v) != p1;
   }

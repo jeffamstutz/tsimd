@@ -34,7 +34,7 @@ namespace tsimd {
   // gather() //
 
   template <typename PACK_T, typename OFFSET_T>
-  inline PACK_T gather(void* _src, const pack<OFFSET_T, PACK_T::static_size> &o)
+  TSIMD_INLINE PACK_T gather(void* _src, const pack<OFFSET_T, PACK_T::static_size> &o)
   {
     auto *src = (typename PACK_T::value_t*) _src;
     PACK_T result;
@@ -47,7 +47,7 @@ namespace tsimd {
   }
 
   template <typename PACK_T, typename OFFSET_T>
-  inline PACK_T gather(void* _src,
+  TSIMD_INLINE PACK_T gather(void* _src,
                        const pack<OFFSET_T, PACK_T::static_size> &o,
                        const mask<PACK_T::static_size> &m)
   {
@@ -65,7 +65,7 @@ namespace tsimd {
   // scatter() //
 
   template <typename PACK_T, typename OFFSET_T>
-  inline void scatter(const PACK_T &p,
+  TSIMD_INLINE void scatter(const PACK_T &p,
                       void* _dst,
                       const pack<OFFSET_T, PACK_T::static_size> &o)
   {
@@ -77,7 +77,7 @@ namespace tsimd {
   }
 
   template <typename PACK_T, typename OFFSET_T>
-  inline void scatter(const PACK_T &p,
+  TSIMD_INLINE void scatter(const PACK_T &p,
                       void* _dst,
                       const pack<OFFSET_T, PACK_T::static_size> &o,
                       const mask<PACK_T::static_size> &m)

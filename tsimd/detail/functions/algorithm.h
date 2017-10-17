@@ -29,7 +29,7 @@
 namespace tsimd {
 
   template <typename T, int W, typename FCN_T>
-  inline void foreach(pack<T, W> &p, FCN_T &&fcn)
+  TSIMD_INLINE void foreach(pack<T, W> &p, FCN_T &&fcn)
   {
     #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -37,7 +37,7 @@ namespace tsimd {
   }
 
   template <int W, typename FCN_T>
-  inline void foreach_active(const mask<W> &m, FCN_T &&fcn)
+  TSIMD_INLINE void foreach_active(const mask<W> &m, FCN_T &&fcn)
   {
     #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -46,7 +46,7 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename FCN_T>
-  inline void foreach_active(const mask<W> &m, pack<T, W> &p, FCN_T &&fcn)
+  TSIMD_INLINE void foreach_active(const mask<W> &m, pack<T, W> &p, FCN_T &&fcn)
   {
     #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -66,7 +66,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline bool any(const vboolf8& a)
+  TSIMD_INLINE bool any(const vboolf8& a)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return !_mm256_testz_ps(a, a);
@@ -91,7 +91,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline bool none(const vboolf8 &m)
+  TSIMD_INLINE bool none(const vboolf8 &m)
   {
     return !any(m);
   }
@@ -112,7 +112,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline bool all(const vboolf8& a)
+  TSIMD_INLINE bool all(const vboolf8& a)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_movemask_ps(a) == (unsigned int)0xff;
@@ -137,7 +137,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline vfloat8 select(const vboolf8& m, const vfloat8& t, const vfloat8& f)
+  TSIMD_INLINE vfloat8 select(const vboolf8& m, const vfloat8& t, const vfloat8& f)
   {
 #if defined(__AVX512__)
     return _mm256_mask_blend_ps(m, f, t);
@@ -158,7 +158,7 @@ namespace tsimd {
 #endif
   }
 
-  inline vint8 select(const vboolf8& m, const vint8& t, const vint8& f)
+  TSIMD_INLINE vint8 select(const vboolf8& m, const vint8& t, const vint8& f)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_castps_si256(

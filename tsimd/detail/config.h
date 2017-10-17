@@ -60,3 +60,5 @@
 #else
 #  define TSIMD_ALIGN(...) __attribute__((aligned(__VA_ARGS__)))
 #endif
+
+#define TSIMD_INLINE inline

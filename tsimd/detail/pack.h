@@ -152,10 +152,10 @@ namespace tsimd {
   using vboolf  = vfloat;
   using vboold  = vllong;
 
-  // pack<> inlined members ///////////////////////////////////////////////////
+  // pack<> TSIMD_INLINEd members ///////////////////////////////////////////////////
 
   template <typename T, int W>
-  inline pack<T, W>::pack(T value)
+  TSIMD_INLINE pack<T, W>::pack(T value)
   {
     #pragma omp simd
     for(int i = 0; i < W; ++i)
@@ -163,26 +163,26 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W>::pack(pack<T, W>::intrinsic_t value)
+  TSIMD_INLINE pack<T, W>::pack(pack<T, W>::intrinsic_t value)
   {
     v = value;
   }
 
   template <typename T, int W>
-  inline const T& pack<T, W>::operator[](int i) const
+  TSIMD_INLINE const T& pack<T, W>::operator[](int i) const
   {
     return data[i];
   }
 
   template <typename T, int W>
-  inline T& pack<T, W>::operator[](int i)
+  TSIMD_INLINE T& pack<T, W>::operator[](int i)
   {
     return data[i];
   }
 
   template <typename T, int W>
   template <typename OTHER_T>
-  inline pack<OTHER_T, W> pack<T, W>::as()
+  TSIMD_INLINE pack<OTHER_T, W> pack<T, W>::as()
   {
     pack<OTHER_T, W> result;
 
@@ -194,25 +194,25 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline T* pack<T, W>::begin()
+  TSIMD_INLINE T* pack<T, W>::begin()
   {
     return data;
   }
 
   template <typename T, int W>
-  inline T* pack<T, W>::end()
+  TSIMD_INLINE T* pack<T, W>::end()
   {
     return data + W;
   }
 
   template <typename T, int W>
-  inline const T* pack<T, W>::cbegin() const
+  TSIMD_INLINE const T* pack<T, W>::cbegin() const
   {
     return data;
   }
 
   template <typename T, int W>
-  inline const T* pack<T, W>::cend() const
+  TSIMD_INLINE const T* pack<T, W>::cend() const
   {
     return data + W;
   }

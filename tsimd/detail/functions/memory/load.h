@@ -29,10 +29,10 @@
 namespace tsimd {
 
   template <typename PACK_T>
-  inline PACK_T load(const void* _src);
+  TSIMD_INLINE PACK_T load(const void* _src);
 
   template <typename PACK_T>
-  inline PACK_T load(const void* _src, const vboolf8& mask);
+  TSIMD_INLINE PACK_T load(const void* _src, const vboolf8& mask);
 
   // load() //
 
@@ -45,7 +45,7 @@ namespace tsimd {
   // TODO
 
   template <>
-  inline vint4 load<vint4>(const void* _src)
+  TSIMD_INLINE vint4 load<vint4>(const void* _src)
   {
 #if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
     return _mm_load_si128((const __m128i*)_src);
@@ -64,7 +64,7 @@ namespace tsimd {
   // 8-wide //
 
   template <>
-  inline vfloat8 load<vfloat8>(const void* _src)
+  TSIMD_INLINE vfloat8 load<vfloat8>(const void* _src)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_load_ps((const float*)_src);
@@ -81,7 +81,7 @@ namespace tsimd {
   }
 
   template <>
-  inline vfloat8 load<vfloat8>(const void* _src, const vboolf8& mask)
+  TSIMD_INLINE vfloat8 load<vfloat8>(const void* _src, const vboolf8& mask)
   {
 #if 0//defined(__AVX512__)
     return _mm256_mask_load_ps(_mm256_setzero_ps(), mask, (float*)_src);
@@ -101,7 +101,7 @@ namespace tsimd {
   }
 
   template <>
-  inline vint8 load<vint8>(const void* _src)
+  TSIMD_INLINE vint8 load<vint8>(const void* _src)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_castps_si256(_mm256_load_ps((const float*)_src));
@@ -118,7 +118,7 @@ namespace tsimd {
   }
 
   template <>
-  inline vint8 load<vint8>(const void* _src, const vboolf8& mask)
+  TSIMD_INLINE vint8 load<vint8>(const void* _src, const vboolf8& mask)
   {
 #if 0//defined(__AVX512__)
     return _mm256_castps_si256(_mm256_maskload_ps((float*)_src, mask));

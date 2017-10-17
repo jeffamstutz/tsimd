@@ -38,7 +38,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline vfloat8 operator/(const vfloat8 &p1, const vfloat8 &p2)
+  TSIMD_INLINE vfloat8 operator/(const vfloat8 &p1, const vfloat8 &p2)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_div_ps(p1, p2);
@@ -55,18 +55,18 @@ namespace tsimd {
   }
 
   template <typename OTHER_T>
-  inline vfloat8 operator/(const vfloat8 &p1, const OTHER_T &v)
+  TSIMD_INLINE vfloat8 operator/(const vfloat8 &p1, const OTHER_T &v)
   {
     return p1 / vfloat8(v);
   }
 
   template <typename OTHER_T>
-  inline vfloat8 operator/(const OTHER_T &v, const vfloat8 &p1)
+  TSIMD_INLINE vfloat8 operator/(const OTHER_T &v, const vfloat8 &p1)
   {
     return vfloat8(v) / p1;
   }
 
-  inline vint8 operator/(const vint8 &p1, const vint8 &p2)
+  TSIMD_INLINE vint8 operator/(const vint8 &p1, const vint8 &p2)
   {
     vint8 result;
 
@@ -77,13 +77,13 @@ namespace tsimd {
   }
 
   template <typename OTHER_T>
-  inline vint8 operator/(const vint8 &p1, const OTHER_T &v)
+  TSIMD_INLINE vint8 operator/(const vint8 &p1, const OTHER_T &v)
   {
     return p1 / vint8(v);
   }
 
   template <typename OTHER_T>
-  inline vint8 operator/(const OTHER_T &v, const vint8 &p1)
+  TSIMD_INLINE vint8 operator/(const OTHER_T &v, const vint8 &p1)
   {
     return vint8(v) / p1;
   }

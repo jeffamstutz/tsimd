@@ -32,7 +32,7 @@
 namespace tsimd {
 
   template <typename T, int W>
-  inline pack<T, W> abs(const pack<T, W> &p)
+  TSIMD_INLINE pack<T, W> abs(const pack<T, W> &p)
   {
     pack<T, W> result;
 
@@ -44,7 +44,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W> sqrt(const pack<T, W> &p)
+  TSIMD_INLINE pack<T, W> sqrt(const pack<T, W> &p)
   {
     pack<T, W> result;
 
@@ -56,7 +56,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W> sin(const pack<T, W> &p)
+  TSIMD_INLINE pack<T, W> sin(const pack<T, W> &p)
   {
     pack<T, W> result;
 
@@ -68,7 +68,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W> cos(const pack<T, W> &p)
+  TSIMD_INLINE pack<T, W> cos(const pack<T, W> &p)
   {
     pack<T, W> result;
 
@@ -80,7 +80,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W> tan(const pack<T, W> &p)
+  TSIMD_INLINE pack<T, W> tan(const pack<T, W> &p)
   {
     pack<T, W> result;
 
@@ -92,7 +92,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W> pow(const pack<T, W> &v, const float b)
+  TSIMD_INLINE pack<T, W> pow(const pack<T, W> &v, const float b)
   {
     pack<T, W> result;
 
@@ -104,7 +104,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W> max(const pack<T, W> &a, const pack<T, W> &b)
+  TSIMD_INLINE pack<T, W> max(const pack<T, W> &a, const pack<T, W> &b)
   {
     pack<T, W> result;
 
@@ -116,7 +116,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  inline pack<T, W> min(const pack<T, W> &a, const pack<T, W> &b)
+  TSIMD_INLINE pack<T, W> min(const pack<T, W> &a, const pack<T, W> &b)
   {
     pack<T, W> result;
 

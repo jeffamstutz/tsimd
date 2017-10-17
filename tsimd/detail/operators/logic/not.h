@@ -40,7 +40,7 @@ namespace tsimd {
 
   // 8-wide //
 
-  inline vboolf8 operator!(const vboolf8 &m)
+  TSIMD_INLINE vboolf8 operator!(const vboolf8 &m)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_xor_ps(m, vboolf8(vtrue));

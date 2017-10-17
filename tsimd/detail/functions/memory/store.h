@@ -29,10 +29,10 @@
 namespace tsimd {
 
   template <typename PACK_T>
-  inline void store(const PACK_T &p, void* _dst);
+  TSIMD_INLINE void store(const PACK_T &p, void* _dst);
 
   template <typename PACK_T>
-  inline void store(const PACK_T &p,
+  TSIMD_INLINE void store(const PACK_T &p,
                     void* _dst,
                     const mask<PACK_T::static_size> &m);
 
@@ -47,7 +47,7 @@ namespace tsimd {
   // TODO
 
   template <>
-  inline void store(const vfloat4& v, void *_dst)
+  TSIMD_INLINE void store(const vfloat4& v, void *_dst)
   {
 #if defined(__AVX512__) || defined(__AVX__) || defined(__SSE__)
     _mm_store_ps((float*)_dst, v);
@@ -63,7 +63,7 @@ namespace tsimd {
   // 8-wide //
 
   template <>
-  inline void store(const vfloat8& v, void *_dst)
+  TSIMD_INLINE void store(const vfloat8& v, void *_dst)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_store_ps((float*)_dst, v);
@@ -77,7 +77,7 @@ namespace tsimd {
   }
 
   template <>
-  inline void store(const vfloat8& v, void *_dst, const vboolf8& mask)
+  TSIMD_INLINE void store(const vfloat8& v, void *_dst, const vboolf8& mask)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     _mm256_maskstore_ps((float*)_dst, _mm256_castps_si256(mask), v);
@@ -92,7 +92,7 @@ namespace tsimd {
   }
 
   template <>
-  inline void store(const vint8& v, void *_dst)
+  TSIMD_INLINE void store(const vint8& v, void *_dst)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     _mm256_store_ps((float*)_dst, _mm256_castsi256_ps(v));
@@ -106,7 +106,7 @@ namespace tsimd {
   }
 
   template <>
-  inline void store(const vint8& v, void *_dst, const vboolf8& mask)
+  TSIMD_INLINE void store(const vint8& v, void *_dst, const vboolf8& mask)
   {
 #if defined(__AVX512__) || defined(__AVX__)
     _mm256_maskstore_ps((float*)_dst,
