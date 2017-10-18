@@ -135,12 +135,6 @@ namespace tsimd {
       using type = short;
     };
 
-    template <>
-    struct half_simd_type<unsigned int, 1>
-    {
-      using type = undefined_type;
-    };
-
     // 4-wide //
 
     template <>
