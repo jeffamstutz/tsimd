@@ -128,7 +128,6 @@ namespace tsimd {
                        const vfloat1 &c_im,
                        int maxIters)
   {
-    #if 1
     vfloat1 z_re = c_re;
     vfloat1 z_im = c_im;
     vint1 vi(0);
@@ -147,9 +146,6 @@ namespace tsimd {
     }
 
     return vi;
-    #else
-    return 1;
-    #endif
   }
 
   void mandelbrot1(float x0,

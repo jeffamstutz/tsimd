@@ -41,7 +41,7 @@ namespace tsimd {
 
     // Defined a struct to get around type conversion problems ////////////////
 
-    struct dummy_type {};
+    struct undefined_type {};
 
     // Provide intrinsic type given a SIMD width //////////////////////////////
 
@@ -57,7 +57,7 @@ namespace tsimd {
     template <typename T>
     struct simd_type<T, 1>
     {
-      using type = dummy_type;
+      using type = undefined_type;
     };
 
     // 4-wide //
@@ -124,15 +124,15 @@ namespace tsimd {
     // 1-wide //
 
     template <>
-    struct half_simd_type<int, 1>
+    struct half_simd_type<float, 1>
     {
-      using type = short;
+      using type = undefined_type;
     };
 
     template <>
-    struct half_simd_type<float, 1>
+    struct half_simd_type<int, 1>
     {
-      using type = dummy_type;
+      using type = short;
     };
 
     // 4-wide //

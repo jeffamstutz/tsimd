@@ -32,7 +32,10 @@ namespace tsimd {
 
   // 1-wide //
 
-  // TODO
+  TSIMD_INLINE vboolf1 operator!(const vboolf1 &m)
+  {
+    return vboolf1(!m[0]);
+  }
 
   // 4-wide //
 

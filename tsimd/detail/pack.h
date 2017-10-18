@@ -44,11 +44,7 @@ namespace tsimd {
     pack() = default;
     explicit pack(T value);
     pack(intrinsic_t value);
-
-#if 0  // NOTE: can this be culled for types that don't make sense?
-    template <int, typename = traits::enable_if_t<W == 8>>
-#endif
-    pack(half_intrinsic_t a, half_intrinsic_t b) : vl(a), vh(b) {}
+    pack(half_intrinsic_t a, half_intrinsic_t b);
 
     // Array access //
 
@@ -171,8 +167,15 @@ namespace tsimd {
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(pack<T, W>::intrinsic_t value)
+      : v(value)
   {
-    v = value;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(pack<T, W>::half_intrinsic_t a,
+                                pack<T, W>::half_intrinsic_t b)
+      : vl(a), vh(b)
+  {
   }
 
   template <typename T, int W>

@@ -84,8 +84,8 @@ namespace tsimd {
 
   // none() ///////////////////////////////////////////////////////////////////
 
-  template <typename MASK_T>
-  TSIMD_INLINE bool none(const MASK_T &m)
+  template <int W>
+  TSIMD_INLINE bool none(const mask<W> &m)
   {
     return !any(m);
   }

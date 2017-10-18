@@ -32,28 +32,6 @@ namespace tsimd {
 
   // 1-wide //
 
-#if 0
-  template <typename T>
-  TSIMD_INLINE pack<T, 1> operator&(const pack<T, 1> &p1, const pack<T, 1> &p2)
-  {
-    return reinterpret_cast<const int&>(p1[0]) &
-           reinterpret_cast<const int&>(p2[0]);
-  }
-
-  template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&(const pack<T, 1> &p1, const OTHER_T &v)
-  {
-    return reinterpret_cast<const int&>(p1[0]) &
-           reinterpret_cast<const int&>(v);
-  }
-
-  template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&(const OTHER_T &v, const pack<T, 1> &p1)
-  {
-    return reinterpret_cast<const int&>(v) &
-           reinterpret_cast<const int&>(p1[0]);
-  }
-#else
   TSIMD_INLINE pack<int, 1> operator&(const pack<int, 1> &p1,
                                       const pack<int, 1> &p2)
   {
@@ -74,7 +52,6 @@ namespace tsimd {
     return pack<int, 1>(reinterpret_cast<const int&>(v) &
                         reinterpret_cast<const int&>(p1[0]));
   }
-#endif
 
   // 4-wide //
 
