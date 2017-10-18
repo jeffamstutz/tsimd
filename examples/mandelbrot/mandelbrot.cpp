@@ -396,20 +396,6 @@ int main()
 
   std::cout << '\n' << "omp " << stats << '\n';
 
-// ispc run /////////////////////////////////////////////////////////////////
-
-#ifdef TSIMD_ENABLE_ISPC
-  std::fill(buf.begin(), buf.end(), 0);
-
-  stats = bencher([&]() {
-    ispc::mandelbrot(x0, y0, x1, y1, width, height, maxIters, buf.data());
-  });
-
-  const float ispc_min = stats.min().count();
-
-  std::cout << '\n' << "ispc " << stats << '\n';
-#endif
-
   // tsimd_1 run //////////////////////////////////////////////////////////////
 
   std::fill(buf.begin(), buf.end(), 0);
@@ -445,6 +431,20 @@ int main()
   const float embree_min = stats.min().count();
 
   std::cout << '\n' << "embree " << stats << '\n';
+
+  // ispc run /////////////////////////////////////////////////////////////////
+
+#ifdef TSIMD_ENABLE_ISPC
+  std::fill(buf.begin(), buf.end(), 0);
+
+  stats = bencher([&]() {
+    ispc::mandelbrot(x0, y0, x1, y1, width, height, maxIters, buf.data());
+  });
+
+  const float ispc_min = stats.min().count();
+
+  std::cout << '\n' << "ispc " << stats << '\n';
+#endif
 
   // conclusions //////////////////////////////////////////////////////////////
 
