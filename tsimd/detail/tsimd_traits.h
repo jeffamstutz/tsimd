@@ -34,6 +34,11 @@ namespace tsimd {
     template <bool B, class T = void>
     using enable_if_t = typename std::enable_if<B, T>::type;
 
+    // If a single type is convertable to another /////////////////////////////
+
+    template <typename FROM, typename TO>
+    using can_convert = enable_if_t<std::is_convertible<TO, FROM>::value>;
+
     // Defined a struct to get around type conversion problems ////////////////
 
     struct dummy_type {};
@@ -170,10 +175,21 @@ namespace tsimd {
 
     // TODO
 
-    // If a single type is convertable to another /////////////////////////////
+    // Provide mask base-type given a SIMD width //////////////////////////////
 
-    template <typename FROM, typename TO>
-    using can_convert = enable_if_t<std::is_convertible<TO, FROM>::value>;
+    template <int W>
+    struct mask_type
+    {
+      using type = float;
+    };
+
+    // 1-wide //
+
+    template <>
+    struct mask_type<1>
+    {
+      using type = int;
+    };
 
   }  // namespace traits
 }  // namespace tsimd

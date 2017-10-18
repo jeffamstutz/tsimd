@@ -96,10 +96,10 @@ namespace tsimd {
 
   // mask types and true/false value aliases //////////////////////////////////
 
-  using mask_t = float;
-
   template <int W = DEFAULT_WIDTH>
-  using mask = pack<mask_t, W>;
+  using mask = pack<typename traits::mask_type<W>::type, W>;
+
+  using mask_t = mask<DEFAULT_WIDTH>::value_t;
 
   static const auto vtrue_v  = 0xFFFFFFFF;
   static const auto vfalse_v = 0x00000000;
@@ -115,11 +115,7 @@ namespace tsimd {
   using vint1    = pack<int, 1>;
   using vuint1   = pack<unsigned int, 1>;
   using vllong1  = pack<long long, 1>;
-#if 0
-  using vboolf1  = pack<mask_t, 1>;
-#else
-  using vboolf1  = pack<int, 1>;
-#endif
+  using vboolf1  = mask<1>;
   using vbool1   = vboolf1;
   using vboold1  = vllong1;
 
@@ -129,7 +125,7 @@ namespace tsimd {
   using vint4    = pack<int, 4>;
   using vuint4   = pack<unsigned int, 4>;
   using vllong4  = pack<long long, 4>;
-  using vboolf4  = pack<mask_t, 4>;
+  using vboolf4  = mask<4>;
   using vbool4   = vboolf4;
   using vboold4  = vllong4;
 
@@ -139,7 +135,7 @@ namespace tsimd {
   using vint8    = pack<int, 8>;
   using vuint8   = pack<unsigned int, 8>;
   using vllong8  = pack<long long, 8>;
-  using vboolf8  = pack<mask_t, 8>;
+  using vboolf8  = mask<8>;
   using vbool8   = vboolf8;
   using vboold8  = vllong8;
 
@@ -149,7 +145,7 @@ namespace tsimd {
   using vint16    = pack<int, 16>;
   using vuint16   = pack<unsigned int, 16>;
   using vllong16  = pack<long long, 16>;
-  using vboolf16  = pack<mask_t, 16>;
+  using vboolf16  = mask<16>;
   using vbool16   = vboolf16;
   using vboold16  = vllong16;
 
@@ -159,7 +155,7 @@ namespace tsimd {
   using vint    = pack<int, DEFAULT_WIDTH>;
   using vuint   = pack<unsigned int, DEFAULT_WIDTH / 2>;
   using vllong  = pack<long long, DEFAULT_WIDTH / 2>;
-  using vbool   = pack<mask_t, DEFAULT_WIDTH>;
+  using vbool   = mask<DEFAULT_WIDTH>;
   using vboolf  = vfloat;
   using vboold  = vllong;
 
