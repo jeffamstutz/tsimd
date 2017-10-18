@@ -26,6 +26,8 @@
 
 #include "../../pack.h"
 
+#include "../bitwise/and.h"
+
 namespace tsimd {
 
   // binary operator&() ///////////////////////////////////////////////////////
@@ -33,21 +35,21 @@ namespace tsimd {
   // 1-wide //
 
   template <typename T>
-  TSIMD_INLINE pack<T, 1> operator&(const pack<T, 1> &p1, const pack<T, 1> &p2)
+  TSIMD_INLINE pack<T, 1> operator&&(const pack<T, 1> &p1, const pack<T, 1> &p2)
   {
-    return pack<T, 1>(p1[0] & p2[0]);
+    return pack<T, 1>(p1[0] && p2[0]);
   }
 
   template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&(const pack<T, 1> &p1, const OTHER_T &v)
+  TSIMD_INLINE pack<T, 1> operator&&(const pack<T, 1> &p1, const OTHER_T &v)
   {
-    return p1[0] & v;
+    return p1[0] && v;
   }
 
   template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&(const OTHER_T &v, const pack<T, 1> &p1)
+  TSIMD_INLINE pack<T, 1> operator&&(const OTHER_T &v, const pack<T, 1> &p1)
   {
-    return v & p1[0];
+    return v && p1[0];
   }
 
   // 4-wide //
@@ -56,55 +58,23 @@ namespace tsimd {
 
   // 8-wide //
 
-  TSIMD_INLINE vfloat8 operator &(const vfloat8& p1, const vfloat8& p2)
+  template <typename T>
+  TSIMD_INLINE pack<T, 8> operator &&(const pack<T, 8>& p1,
+                                      const pack<T, 8>& p2)
   {
-#if defined(__AVX512__) || defined(__AVX__)
-    return _mm256_and_ps(p1, p2);
-#else
-    vfloat8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = p1[i] & p2[i];
-
-    return result;
-#endif
+    return p1 & p2;
   }
 
-  TSIMD_INLINE vfloat8 operator &(const vfloat8& p1, float v)
+  template <typename T>
+  TSIMD_INLINE pack<T, 8> operator &&(const pack<T, 8>& p1, float v)
   {
-    return p1 & vfloat8(v);
+    return p1 & pack<T, 8>(v);
   }
 
-  TSIMD_INLINE vfloat8 operator &(float v, const vfloat8& p1)
+  template <typename T>
+  TSIMD_INLINE pack<T, 8> operator &&(float v, const pack<T, 8>& p1)
   {
-    return vfloat8(v) & p1;
-  }
-
-  TSIMD_INLINE vint8 operator &(const vint8& p1, const vint8& p2)
-  {
-#if defined(__AVX512__) || defined(__AVX2__)
-    return _mm256_and_si256(p1, p2);
-#elif defined(__AVX__)
-    return _mm256_castps_si256(
-      _mm256_and_ps(_mm256_castsi256_ps(p1), _mm256_castsi256_ps(p2)));
-#else
-    vint8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = p1[i] & p2[i];
-
-    return result;
-#endif
-  }
-
-  TSIMD_INLINE vint8 operator &(const vint8& p1, int v)
-  {
-    return p1 & vint8(v);
-  }
-
-  TSIMD_INLINE vint8 operator &(int v, const vint8& p1)
-  {
-    return vint8(v) & p1;
+    return pack<T, 8>(v) & p1;
   }
 
   // 16-wide //

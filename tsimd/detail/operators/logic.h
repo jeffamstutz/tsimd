@@ -26,6 +26,7 @@
 
 #include "../pack.h"
 
+#include "logic/and.h"
 #include "logic/equals.h"
 #include "logic/less_than.h"
 
