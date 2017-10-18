@@ -31,11 +31,11 @@
 using namespace tsimd;
 
 template <typename PACK_T>
-inline void print(PACK_T &p)
+inline void print(const PACK_T &p)
 {
   std::cout << "{";
 
-  for (auto &v : p)
+  for (const auto &v : p)
     std::cout << " " << v;
 
   std::cout << " }" << std::endl;

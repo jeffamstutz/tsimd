@@ -69,6 +69,9 @@ namespace tsimd {
     T *begin();
     T *end();
 
+    const T *begin() const;
+    const T *end() const;
+
     const T *cbegin() const;
     const T *cend() const;
 
@@ -235,6 +238,18 @@ namespace tsimd {
 
   template <typename T, int W>
   TSIMD_INLINE T *pack<T, W>::end()
+  {
+    return data + W;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE const T *pack<T, W>::begin() const
+  {
+    return data;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE const T *pack<T, W>::end() const
   {
     return data + W;
   }
