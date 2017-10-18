@@ -43,14 +43,14 @@ namespace tsimd {
   template <typename T>
   TSIMD_INLINE void store(const pack<T, 1> &v, void *_dst)
   {
-    *((T*)_dst) = v[0];
+    *((T *)_dst) = v[0];
   }
 
   template <typename T>
   TSIMD_INLINE void store(const pack<T, 1> &v, void *_dst, const vboolf1 &mask)
   {
     if (mask[0])
-      *((T*)_dst) = v[0];
+      *((T *)_dst) = v[0];
   }
 
   // 4-wide //
@@ -103,7 +103,7 @@ namespace tsimd {
   TSIMD_INLINE void store(const vint8 &v, void *_dst)
   {
 #if defined(__AVX512__) || defined(__AVX2__)
-    _mm256_store_si256((__m256i*)_dst, v);
+    _mm256_store_si256((__m256i *)_dst, v);
 #elif defined(__AVX__)
     _mm256_store_ps((float *)_dst, _mm256_castsi256_ps(v));
 #else
@@ -117,7 +117,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vint8 &v, void *_dst, const vboolf8 &mask)
   {
-#if 0//defined(__AVX512__) || defined(__AVX2__)
+#if 0  // defined(__AVX512__) || defined(__AVX2__)
     _mm256_maskstore_epi32((int*)_dst, mask, v);
 #elif defined(__AVX__)
     _mm256_maskstore_ps(

@@ -41,7 +41,9 @@ namespace tsimd {
 
     // Defined a struct to get around type conversion problems ////////////////
 
-    struct undefined_type {};
+    struct undefined_type
+    {
+    };
 
     // Provide intrinsic type given a SIMD width //////////////////////////////
 

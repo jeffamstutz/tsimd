@@ -34,7 +34,10 @@ namespace tsimd {
   {
     // Compile-time info //
 
-    enum { static_size = W };
+    enum
+    {
+      static_size = W
+    };
     using value_t          = typename std::decay<T>::type;
     using intrinsic_t      = typename traits::simd_type<T, W>::type;
     using half_intrinsic_t = typename traits::half_simd_type<T, W>::type;
@@ -172,8 +175,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::pack(pack<T, W>::intrinsic_t value)
-      : v(value)
+  TSIMD_INLINE pack<T, W>::pack(pack<T, W>::intrinsic_t value) : v(value)
   {
   }
 

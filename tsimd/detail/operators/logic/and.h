@@ -59,20 +59,19 @@ namespace tsimd {
   // 8-wide //
 
   template <typename T>
-  TSIMD_INLINE pack<T, 8> operator &&(const pack<T, 8>& p1,
-                                      const pack<T, 8>& p2)
+  TSIMD_INLINE pack<T, 8> operator&&(const pack<T, 8> &p1, const pack<T, 8> &p2)
   {
     return p1 & p2;
   }
 
   template <typename T>
-  TSIMD_INLINE pack<T, 8> operator &&(const pack<T, 8>& p1, float v)
+  TSIMD_INLINE pack<T, 8> operator&&(const pack<T, 8> &p1, float v)
   {
     return p1 & pack<T, 8>(v);
   }
 
   template <typename T>
-  TSIMD_INLINE pack<T, 8> operator &&(float v, const pack<T, 8>& p1)
+  TSIMD_INLINE pack<T, 8> operator&&(float v, const pack<T, 8> &p1)
   {
     return pack<T, 8>(v) & p1;
   }
@@ -81,4 +80,4 @@ namespace tsimd {
 
   // TODO
 
-} // ::tsimd
+}  // namespace tsimd

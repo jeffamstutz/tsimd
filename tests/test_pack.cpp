@@ -29,13 +29,13 @@
 #include <algorithm>
 #include <vector>
 
+using tsimd::vbool;
 using tsimd::vfloat;
 using tsimd::vint;
-using tsimd::vbool;
 using vmask = tsimd::vbool;
 
-using tsimd::vtrue;
 using tsimd::vfalse;
+using tsimd::vtrue;
 
 /* TODO: add tests for -->
  *         - operator<<()

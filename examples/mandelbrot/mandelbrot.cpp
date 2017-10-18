@@ -139,8 +139,8 @@ namespace tsimd {
 
       vfloat1 new_re = z_re * z_re - z_im * z_im;
       vfloat1 new_im = 2.f * z_re * z_im;
-      z_re          = c_re + new_re;
-      z_im          = c_im + new_im;
+      z_re           = c_re + new_re;
+      z_im           = c_im + new_im;
 
       vi = tsimd::select(active, vi + 1, vi);
     }
@@ -536,7 +536,7 @@ int main()
             << "--> embc was " << omp_min / embree_min << "x the speed of omp"
             << '\n';
 
-// ispc //
+  // ispc //
 
 #ifdef TSIMD_ENABLE_ISPC
   std::cout << '\n'
