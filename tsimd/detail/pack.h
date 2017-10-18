@@ -89,6 +89,9 @@ namespace tsimd {
 
     // Interface checks //
 
+    static_assert(std::is_same<T, float>::value || std::is_same<T, int>::value,
+                  "SIMD T type currently must be 'float' or 'int'!");
+
     static_assert(W == 1 || W == 4 || W == 8 || W == 16,
                   "SIMD width must be 1, 4, 8, or 16!");
   };
