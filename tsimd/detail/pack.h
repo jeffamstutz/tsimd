@@ -41,8 +41,8 @@ namespace tsimd {
       static_size = W
     };
     using value_t          = typename std::decay<T>::type;
-    using intrinsic_t      = typename traits::simd_type<T, W>::type;
-    using half_intrinsic_t = typename traits::half_simd_type<T, W>::type;
+    using intrinsic_t      = typename traits::simd_type<value_t, W>::type;
+    using half_intrinsic_t = typename traits::half_simd_type<value_t, W>::type;
 
     // Construction //
 
