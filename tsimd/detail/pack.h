@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <array>
+
 #include "config.h"
 #include "tsimd_traits.h"
 
@@ -82,7 +84,7 @@ namespace tsimd {
 
     union
     {
-      T data[W];
+      std::array<T, W> arr;
       intrinsic_t v;
       struct
       {
@@ -171,7 +173,7 @@ namespace tsimd {
   {
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      data[i] = value;
+      arr[i] = value;
   }
 
   template <typename T, int W>
@@ -189,13 +191,13 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE const T &pack<T, W>::operator[](int i) const
   {
-    return data[i];
+    return arr[i];
   }
 
   template <typename T, int W>
   TSIMD_INLINE T &pack<T, W>::operator[](int i)
   {
-    return data[i];
+    return arr[i];
   }
 
   template <typename T, int W>
@@ -206,7 +208,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = data[i];
+      result[i] = arr[i];
 
     return result;
   }
@@ -226,49 +228,49 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator const T *() const
   {
-    return data;
+    return arr.data();
   }
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator T *()
   {
-    return data;
+    return arr.data();
   }
 
   template <typename T, int W>
   TSIMD_INLINE T *pack<T, W>::begin()
   {
-    return data;
+    return arr.begin();
   }
 
   template <typename T, int W>
   TSIMD_INLINE T *pack<T, W>::end()
   {
-    return data + W;
+    return arr.end();
   }
 
   template <typename T, int W>
   TSIMD_INLINE const T *pack<T, W>::begin() const
   {
-    return data;
+    return arr.begin();
   }
 
   template <typename T, int W>
   TSIMD_INLINE const T *pack<T, W>::end() const
   {
-    return data + W;
+    return arr.end();
   }
 
   template <typename T, int W>
   TSIMD_INLINE const T *pack<T, W>::cbegin() const
   {
-    return data;
+    return arr.begin();
   }
 
   template <typename T, int W>
   TSIMD_INLINE const T *pack<T, W>::cend() const
   {
-    return data + W;
+    return arr.end();
   }
 
 }  // namespace tsimd
