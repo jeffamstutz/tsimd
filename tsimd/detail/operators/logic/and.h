@@ -32,7 +32,25 @@ namespace tsimd {
 
   // binary operator&() ///////////////////////////////////////////////////////
 
-  // 1-wide //
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> operator&&(const pack<T, W> &p1, const pack<T, W> &p2)
+  {
+    return p1 & p2;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> operator&&(const pack<T, W> &p1, float v)
+  {
+    return p1 & pack<T, W>(v);
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> operator&&(float v, const pack<T, W> &p1)
+  {
+    return pack<T, W>(v) & p1;
+  }
+
+  // specialize 1-wide //
 
   template <typename T>
   TSIMD_INLINE pack<T, 1> operator&&(const pack<T, 1> &p1, const pack<T, 1> &p2)
@@ -51,33 +69,5 @@ namespace tsimd {
   {
     return v && p1[0];
   }
-
-  // 4-wide //
-
-  // TODO
-
-  // 8-wide //
-
-  template <typename T>
-  TSIMD_INLINE pack<T, 8> operator&&(const pack<T, 8> &p1, const pack<T, 8> &p2)
-  {
-    return p1 & p2;
-  }
-
-  template <typename T>
-  TSIMD_INLINE pack<T, 8> operator&&(const pack<T, 8> &p1, float v)
-  {
-    return p1 & pack<T, 8>(v);
-  }
-
-  template <typename T>
-  TSIMD_INLINE pack<T, 8> operator&&(float v, const pack<T, 8> &p1)
-  {
-    return pack<T, 8>(v) & p1;
-  }
-
-  // 16-wide //
-
-  // TODO
 
 }  // namespace tsimd
