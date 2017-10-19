@@ -27,6 +27,7 @@
 #include "../pack.h"
 
 #include "bitwise/and.h"
+#include "bitwise/or.h"
 
 namespace tsimd {
 

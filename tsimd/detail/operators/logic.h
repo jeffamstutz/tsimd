@@ -29,6 +29,7 @@
 #include "logic/and.h"
 #include "logic/equals.h"
 #include "logic/less_than.h"
+#include "logic/or.h"
 
 namespace tsimd {
 
@@ -138,20 +139,6 @@ namespace tsimd {
   operator>=(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) >= p1;
-  }
-
-  // binary operator||() //
-
-  template <int W>
-  TSIMD_INLINE mask<W> operator||(const mask<W> &m1, const mask<W> &m2)
-  {
-    mask<W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = (m1[i] || m2[i]) ? vtrue : vfalse;
-
-    return result;
   }
 
 }  // namespace tsimd
