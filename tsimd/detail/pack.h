@@ -67,7 +67,7 @@ namespace tsimd {
     operator const T *() const;
     operator T *();
 
-    // Iteratoration //
+    // Iterators //
 
     T *begin();
     T *end();
