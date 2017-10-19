@@ -461,7 +461,7 @@ TEST_SUITE_BEGIN("memory operations");
 
 TEST_CASE("unmasked load()")
 {
-  std::vector<int> values(DEFAULT_WIDTH);
+  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
   std::fill(values.begin(), values.end(), 5);
 
   auto v1 = tsimd::load<vint>(values.data());
@@ -471,7 +471,7 @@ TEST_CASE("unmasked load()")
 #if 0  // NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("masked load()")
 {
-  std::vector<int> values(DEFAULT_WIDTH);
+  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
   std::fill(values.begin(), values.end(), 5);
 
   vbool m(vfalse);
@@ -488,11 +488,11 @@ TEST_CASE("masked load()")
 
 TEST_CASE("unmasked gather()")
 {
-  std::vector<int> values(DEFAULT_WIDTH);
+  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
   std::fill(values.begin(), values.end(), 4);
 
   vint offset;
-  for (int i = 0; i < DEFAULT_WIDTH; ++i)
+  for (int i = 0; i < TSIMD_DEFAULT_WIDTH; ++i)
     offset[i] = i;
 
   auto result = tsimd::gather<vint>(values.data(), offset);
@@ -502,7 +502,7 @@ TEST_CASE("unmasked gather()")
 
 TEST_CASE("unmasked store()")
 {
-  std::vector<int> values(DEFAULT_WIDTH);
+  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
 
   vint v1(7);
 
@@ -513,12 +513,12 @@ TEST_CASE("unmasked store()")
 
 TEST_CASE("unmasked scatter()")
 {
-  std::vector<int> values(DEFAULT_WIDTH);
+  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
 
   vint v1(5);
 
   vint offset;
-  for (int i = 0; i < DEFAULT_WIDTH; ++i)
+  for (int i = 0; i < TSIMD_DEFAULT_WIDTH; ++i)
     offset[i] = i;
 
   tsimd::scatter(v1, values.data(), offset);

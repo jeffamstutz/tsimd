@@ -236,7 +236,7 @@ namespace embc {
     float dy = (y1 - y0) / height;
 
     for (int j = 0; j < height; j++) {
-      for (int i = 0; i < width; i += DEFAULT_WIDTH) {
+      for (int i = 0; i < width; i += vfloat::size) {
         vfloat x = x0 + (i + vfloat(programIndex)) * dx;
         vfloat y = y0 + j * dy;
 

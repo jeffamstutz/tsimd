@@ -31,7 +31,7 @@
 
 namespace tsimd {
 
-  template <typename T, int W = DEFAULT_WIDTH>
+  template <typename T, int W = TSIMD_DEFAULT_WIDTH>
   struct pack
   {
     // Compile-time info //
@@ -103,10 +103,12 @@ namespace tsimd {
 
   // mask types and true/false value aliases //////////////////////////////////
 
-  template <int W = DEFAULT_WIDTH>
+  template <int W = TSIMD_DEFAULT_WIDTH>
   using mask = pack<typename traits::mask_type<W>::type, W>;
 
-  using mask_t = mask<DEFAULT_WIDTH>::value_t;
+  using vmask = mask<TSIMD_DEFAULT_WIDTH>;
+
+  using mask_t = vmask::value_t;
 
   static const auto vtrue_v  = 0xFFFFFFFF;
   static const auto vfalse_v = 0x00000000;
@@ -157,12 +159,12 @@ namespace tsimd {
   using vboold16  = vllong16;
 
   /* default shortcuts */
-  using vfloat  = pack<float, DEFAULT_WIDTH>;
-  using vdouble = pack<double, DEFAULT_WIDTH>;
-  using vint    = pack<int, DEFAULT_WIDTH>;
-  using vuint   = pack<unsigned int, DEFAULT_WIDTH / 2>;
-  using vllong  = pack<long long, DEFAULT_WIDTH / 2>;
-  using vbool   = mask<DEFAULT_WIDTH>;
+  using vfloat  = pack<float, TSIMD_DEFAULT_WIDTH>;
+  using vdouble = pack<double, TSIMD_DEFAULT_WIDTH>;
+  using vint    = pack<int, TSIMD_DEFAULT_WIDTH>;
+  using vuint   = pack<unsigned int, TSIMD_DEFAULT_WIDTH / 2>;
+  using vllong  = pack<long long, TSIMD_DEFAULT_WIDTH / 2>;
+  using vbool   = mask<TSIMD_DEFAULT_WIDTH>;
   using vboolf  = vfloat;
   using vboold  = vllong;
 

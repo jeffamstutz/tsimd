@@ -135,7 +135,7 @@ int main()
   std::cout << "test masked load()" << std::endl;
 
   {
-    std::vector<int> values(DEFAULT_WIDTH);
+    std::vector<int> values(vint::static_size);
     std::fill(values.begin(), values.end(), 5);
 
     vbool m(vfalse);

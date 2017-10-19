@@ -26,25 +26,25 @@
 
 #if defined(__AVX512F__)
 #include <zmmintrin.h>
-#define DEFAULT_WIDTH 16
+#define TSIMD_DEFAULT_WIDTH 16
 #endif
 
 #if defined(__AVX__)
 #include <immintrin.h>
-#if !defined(DEFAULT_WIDTH)
-#define DEFAULT_WIDTH 8
+#if !defined(TSIMD_DEFAULT_WIDTH)
+#define TSIMD_DEFAULT_WIDTH 8
 #endif
 #endif
 
 #if defined(__SSE__)
 #include <xmmintrin.h>
-#if !defined(DEFAULT_WIDTH)
-#define DEFAULT_WIDTH 4
+#if !defined(TSIMD_DEFAULT_WIDTH)
+#define TSIMD_DEFAULT_WIDTH 4
 #endif
 #endif
 
-#if !defined(DEFAULT_WIDTH)
-#define DEFAULT_WIDTH 1
+#if !defined(TSIMD_DEFAULT_WIDTH)
+#define TSIMD_DEFAULT_WIDTH 1
 #endif
 
 #if defined(__AVX512F__)
