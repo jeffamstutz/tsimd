@@ -31,9 +31,24 @@ namespace tsimd {
 
   // binary operator==() //////////////////////////////////////////////////////
 
+  template <typename T, int W, typename OTHER_T>
+  TSIMD_INLINE mask<W> operator==(const pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 == pack<T, W>(v);
+  }
+
+  template <typename T, int W, typename OTHER_T>
+  TSIMD_INLINE mask<W> operator==(const OTHER_T &v, const pack<T, W> &p1)
+  {
+    return pack<T, W>(v) == p1;
+  }
+
   // 1-wide //
 
-  // TODO
+  TSIMD_INLINE vboolf1 operator==(const vfloat1 &p1, const vfloat1 &p2)
+  {
+    return vboolf1(p1[0] == p2[0]);
+  }
 
   // 4-wide //
 
@@ -57,18 +72,6 @@ namespace tsimd {
 #endif
   }
 
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator==(const vfloat8 &p1, const OTHER_T &v)
-  {
-    return p1 == vfloat8(v);
-  }
-
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator==(const OTHER_T &v, const vfloat8 &p1)
-  {
-    return vfloat8(v) == p1;
-  }
-
   TSIMD_INLINE vboolf8 operator==(const vint8 &p1, const vint8 &p2)
   {
 #if defined(__AVX512__) || defined(__AVX2__)
@@ -86,70 +89,28 @@ namespace tsimd {
 #endif
   }
 
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator==(const vint8 &p1, const OTHER_T &v)
-  {
-    return p1 == vint8(v);
-  }
-
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator==(const OTHER_T &v, const vint8 &p1)
-  {
-    return vint8(v) == p1;
-  }
-
   // 16-wide //
 
   // TODO
 
   // binary operator!=() //////////////////////////////////////////////////////
 
-  // 1-wide //
-
-  // TODO
-
-  // 4-wide //
-
-  // TODO
-
-  // 8-wide //
-
-  TSIMD_INLINE vboolf8 operator!=(const vfloat8 &p1, const vfloat8 &p2)
+  template <typename T, int W>
+  TSIMD_INLINE mask<W> operator!=(const pack<T, W> &p1, const pack<T, W> &p2)
   {
     return !(p1 == p2);
   }
 
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator!=(const vfloat8 &p1, const OTHER_T &v)
+  template <typename T, int W, typename OTHER_T>
+  TSIMD_INLINE mask<W> operator!=(const pack<T, W> &p1, const OTHER_T &v)
   {
-    return p1 != vfloat8(v);
+    return p1 != pack<T, W>(v);
   }
 
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator!=(const OTHER_T &v, const vfloat8 &p1)
+  template <typename T, int W, typename OTHER_T>
+  TSIMD_INLINE mask<W> operator!=(const OTHER_T &v, const pack<T, W> &p1)
   {
-    return vfloat8(v) != p1;
+    return pack<T, W>(v) != p1;
   }
-
-  TSIMD_INLINE vboolf8 operator!=(const vint8 &p1, const vint8 &p2)
-  {
-    return !(p1 == p2);
-  }
-
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator!=(const vint8 &p1, const OTHER_T &v)
-  {
-    return p1 != vint8(v);
-  }
-
-  template <typename OTHER_T>
-  TSIMD_INLINE vboolf8 operator!=(const OTHER_T &v, const vint8 &p1)
-  {
-    return vint8(v) != p1;
-  }
-
-  // 16-wide //
-
-  // TODO
 
 }  // namespace tsimd

@@ -30,24 +30,24 @@ namespace tsimd {
 
   // binary operator&() ///////////////////////////////////////////////////////
 
+  template <typename T, int W, typename OTHER_T>
+  TSIMD_INLINE pack<T, W> operator&(const pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 & pack<T, W>(v);
+  }
+
+  template <typename T, int W, typename OTHER_T>
+  TSIMD_INLINE pack<T, W> operator&(const OTHER_T &v, const pack<T, W> &p1)
+  {
+    return pack<T, W>(v) & p1;
+  }
+
   // 1-wide //
 
   template <typename T>
   TSIMD_INLINE pack<T, 1> operator&(const pack<T, 1> &p1, const pack<T, 1> &p2)
   {
     return pack<T, 1>(p1[0] & p2[0]);
-  }
-
-  template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&(const pack<T, 1> &p1, const OTHER_T &v)
-  {
-    return p1[0] & v;
-  }
-
-  template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&(const OTHER_T &v, const pack<T, 1> &p1)
-  {
-    return v & p1[0];
   }
 
   // 4-wide //
@@ -70,16 +70,6 @@ namespace tsimd {
 #endif
   }
 
-  TSIMD_INLINE vfloat8 operator&(const vfloat8 &p1, float v)
-  {
-    return p1 & vfloat8(v);
-  }
-
-  TSIMD_INLINE vfloat8 operator&(float v, const vfloat8 &p1)
-  {
-    return vfloat8(v) & p1;
-  }
-
   TSIMD_INLINE vint8 operator&(const vint8 &p1, const vint8 &p2)
   {
 #if defined(__AVX512__) || defined(__AVX2__)
@@ -95,16 +85,6 @@ namespace tsimd {
 
     return result;
 #endif
-  }
-
-  TSIMD_INLINE vint8 operator&(const vint8 &p1, int v)
-  {
-    return p1 & vint8(v);
-  }
-
-  TSIMD_INLINE vint8 operator&(int v, const vint8 &p1)
-  {
-    return vint8(v) & p1;
   }
 
   // 16-wide //

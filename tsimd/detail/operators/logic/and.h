@@ -30,7 +30,7 @@
 
 namespace tsimd {
 
-  // binary operator&() ///////////////////////////////////////////////////////
+  // binary operator&&() //////////////////////////////////////////////////////
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W> operator&&(const pack<T, W> &p1, const pack<T, W> &p2)
