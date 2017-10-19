@@ -51,6 +51,8 @@ namespace tsimd {
     pack(intrinsic_t value);
     pack(half_intrinsic_t a, half_intrinsic_t b);
 
+    pack<T, W> &operator=(const value_t &);
+
     // Array access //
 
     const T &operator[](int i) const;
@@ -188,6 +190,13 @@ namespace tsimd {
                                 pack<T, W>::half_intrinsic_t b)
       : vl(a), vh(b)
   {
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> &pack<T, W>::operator=(const value_t &v)
+  {
+    *this = pack<T, W>(v);
+    return *this;
   }
 
   template <typename T, int W>
