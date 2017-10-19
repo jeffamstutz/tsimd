@@ -31,18 +31,6 @@ namespace tsimd {
 
   // binary operator==() //////////////////////////////////////////////////////
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE mask<W> operator==(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 == pack<T, W>(v);
-  }
-
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE mask<W> operator==(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) == p1;
-  }
-
   // 1-wide //
 
   TSIMD_INLINE vboolf1 operator==(const vfloat1 &p1, const vfloat1 &p2)
@@ -93,6 +81,28 @@ namespace tsimd {
 
   // TODO
 
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE mask<W> operator==(const pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 == pack<T, W>(v);
+  }
+
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE mask<W> operator==(const OTHER_T &v, const pack<T, W> &p1)
+  {
+    return pack<T, W>(v) == p1;
+  }
+
   // binary operator!=() //////////////////////////////////////////////////////
 
   template <typename T, int W>
@@ -101,13 +111,23 @@ namespace tsimd {
     return !(p1 == p2);
   }
 
-  template <typename T, int W, typename OTHER_T>
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
   TSIMD_INLINE mask<W> operator!=(const pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 != pack<T, W>(v);
   }
 
-  template <typename T, int W, typename OTHER_T>
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
   TSIMD_INLINE mask<W> operator!=(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) != p1;
