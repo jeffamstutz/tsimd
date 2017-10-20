@@ -57,7 +57,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < PACK_T::static_size; ++i)
-      if (m[i])
+      if (m[i] == vtrue)
         result[i] = src[o[i]];
 
     return result;
@@ -72,7 +72,6 @@ namespace tsimd {
   {
     auto *dst = (typename PACK_T::value_t *)_dst;
 
-#pragma omp simd
     for (int i = 0; i < PACK_T::static_size; ++i)
       dst[o[i]] = p[i];
   }
@@ -85,9 +84,8 @@ namespace tsimd {
   {
     auto *dst = (typename PACK_T::value_t *)_dst;
 
-#pragma omp simd
     for (int i = 0; i < PACK_T::static_size; ++i)
-      if (m[i])
+      if (m[i] == vtrue)
         dst[o[i]] = p[i];
   }
 

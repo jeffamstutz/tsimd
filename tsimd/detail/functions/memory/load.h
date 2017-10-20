@@ -102,7 +102,7 @@ namespace tsimd {
     vfloat8 result;
 
     for (int i = 0; i < 8; ++i)
-      if (mask[i])
+      if (mask[i] == vtrue)
         result[i] = src[i];
 
     return result;
@@ -138,7 +138,7 @@ namespace tsimd {
     vint8 result;
 
     for (int i = 0; i < 8; ++i)
-      if (mask[i])
+      if (mask[i] == vtrue)
         result[i] = src[i];
 
     return result;

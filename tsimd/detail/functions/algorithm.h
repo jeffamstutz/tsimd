@@ -41,7 +41,7 @@ namespace tsimd {
   {
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      if (m[i])
+      if (m[i] == vtrue)
         fcn(i);
   }
 
@@ -50,7 +50,7 @@ namespace tsimd {
   {
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      if (m[i])
+      if (m[i] == vtrue)
         fcn(p[i]);
   }
 
@@ -148,7 +148,7 @@ namespace tsimd {
     vfloat8 result;
 
     for (int i = 0; i < 8; ++i) {
-      if (m[i])
+      if (m[i] == vtrue)
         result[i] = t[i];
       else
         result[i] = f[i];
@@ -167,7 +167,7 @@ namespace tsimd {
     vint8 result;
 
     for (int i = 0; i < 8; ++i) {
-      if (m[i])
+      if (m[i] == vtrue)
         result[i] = t[i];
       else
         result[i] = f[i];
