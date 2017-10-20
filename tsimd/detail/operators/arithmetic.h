@@ -41,10 +41,13 @@ namespace tsimd {
     return p1 = (p1 + p2);
   }
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       pack<T, W> &>::type
-  operator+=(pack<T, W> &p1, const OTHER_T &v)
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE pack<T, W> & operator+=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 + pack<T, W>(v));
   }
@@ -57,10 +60,14 @@ namespace tsimd {
     return p1 = (p1 - p2);
   }
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       pack<T, W> &>::type
-  operator-=(pack<T, W> &p1, const OTHER_T &v)
+
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE pack<T, W> &operator-=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 - pack<T, W>(v));
   }
@@ -73,10 +80,13 @@ namespace tsimd {
     return p1 = (p1 * p2);
   }
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       pack<T, W> &>::type
-  operator*=(pack<T, W> &p1, const OTHER_T &v)
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 * pack<T, W>(v));
   }
@@ -89,10 +99,13 @@ namespace tsimd {
     return p1 = (p1 / p2);
   }
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       pack<T, W> &>::type
-  operator/=(pack<T, W> &p1, const OTHER_T &v)
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE pack<T, W> &operator/=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 / pack<T, W>(v));
   }
@@ -111,10 +124,13 @@ namespace tsimd {
     return result;
   }
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       pack<T, W>>::type
-  operator%(const pack<T, W> &p1, const OTHER_T &v)
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const OTHER_T &v)
   {
     pack<T, W> result;
 
@@ -125,10 +141,14 @@ namespace tsimd {
     return result;
   }
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       pack<T, W>>::type
-  operator%(const OTHER_T &v, const pack<T, W> &p1)
+
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE pack<T, W> operator%(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) % p1;
   }
@@ -141,10 +161,14 @@ namespace tsimd {
     return p1 = (p1 % p2);
   }
 
-  template <typename T, int W, typename OTHER_T>
-  TSIMD_INLINE typename std::enable_if<std::is_convertible<OTHER_T, T>::value,
-                                       pack<T, W> &>::type
-  operator%=(pack<T, W> &p1, const OTHER_T &v)
+
+  template <
+      typename T,
+      int W,
+      typename OTHER_T,
+      typename = traits::can_convert<OTHER_T, T>
+  >
+  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 = (p1 % pack<T, W>(v));
   }
