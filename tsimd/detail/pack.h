@@ -25,6 +25,7 @@
 #pragma once
 
 #include <array>
+#include <iostream>
 
 #include "config.h"
 #include "tsimd_traits.h"
@@ -282,6 +283,19 @@ namespace tsimd {
   TSIMD_INLINE const T *pack<T, W>::cend() const
   {
     return arr.end();
+  }
+
+  // pack<> debugging functions ///////////////////////////////////////////////
+
+  template <typename T, int W>
+  inline void print(const pack<T, W> &p)
+  {
+    std::cout << "{";
+
+    for (const auto &v : p)
+      std::cout << " " << v;
+
+    std::cout << " }" << std::endl;
   }
 
 }  // namespace tsimd

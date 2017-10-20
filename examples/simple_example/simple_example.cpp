@@ -30,17 +30,6 @@
 
 using namespace tsimd;
 
-template <typename PACK_T>
-inline void print(const PACK_T &p)
-{
-  std::cout << "{";
-
-  for (const auto &v : p)
-    std::cout << " " << v;
-
-  std::cout << " }" << std::endl;
-}
-
 int main()
 {
   std::cout << "test foreach() and construction" << std::endl;

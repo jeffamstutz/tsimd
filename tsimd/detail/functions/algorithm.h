@@ -31,7 +31,6 @@ namespace tsimd {
   template <typename T, int W, typename FCN_T>
   TSIMD_INLINE void foreach (pack<T, W> &p, FCN_T && fcn)
   {
-#pragma omp simd
     for (int i = 0; i < W; ++i)
       fcn(p[i], i);
   }
@@ -39,18 +38,16 @@ namespace tsimd {
   template <int W, typename FCN_T>
   TSIMD_INLINE void foreach_active(const mask<W> &m, FCN_T &&fcn)
   {
-#pragma omp simd
     for (int i = 0; i < W; ++i)
-      if (m[i] == vtrue)
+      if (m[i])
         fcn(i);
   }
 
   template <typename T, int W, typename FCN_T>
   TSIMD_INLINE void foreach_active(const mask<W> &m, pack<T, W> &p, FCN_T &&fcn)
   {
-#pragma omp simd
     for (int i = 0; i < W; ++i)
-      if (m[i] == vtrue)
+      if (m[i])
         fcn(p[i]);
   }
 

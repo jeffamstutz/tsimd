@@ -27,7 +27,6 @@
 #include "tsimd/tsimd.h"
 
 #include <algorithm>
-#include <vector>
 
 using tsimd::vbool;
 using tsimd::vfloat;
@@ -382,7 +381,6 @@ TEST_CASE("foreach()")
   REQUIRE(tsimd::all(v1 == v2));
 }
 
-#if 0  // NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("foreach_active()")
 {
   vbool m(vfalse);
@@ -400,7 +398,6 @@ TEST_CASE("foreach_active()")
 
   REQUIRE(tsimd::all(v1 == expected));
 }
-#endif
 
 TEST_CASE("any()")
 {
@@ -429,7 +426,6 @@ TEST_CASE("all()")
   REQUIRE(tsimd::all(m));
 }
 
-#if 0  // NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("select()")
 {
   vbool m(vfalse);
@@ -451,7 +447,6 @@ TEST_CASE("select()")
   REQUIRE(tsimd::any(v1     != expected));
   REQUIRE(tsimd::any(v2     != expected));
 }
-#endif
 
 TEST_SUITE_END();
 
@@ -461,21 +456,20 @@ TEST_SUITE_BEGIN("memory operations");
 
 TEST_CASE("unmasked load()")
 {
-  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
+  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
   auto v1 = tsimd::load<vint>(values.data());
   REQUIRE(tsimd::all(v1 == 5));
 }
 
-#if 0  // NOTE: currently crashing on IVB for no obvious reason...
 TEST_CASE("masked load()")
 {
-  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
+  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
-  vbool m(vfalse);
-  m[2] = vtrue;
+  vbool m(vtrue);
+  m[2] = vfalse;
 
   vint v1(0);
   v1 = tsimd::load<vint>(values.data(), m);
@@ -484,11 +478,10 @@ TEST_CASE("masked load()")
   expected[2] = 0;
   REQUIRE(tsimd::all(v1 == expected));
 }
-#endif
 
 TEST_CASE("unmasked gather()")
 {
-  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
+  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
   std::fill(values.begin(), values.end(), 4);
 
   vint offset;
@@ -502,7 +495,7 @@ TEST_CASE("unmasked gather()")
 
 TEST_CASE("unmasked store()")
 {
-  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
+  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
 
   vint v1(7);
 
@@ -513,7 +506,7 @@ TEST_CASE("unmasked store()")
 
 TEST_CASE("unmasked scatter()")
 {
-  std::vector<int> values(TSIMD_DEFAULT_WIDTH);
+  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
 
   vint v1(5);
 
