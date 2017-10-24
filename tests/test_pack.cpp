@@ -392,7 +392,7 @@ TEST_CASE("foreach_active()")
   expected[0] = 2;
   expected[2] = 2;
 
-  tsimd::foreach_active(m, v1, [](int &v){ v = 2; });
+  tsimd::foreach_active(m, v1, [](int &v) { v = 2; });
 
   REQUIRE(tsimd::all(v1 == expected));
 }
@@ -442,8 +442,8 @@ TEST_CASE("select()")
   expected[2] = 0;
 
   REQUIRE(tsimd::all(result == expected));
-  REQUIRE(tsimd::any(v1     != expected));
-  REQUIRE(tsimd::any(v2     != expected));
+  REQUIRE(tsimd::any(v1 != expected));
+  REQUIRE(tsimd::any(v2 != expected));
 }
 
 TEST_SUITE_END();

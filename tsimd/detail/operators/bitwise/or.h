@@ -93,23 +93,19 @@ namespace tsimd {
 
   // TODO
 
-  template <
-      typename T,
-      int W,
-      typename OTHER_T,
-      typename = traits::can_convert<OTHER_T, T>
-  >
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
   TSIMD_INLINE pack<T, W> operator|(const pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 | pack<T, W>(v);
   }
 
-  template <
-      typename T,
-      int W,
-      typename OTHER_T,
-      typename = traits::can_convert<OTHER_T, T>
-  >
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
   TSIMD_INLINE pack<T, W> operator|(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) | p1;

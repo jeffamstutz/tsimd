@@ -31,18 +31,27 @@ namespace tsimd {
   // NOTE: this type is to be used for the per-element 32-bit SIMD mask types
   struct mask32_t
   {
-    mask32_t() = default;
+    mask32_t()                 = default;
     mask32_t(const mask32_t &) = default;
-    mask32_t(mask32_t &&) = default;
+    mask32_t(mask32_t &&)      = default;
     mask32_t &operator=(const mask32_t &) = default;
     mask32_t &operator=(mask32_t &&) = default;
 
-    TSIMD_INLINE mask32_t(bool b) noexcept { value = b ? 0xFFFFFFFF : 0x0; }
+    TSIMD_INLINE mask32_t(bool b) noexcept
+    {
+      value = b ? 0xFFFFFFFF : 0x0;
+    }
 
     TSIMD_INLINE mask32_t &operator=(bool b) noexcept
-    { value = b ? 0xFFFFFFFF : 0x0; return *this; }
+    {
+      value = b ? 0xFFFFFFFF : 0x0;
+      return *this;
+    }
 
-    TSIMD_INLINE operator bool() const noexcept { return value == 0xFFFFFFFF; }
+    TSIMD_INLINE operator bool() const noexcept
+    {
+      return value == 0xFFFFFFFF;
+    }
 
     int value;
   };
@@ -65,4 +74,4 @@ namespace tsimd {
     return o;
   }
 
-} // ::tsimd
+}  // namespace tsimd

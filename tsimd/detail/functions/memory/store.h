@@ -60,8 +60,8 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vfloat4 &v, void *_dst)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || \
-    defined(__AVX__) || defined(__SSE__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__) || \
+    defined(__SSE__)
     _mm_store_ps((float *)_dst, v);
 #else
     auto *dst = (typename vfloat4::value_t *)_dst;
