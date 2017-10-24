@@ -26,14 +26,24 @@
 # CMake configuration
 ##############################################################
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 
 project(tsimd)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(tsimd)
 
+add_library(tsimd INTERFACE)
+target_include_directories(tsimd INTERFACE
+	$<INSTALL_INTERFACE:include/tsimd>)
+
 install(DIRECTORY tsimd DESTINATION include)
+install(TARGETS tsimd
+	EXPORT tsimdConfig
+	RUNTIME DESTINATION bin/tsimd
+	ARCHIVE DESTINATION lib/tsimd
+	LIBRARY DESTINATION lib/tsimd)
+install(EXPORT tsimdConfig DESTINATION lib/cmake/tsimd)
 
 ##############################################################
 # Build tests and examples
