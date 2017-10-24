@@ -54,7 +54,7 @@ namespace tsimd {
     vboolf8 result;
 
     for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] == p2[i]) ? vtrue : vfalse;
+      result[i] = (p1[i] == p2[i]);
 
     return result;
 #endif
@@ -71,7 +71,23 @@ namespace tsimd {
     vboolf8 result;
 
     for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] == p2[i]) ? vtrue : vfalse;
+      result[i] = (p1[i] == p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf8 operator==(const vbool8 &p1, const vbool8 &p2)
+  {
+#if defined(__AVX512__)
+    return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_EQ);
+#elif defined(__AVX__)
+    return _mm256_cmp_ps(p1, p2, _CMP_EQ_OQ);
+#else
+    vboolf8 result;
+
+    for (int i = 0; i < 8; ++i)
+      result[i] = (p1[i] == p2[i]);
 
     return result;
 #endif

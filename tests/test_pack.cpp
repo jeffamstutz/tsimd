@@ -28,13 +28,11 @@
 
 #include <algorithm>
 
+using tsimd::mask32_t;
 using tsimd::vbool;
 using tsimd::vfloat;
 using tsimd::vint;
 using vmask = tsimd::vbool;
-
-using tsimd::vfalse;
-using tsimd::vtrue;
 
 /* TODO: add tests for -->
  *         - operator<<()
@@ -294,25 +292,25 @@ TEST_CASE("binary operator>=()")
 
 TEST_CASE("binary operator&&()")
 {
-  vmask m1(vtrue);
-  vmask m2(vfalse);
+  vmask m1(true);
+  vmask m2(false);
 
   REQUIRE(tsimd::none(m1 && m2));
 }
 
 TEST_CASE("binary operator||()")
 {
-  vmask m1(vtrue);
-  vmask m2(vfalse);
+  vmask m1(true);
+  vmask m2(false);
 
   REQUIRE(tsimd::all(m1 || m2));
 }
 
 TEST_CASE("unary operator!()")
 {
-  vmask v(vtrue);
+  vmask v(true);
 
-  REQUIRE(tsimd::all(!v == vmask(vfalse)));
+  REQUIRE(tsimd::all(!v == vmask(false)));
 }
 
 TEST_CASE("unary operator-()")
@@ -383,10 +381,10 @@ TEST_CASE("foreach()")
 
 TEST_CASE("foreach_active()")
 {
-  vbool m(vfalse);
+  vbool m(false);
 
-  m[0] = vtrue;
-  m[2] = vtrue;
+  m[0] = true;
+  m[2] = true;
 
   vint v1(0);
 
@@ -401,36 +399,36 @@ TEST_CASE("foreach_active()")
 
 TEST_CASE("any()")
 {
-  vmask m(vfalse);
+  vmask m(false);
   REQUIRE(!tsimd::any(m));
-  m[0] = vtrue;
+  m[0] = true;
   REQUIRE(tsimd::any(m));
 }
 
 TEST_CASE("none()")
 {
-  vmask m(vfalse);
+  vmask m(false);
   REQUIRE(tsimd::none(m));
-  m[0] = vtrue;
+  m[0] = true;
   REQUIRE(!tsimd::none(m));
 }
 
 TEST_CASE("all()")
 {
-  vmask m(vfalse);
+  vmask m(false);
   REQUIRE(!tsimd::all(m));
-  m[0] = vtrue;
+  m[0] = true;
   REQUIRE(!tsimd::all(m));
-  foreach (m, [](float &l, int) { l = vtrue; })
+  foreach (m, [](mask32_t &l, int) { l = true; })
     ;
   REQUIRE(tsimd::all(m));
 }
 
 TEST_CASE("select()")
 {
-  vbool m(vfalse);
-  m[0] = vtrue;
-  m[2] = vtrue;
+  vbool m(false);
+  m[0] = true;
+  m[2] = true;
 
   vint v1(0);
   vint v2(2);
@@ -468,8 +466,8 @@ TEST_CASE("masked load()")
   TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
-  vbool m(vtrue);
-  m[2] = vfalse;
+  vbool m(true);
+  m[2] = false;
 
   vint v1(0);
   v1 = tsimd::load<vint>(values.data(), m);

@@ -24,41 +24,42 @@
 
 #pragma once
 
-#include "../../pack.h"
+#include <ostream>
 
 namespace tsimd {
 
-  // unary operator!() ////////////////////////////////////////////////////////
-
-  // 1-wide //
-
-  TSIMD_INLINE vboolf1 operator!(const vboolf1 &m)
+  // NOTE: this type is to be used for the per-element 32-bit SIMD mask types
+  struct mask32_t
   {
-    return vboolf1(!m[0]);
+    mask32_t() = default;
+
+    mask32_t(bool b) { asInt = b ? 0xFFFFFFFF : 0x0; }
+    mask32_t &operator=(bool b) { asInt = b ? 0xFFFFFFFF : 0x0; return *this; }
+    operator bool() const { return asInt == 0xFFFFFFFF; }
+
+    union
+    {
+      int asInt;
+      float asFloat;
+    };
+  };
+
+  // Inlined operators ////////////////////////////////////////////////////////
+
+  TSIMD_INLINE mask32_t operator|(const mask32_t &p1, const mask32_t &p2)
+  {
+    return p1.asInt | p2.asInt;
   }
 
-  // 4-wide //
-
-  // TODO
-
-  // 8-wide //
-
-  TSIMD_INLINE vboolf8 operator!(const vboolf8 &m)
+  TSIMD_INLINE mask32_t operator&(const mask32_t &p1, const mask32_t &p2)
   {
-#if defined(__AVX512__) || defined(__AVX__)
-    return _mm256_xor_ps(m, vboolf8(true));
-#else
-    vboolf8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = !m[i];
-
-    return result;
-#endif
+    return p1.asInt & p2.asInt;
   }
 
-  // 16-wide //
+  TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const mask32_t &v)
+  {
+    o << static_cast<bool>(v);
+    return o;
+  }
 
-  // TODO
-
-}  // namespace tsimd
+} // ::tsimd

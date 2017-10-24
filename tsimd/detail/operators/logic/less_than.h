@@ -54,7 +54,7 @@ namespace tsimd {
     vboolf8 result;
 
     for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] < p2[i]) ? vtrue : vfalse;
+      result[i] = (p1[i] < p2[i]);
 
     return result;
 #endif
@@ -71,7 +71,7 @@ namespace tsimd {
     vboolf8 result;
 
     for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] < p2[i]) ? vtrue : vfalse;
+      result[i] = (p1[i] < p2[i]);
 
     return result;
 #endif

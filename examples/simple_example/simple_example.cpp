@@ -57,12 +57,12 @@ int main()
   std::cout << "test any()" << std::endl;
 
   {
-    vbool m(vfalse);
+    vbool m(false);
 
     print(m);
 
     std::cout << "#1: " << !tsimd::any(m) << std::endl;
-    m[0] = vtrue;
+    m[0] = true;
     std::cout << "#2: " << tsimd::any(m) << std::endl;
   }
 
@@ -101,10 +101,10 @@ int main()
   std::cout << "test foreach_active()" << std::endl;
 
   {
-    vbool m(vfalse);
+    vbool m(false);
 
-    m[0] = vtrue;
-    m[2] = vtrue;
+    m[0] = true;
+    m[2] = true;
 
     vint v(0);
 
@@ -127,8 +127,8 @@ int main()
     std::vector<int> values(vint::static_size);
     std::fill(values.begin(), values.end(), 5);
 
-    vbool m(vfalse);
-    m[2] = vtrue;
+    vbool m(false);
+    m[2] = true;
 
     vint v1(0);
     v1 = tsimd::load<vint>(values.data(), m);

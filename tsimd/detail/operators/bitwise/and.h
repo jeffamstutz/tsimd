@@ -75,6 +75,20 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vbool8 operator&(const vbool8 &p1, const vbool8 &p2)
+  {
+#if defined(__AVX512__) || defined(__AVX__)
+    return _mm256_and_ps(p1, p2);
+#else
+    vbool8 result;
+
+    for (int i = 0; i < 8; ++i)
+      result[i] = p1[i] & p2[i];
+
+    return result;
+#endif
+  }
+
   // 16-wide //
 
   // TODO

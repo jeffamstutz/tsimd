@@ -10,5 +10,4 @@ TODO:
 - SIMD arithmetic operators
 - SSE + AVX512 implementations (i.e. 4 + 16 wide pack<>)
 - replace ```#pragma omp simd``` loop implementations with intrinsics where appropriate
-- replace tsimd::mask_t with struct type which can more easily convert to ```bool```
 - make all correctness tests independant of pack<> size and build each version

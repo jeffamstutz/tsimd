@@ -144,12 +144,8 @@ namespace tsimd {
 #else
     vfloat8 result;
 
-    for (int i = 0; i < 8; ++i) {
-      if (m[i] == vtrue)
-        result[i] = t[i];
-      else
-        result[i] = f[i];
-    }
+    for (int i = 0; i < 8; ++i)
+      result[i] = m[i] ? t[i] : f[i];
 
     return result;
 #endif
@@ -163,12 +159,8 @@ namespace tsimd {
 #else
     vint8 result;
 
-    for (int i = 0; i < 8; ++i) {
-      if (m[i] == vtrue)
-        result[i] = t[i];
-      else
-        result[i] = f[i];
-    }
+    for (int i = 0; i < 8; ++i)
+      result[i] = m[i] ? t[i] : f[i];
 
     return result;
 #endif

@@ -42,7 +42,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] <= p2[i]) ? vtrue : vfalse;
+      result[i] = (p1[i] <= p2[i]);
 
     return result;
   }
@@ -59,7 +59,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] <= v) ? vtrue : vfalse;
+      result[i] = (p1[i] <= v);
 
     return result;
   }
@@ -84,7 +84,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] > p2[i]) ? vtrue : vfalse;
+      result[i] = (p1[i] > p2[i]);
 
     return result;
   }
@@ -101,7 +101,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] > v) ? vtrue : vfalse;
+      result[i] = (p1[i] > v);
 
     return result;
   }
@@ -126,7 +126,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] >= p2[i]) ? vtrue : vfalse;
+      result[i] = (p1[i] >= p2[i]);
 
     return result;
   }
@@ -143,7 +143,7 @@ namespace tsimd {
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] >= v) ? vtrue : vfalse;
+      result[i] = (p1[i] >= v);
 
     return result;
   }

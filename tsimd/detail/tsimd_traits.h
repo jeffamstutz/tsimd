@@ -25,6 +25,7 @@
 #pragma once
 
 #include "config.h"
+#include "mask_t.h"
 
 namespace tsimd {
   namespace traits {
@@ -49,15 +50,6 @@ namespace tsimd {
 
     template <typename T, int W>
     struct simd_type
-    {
-      using type = void;  // NOTE(jda) - use 'void' to flag a <T,W> pair which
-                          //             is missing
-    };
-
-    // 1-wide //
-
-    template <typename T>
-    struct simd_type<T, 1>
     {
       using type = undefined_type;
     };
@@ -110,6 +102,18 @@ namespace tsimd {
 #endif
     };
 
+    template <>
+    struct simd_type<mask32_t, 8>
+    {
+#if defined(__AVX__) || defined(__AVX512__)
+      using type = __m256;
+#elif defined(__SSE__)
+      using type = __m128[2];
+#else
+      using type = float[8];
+#endif
+    };
+
     // 16-wide //
 
     // TODO
@@ -119,17 +123,10 @@ namespace tsimd {
     template <typename T, int W>
     struct half_simd_type
     {
-      using type = void;  // NOTE(jda) - use 'void' to flag a <T,W> pair which
-                          //             is missing
+      using type = undefined_type;
     };
 
     // 1-wide //
-
-    template <>
-    struct half_simd_type<float, 1>
-    {
-      using type = undefined_type;
-    };
 
     template <>
     struct half_simd_type<int, 1>
@@ -173,6 +170,16 @@ namespace tsimd {
 #endif
     };
 
+    template <>
+    struct half_simd_type<mask32_t, 8>
+    {
+#if defined(__AVX__) || defined(__AVX512__) || defined(__SSE__)
+      using type = __m128;
+#else
+      using type = float[4];
+#endif
+    };
+
     // 16-wide //
 
     // TODO
@@ -182,7 +189,7 @@ namespace tsimd {
     template <int W>
     struct mask_type
     {
-      using type = float;
+      using type = mask32_t;
     };
 
     // 1-wide //
@@ -190,7 +197,7 @@ namespace tsimd {
     template <>
     struct mask_type<1>
     {
-      using type = int;
+      using type = bool;
     };
 
   }  // namespace traits

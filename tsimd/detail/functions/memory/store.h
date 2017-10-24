@@ -49,7 +49,7 @@ namespace tsimd {
   template <typename T>
   TSIMD_INLINE void store(const pack<T, 1> &v, void *_dst, const vboolf1 &mask)
   {
-    if (mask[0] == vtrue)
+    if (mask[0])
       *((T *)_dst) = v[0];
   }
 
@@ -94,7 +94,7 @@ namespace tsimd {
     auto *dst = (typename vfloat8::value_t *)_dst;
 
     for (int i = 0; i < 8; ++i)
-      if (mask[i] == vtrue)
+      if (mask[i])
         dst[i] = v[i];
 #endif
   }
@@ -126,7 +126,7 @@ namespace tsimd {
     auto *dst = (typename vint8::value_t *)_dst;
 
     for (int i = 0; i < 8; ++i)
-      if (mask[i] == vtrue)
+      if (mask[i])
         dst[i] = v[i];
 #endif
   }
