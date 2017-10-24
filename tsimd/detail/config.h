@@ -24,20 +24,19 @@
 
 #pragma once
 
+#include <immintrin.h>
+
 #if defined(__AVX512F__)
-#include <zmmintrin.h>
 #define TSIMD_DEFAULT_WIDTH 16
 #endif
 
 #if defined(__AVX__)
-#include <immintrin.h>
 #if !defined(TSIMD_DEFAULT_WIDTH)
 #define TSIMD_DEFAULT_WIDTH 8
 #endif
 #endif
 
 #if defined(__SSE__)
-#include <xmmintrin.h>
 #if !defined(TSIMD_DEFAULT_WIDTH)
 #define TSIMD_DEFAULT_WIDTH 4
 #endif
