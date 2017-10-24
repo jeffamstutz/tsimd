@@ -175,7 +175,7 @@ macro (TSIMD_ISPC_COMPILE)
 endmacro()
 
 ## Macro configure ISA targets for ispc ##
-macro(TSIMD_CONFIGURE_ISPC_ISA)
+macro(TSIMD_CONFIGURE_ISA)
   set(TSIMD_BUILD_ISA "AVX" CACHE STRING
       "Target ISA (SSE4, AVX, AVX2, AVX512KNL, AVX512SKX)")
   string(TOUPPER ${TSIMD_BUILD_ISA} TSIMD_BUILD_ISA)
@@ -206,7 +206,7 @@ macro(ISPC_ADD_EXECUTABLE name)
   foreach(src ${ARGN})
     get_filename_component(ext ${src} EXT)
     if (ext STREQUAL ".ispc")
-      if(TSIMD_ENABLE_ISPC)
+      if(TSIMD_ENABLE_ISPC_COMPARISONS)
         set(ISPC_SOURCES ${ISPC_SOURCES} ${src})
       endif()
     else ()

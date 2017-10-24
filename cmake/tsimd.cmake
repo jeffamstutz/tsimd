@@ -50,6 +50,9 @@ endmacro()
 ## Compiler configuration macro ##
 
 macro(tsimd_configure_compiler)
+
+  tsimd_configure_isa()
+
   if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
     include(cmake/icc.cmake)
   elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")

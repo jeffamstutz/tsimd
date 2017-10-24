@@ -22,8 +22,6 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-include(ispc)
-
 ispc_add_executable(mandelbrot
   mandelbrot.cpp
   mandelbrot.ispc
