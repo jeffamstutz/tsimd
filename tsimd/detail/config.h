@@ -57,12 +57,14 @@
 
 #ifdef _WIN32
 #define TSIMD_ALIGN(...) __declspec(align(__VA_ARGS__))
+#define TSIMD_INLINE inline
 #else
 #define TSIMD_ALIGN(...) __attribute__((aligned(__VA_ARGS__)))
+#define TSIMD_INLINE inline __attribute__((always_inline))
 #endif
 
-#if 1
-#define TSIMD_INLINE inline __attribute__((always_inline))
-#else
-#define TSIMD_INLINE inline
-#endif
+#define NOT_YET_IMPLEMENTED \
+  static_assert(false, "This function is not yet implemented!");
+
+#define DO_NOT_USE \
+  static_assert(false, "This function should not be used in this context!");

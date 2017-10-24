@@ -47,7 +47,7 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_div_ps(p1, p2);
 #elif defined(__SSE__)
-    NOT_IMPLEMENTED;
+    NOT_YET_IMPLEMENTED;
 #else
     vfloat8 result;
 

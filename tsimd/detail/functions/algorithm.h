@@ -71,7 +71,7 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX__)
     return !_mm256_testz_ps(a, a);
 #else
-    NOT_IMPLEMENTED;
+    NOT_YET_IMPLEMENTED;
 #endif
   }
 
@@ -107,7 +107,7 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_movemask_ps(a) == (unsigned int)0xff;
 #else
-    NOT_IMPLEMENTED;
+    NOT_YET_IMPLEMENTED;
 #endif
   }
 

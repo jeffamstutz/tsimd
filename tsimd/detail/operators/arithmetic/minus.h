@@ -47,7 +47,7 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_sub_ps(p1, p2);
 #elif defined(__SSE__)
-    NOT_IMPLEMENTED;
+    NOT_YET_IMPLEMENTED;
 #else
     vfloat8 result;
 
@@ -65,7 +65,7 @@ namespace tsimd {
 #elif defined(__AVX__)
     return vint8(_mm_sub_epi32(p1.vl, p2.vl), _mm_sub_epi32(p1.vh, p2.vh));
 #elif defined(__SSE__)
-    NOT_IMPLEMENTED;
+    NOT_YET_IMPLEMENTED;
 #else
     vint8 result;
 
