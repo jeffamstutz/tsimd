@@ -44,7 +44,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat8 operator/(const vfloat8 &p1, const vfloat8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_div_ps(p1, p2);
 #elif defined(__SSE__)
     NOT_YET_IMPLEMENTED;
@@ -62,6 +62,7 @@ namespace tsimd {
   {
     vint8 result;
 
+#pragma omp simd
     for (int i = 0; i < 8; ++i)
       result[i] = (p1[i] / p2[i]);
 

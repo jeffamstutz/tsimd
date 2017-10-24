@@ -81,7 +81,7 @@ namespace tsimd {
     template <>
     struct simd_type<float, 8>
     {
-#if defined(__AVX__) || defined(__AVX512__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m256;
 #elif defined(__SSE__)
       using type = __m128[2];
@@ -93,7 +93,7 @@ namespace tsimd {
     template <>
     struct simd_type<int, 8>
     {
-#if defined(__AVX__) || defined(__AVX512__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m256i;
 #elif defined(__SSE__)
       using type = __m128i[2];
@@ -105,7 +105,7 @@ namespace tsimd {
     template <>
     struct simd_type<mask32_t, 8>
     {
-#if defined(__AVX__) || defined(__AVX512__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m256;
 #elif defined(__SSE__)
       using type = __m128[2];
@@ -153,7 +153,7 @@ namespace tsimd {
     template <>
     struct half_simd_type<float, 8>
     {
-#if defined(__AVX__) || defined(__AVX512__) || defined(__SSE__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m128;
 #else
       using type = float[4];
@@ -163,7 +163,7 @@ namespace tsimd {
     template <>
     struct half_simd_type<int, 8>
     {
-#if defined(__AVX__) || defined(__AVX512__) || defined(__SSE__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m128i;
 #else
       using type = int[4];
@@ -173,7 +173,7 @@ namespace tsimd {
     template <>
     struct half_simd_type<mask32_t, 8>
     {
-#if defined(__AVX__) || defined(__AVX512__) || defined(__SSE__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m128;
 #else
       using type = float[4];

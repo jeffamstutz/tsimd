@@ -77,7 +77,7 @@ namespace tsimd {
 
   TSIMD_INLINE vbool8 operator&(const vbool8 &p1, const vbool8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_and_ps(p1, p2);
 #else
     vbool8 result;

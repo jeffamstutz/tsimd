@@ -48,7 +48,7 @@ namespace tsimd {
   {
 #if defined(__AVX512__)
     return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_LT);
-#elif defined(__AVX__)
+#elif defined(__AVX2__) || defined(__AVX__)
     return _mm256_cmp_ps(p1, p2, _CMP_LT_OQ);
 #else
     vboolf8 result;

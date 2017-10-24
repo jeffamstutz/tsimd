@@ -68,7 +68,7 @@ namespace tsimd {
 
   TSIMD_INLINE bool any(const vboolf8 &a)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return !_mm256_testz_ps(a, a);
 #else
     NOT_YET_IMPLEMENTED;
@@ -104,7 +104,7 @@ namespace tsimd {
 
   TSIMD_INLINE bool all(const vboolf8 &a)
   {
-#if defined(__AVX512__) || defined(__AVX__)
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_movemask_ps(a) == (unsigned int)0xff;
 #else
     NOT_YET_IMPLEMENTED;
@@ -139,7 +139,7 @@ namespace tsimd {
   {
 #if defined(__AVX512__)
     return _mm256_mask_blend_ps(m, f, t);
-#elif defined(__AVX__)
+#elif defined(__AVX2__) || defined(__AVX__)
     return _mm256_blendv_ps(f, t, m);
 #else
     vfloat8 result;
