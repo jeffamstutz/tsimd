@@ -99,7 +99,7 @@ namespace tsimd {
 
     static_assert(std::is_same<T, float>::value ||
                       std::is_same<T, int>::value ||
-                      std::is_same<T, mask32_t>::value,
+                      std::is_same<T, bool32_t>::value,
                   "SIMD T type currently must be 'float', 'int', or a mask!");
 
     static_assert(W == 1 || W == 4 || W == 8 || W == 16,
@@ -109,7 +109,7 @@ namespace tsimd {
   // mask types and true/false value aliases //////////////////////////////////
 
   template <int W = TSIMD_DEFAULT_WIDTH>
-  using mask = pack<mask32_t, W>;
+  using mask = pack<bool32_t, W>;
 
   using vmask = mask<TSIMD_DEFAULT_WIDTH>;
 

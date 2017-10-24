@@ -103,7 +103,7 @@ namespace tsimd {
     };
 
     template <>
-    struct simd_type<mask32_t, 8>
+    struct simd_type<bool32_t, 8>
     {
 #if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m256;
@@ -171,7 +171,7 @@ namespace tsimd {
     };
 
     template <>
-    struct half_simd_type<mask32_t, 8>
+    struct half_simd_type<bool32_t, 8>
     {
 #if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m128;

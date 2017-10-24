@@ -29,20 +29,20 @@
 namespace tsimd {
 
   // NOTE: this type is to be used for the per-element 32-bit SIMD mask types
-  struct mask32_t
+  struct bool32_t
   {
-    mask32_t()                 = default;
-    mask32_t(const mask32_t &) = default;
-    mask32_t(mask32_t &&)      = default;
-    mask32_t &operator=(const mask32_t &) = default;
-    mask32_t &operator=(mask32_t &&) = default;
+    bool32_t()                 = default;
+    bool32_t(const bool32_t &) = default;
+    bool32_t(bool32_t &&)      = default;
+    bool32_t &operator=(const bool32_t &) = default;
+    bool32_t &operator=(bool32_t &&) = default;
 
-    TSIMD_INLINE mask32_t(bool b) noexcept
+    TSIMD_INLINE bool32_t(bool b) noexcept
     {
       value = b ? 0xFFFFFFFF : 0x0;
     }
 
-    TSIMD_INLINE mask32_t &operator=(bool b) noexcept
+    TSIMD_INLINE bool32_t &operator=(bool b) noexcept
     {
       value = b ? 0xFFFFFFFF : 0x0;
       return *this;
@@ -58,17 +58,17 @@ namespace tsimd {
 
   // Inlined operators ////////////////////////////////////////////////////////
 
-  TSIMD_INLINE mask32_t operator|(const mask32_t &p1, const mask32_t &p2)
+  TSIMD_INLINE bool32_t operator|(const bool32_t &p1, const bool32_t &p2)
   {
     return p1.value | p2.value;
   }
 
-  TSIMD_INLINE mask32_t operator&(const mask32_t &p1, const mask32_t &p2)
+  TSIMD_INLINE bool32_t operator&(const bool32_t &p1, const bool32_t &p2)
   {
     return p1.value & p2.value;
   }
 
-  TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const mask32_t &v)
+  TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const bool32_t &v)
   {
     o << static_cast<bool>(v);
     return o;

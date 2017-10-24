@@ -28,7 +28,7 @@
 
 #include <algorithm>
 
-using tsimd::mask32_t;
+using tsimd::bool32_t;
 using tsimd::vbool;
 using tsimd::vfloat;
 using tsimd::vint;
@@ -419,7 +419,7 @@ TEST_CASE("all()")
   REQUIRE(!tsimd::all(m));
   m[0] = true;
   REQUIRE(!tsimd::all(m));
-  foreach (m, [](mask32_t &l, int) { l = true; })
+  foreach (m, [](bool32_t &l, int) { l = true; })
     ;
   REQUIRE(tsimd::all(m));
 }
