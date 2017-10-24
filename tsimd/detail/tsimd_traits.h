@@ -184,21 +184,5 @@ namespace tsimd {
 
     // TODO
 
-    // Provide mask base-type given a SIMD width //////////////////////////////
-
-    template <int W>
-    struct mask_type
-    {
-      using type = mask32_t;
-    };
-
-    // 1-wide //
-
-    template <>
-    struct mask_type<1>
-    {
-      using type = bool;
-    };
-
   }  // namespace traits
 }  // namespace tsimd
