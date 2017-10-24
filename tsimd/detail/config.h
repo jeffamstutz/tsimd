@@ -30,7 +30,7 @@
 #define TSIMD_DEFAULT_WIDTH 16
 #endif
 
-#if defined(__AVX__)
+#if defined(__AVX2__) || defined(__AVX__)
 #if !defined(TSIMD_DEFAULT_WIDTH)
 #define TSIMD_DEFAULT_WIDTH 8
 #endif
@@ -48,7 +48,7 @@
 
 #if defined(__AVX512F__)
 #define AVX_ZERO_UPPER()
-#elif defined(__AVX__)
+#elif defined(__AVX2__) || defined(__AVX__)
 #define AVX_ZERO_UPPER() _mm256_zeroupper()
 #else
 #define AVX_ZERO_UPPER()
