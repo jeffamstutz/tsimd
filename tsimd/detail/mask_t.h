@@ -32,28 +32,31 @@ namespace tsimd {
   struct mask32_t
   {
     mask32_t() = default;
+    mask32_t(const mask32_t &) = default;
+    mask32_t(mask32_t &&) = default;
+    mask32_t &operator=(const mask32_t &) = default;
+    mask32_t &operator=(mask32_t &&) = default;
 
-    mask32_t(bool b) { asInt = b ? 0xFFFFFFFF : 0x0; }
-    mask32_t &operator=(bool b) { asInt = b ? 0xFFFFFFFF : 0x0; return *this; }
-    operator bool() const { return asInt == 0xFFFFFFFF; }
+    TSIMD_INLINE mask32_t(bool b) noexcept { value = b ? 0xFFFFFFFF : 0x0; }
 
-    union
-    {
-      int asInt;
-      float asFloat;
-    };
+    TSIMD_INLINE mask32_t &operator=(bool b) noexcept
+    { value = b ? 0xFFFFFFFF : 0x0; return *this; }
+
+    TSIMD_INLINE operator bool() const noexcept { return value == 0xFFFFFFFF; }
+
+    int value;
   };
 
   // Inlined operators ////////////////////////////////////////////////////////
 
   TSIMD_INLINE mask32_t operator|(const mask32_t &p1, const mask32_t &p2)
   {
-    return p1.asInt | p2.asInt;
+    return p1.value | p2.value;
   }
 
   TSIMD_INLINE mask32_t operator&(const mask32_t &p1, const mask32_t &p2)
   {
-    return p1.asInt & p2.asInt;
+    return p1.value & p2.value;
   }
 
   TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const mask32_t &v)

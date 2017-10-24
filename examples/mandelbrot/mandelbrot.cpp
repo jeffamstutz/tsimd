@@ -65,9 +65,9 @@ inline void writePPM(const std::string &fileName,
 
 namespace tsimd {
 
-  static vint programIndex(0);
+  static vfloat programIndex(0);
 
-  // varying == DEFAULT_WIDTH //
+  // varying == TSIMD_DEFAULT_WIDTH //
 
   inline vint mandel(const vbool &_active,
                      const vfloat &c_re,
@@ -108,7 +108,7 @@ namespace tsimd {
 
     for (int j = 0; j < height; j++) {
       for (int i = 0; i < width; i += vfloat::static_size) {
-        vfloat x = x0 + (i + programIndex.as<float>()) * dx;
+        vfloat x = x0 + (i + programIndex) * dx;
         vfloat y = vfloat(y0 + j * dy);
 
         auto active = x < width;
