@@ -177,7 +177,7 @@ endmacro()
 ## Macro configure ISA targets for ispc ##
 macro(TSIMD_CONFIGURE_ISA)
   set(TSIMD_BUILD_ISA "AVX" CACHE STRING
-      "Target ISA (SSE4, AVX, AVX2, AVX512KNL, AVX512SKX)")
+      "Target ISA for examples (SSE4, AVX, AVX2, AVX512KNL, AVX512SKX)")
   string(TOUPPER ${TSIMD_BUILD_ISA} TSIMD_BUILD_ISA)
   set_property(CACHE TSIMD_BUILD_ISA PROPERTY STRINGS
                SSE4 AVX AVX2 AVX512KNL AVX512SKX)

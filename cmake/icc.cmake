@@ -22,9 +22,27 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-SET(CMAKE_CXX_FLAGS "-std=c++11 -march=native ${CMAKE_CXX_FLAGS}")
+set(FLAGS_SSE42  "-xsse4.2")
+set(FLAGS_AVX    "-xAVX")
+set(FLAGS_AVX2   "-xCORE-AVX2")
+set(FLAGS_AVX512KNL "-xMIC-AVX512")
+set(FLAGS_AVX512SKX "-xCORE-AVX512")
 
-IF (APPLE)
-  SET (CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_INIT} -dynamiclib)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++") # link against C++11 stdlib
-ENDIF()
+if (TSIMD_BUILD_ISA STREQUAL "AVX512SKX")
+  set (ISA_FLAGS ${FLAGS_AVX512SKX})
+elseif (TSIMD_BUILD_ISA STREQUAL "AVX512KNL")
+  set (ISA_FLAGS ${FLAGS_AVX512KNL})
+elseif (TSIMD_BUILD_ISA STREQUAL "AVX2")
+  set (ISA_FLAGS ${FLAGS_AVX2})
+elseif (TSIMD_BUILD_ISA STREQUAL "AVX")
+  set (ISA_FLAGS ${FLAGS_AVX})
+else()
+  set (ISA_FLAGS ${FLAGS_SSE42})
+endif()
+
+set(CMAKE_CXX_FLAGS "-std=c++11 ${ISA_FLAGS} ${CMAKE_CXX_FLAGS}")
+
+if (APPLE)
+  set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_INIT} -dynamiclib)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++") # link against C++11 stdlib
+endif()
