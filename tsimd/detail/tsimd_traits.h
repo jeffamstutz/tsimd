@@ -25,7 +25,7 @@
 #pragma once
 
 #include "config.h"
-#include "mask_t.h"
+#include "bool_t.h"
 
 namespace tsimd {
   namespace traits {
