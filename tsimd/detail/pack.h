@@ -97,9 +97,7 @@ namespace tsimd {
 
     // Interface checks //
 
-    static_assert(std::is_same<T, float>::value ||
-                      std::is_same<T, int>::value ||
-                      std::is_same<T, bool32_t>::value,
+    static_assert(traits::valid_type_for_pack<T>::value,
                   "SIMD T type currently must be 'float', 'int', or a mask!");
 
     static_assert(W == 1 || W == 4 || W == 8 || W == 16,

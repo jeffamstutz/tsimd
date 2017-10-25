@@ -30,6 +30,12 @@
 namespace tsimd {
   namespace traits {
 
+    // Defined a struct to get around type conversion problems ////////////////
+
+    struct undefined_type
+    {
+    };
+
     // C++14 traits for C++11 /////////////////////////////////////////////////
 
     template <bool B, class T = void>
@@ -40,11 +46,32 @@ namespace tsimd {
     template <typename FROM, typename TO>
     using can_convert = enable_if_t<std::is_convertible<TO, FROM>::value>;
 
-    // Defined a struct to get around type conversion problems ////////////////
+    // Is a pack<> with given width ///////////////////////////////////////////
 
-    struct undefined_type
+    // TODO: verify if it is indeed a pack! this trait fails if given anything
+    //       other than T = pack<something, something>!
+
+    template <typename T, int W>
+    struct is_pack_of_width
     {
+      static const bool value = (T::static_size == W);
     };
+
+    template <typename T, int W>
+    using is_pack_of_width_t = enable_if_t<is_pack_of_width<T, W>::value>;
+
+    // If a given T is a valid type for use in a pack<> ///////////////////////
+
+    template <typename T>
+    struct valid_type_for_pack
+    {
+      static const bool value = std::is_same<T, float>::value ||
+                                std::is_same<T, int>::value ||
+                                std::is_same<T, bool32_t>::value;
+    };
+
+    template <typename T>
+    using valid_type_for_pack_t = enable_if_t<valid_type_for_pack<T>::value>;
 
     // Provide intrinsic type given a SIMD width //////////////////////////////
 

@@ -38,19 +38,23 @@ namespace tsimd {
 
   // 1-wide //
 
-#if 0
-  template <typename T>
-  TSIMD_INLINE pack<T, 1> load(const void *_src)
+  template <
+      typename PACK_T,
+      typename = traits::is_pack_of_width_t<PACK_T, 1>>
+  TSIMD_INLINE PACK_T load(const void *_src)
   {
-    return *((T*)_src);
+    using T = typename PACK_T::value_t;
+    return PACK_T(*((T*)_src));
   }
 
-  template <typename T>
-  TSIMD_INLINE pack<T, 1> load(const void *_src, const vboolf1 &mask)
+  template <
+      typename PACK_T,
+      typename = traits::is_pack_of_width_t<PACK_T, 1>>
+  TSIMD_INLINE PACK_T load(const void *_src, const vboolf1 &mask)
   {
-    return mask[0] ? *((T*)_src) : T();
+    using T = typename PACK_T::value_t;
+    return PACK_T(mask[0] ? *((T*)_src) : T());
   }
-#endif
 
   // 4-wide //
 
