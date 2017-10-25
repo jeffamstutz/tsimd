@@ -282,7 +282,7 @@ namespace tsimd {
   // pack<> debugging functions ///////////////////////////////////////////////
 
   template <typename T, int W>
-  inline void print(const pack<T, W> &p)
+  TSIMD_INLINE void print(const pack<T, W> &p)
   {
     std::cout << "{";
 
@@ -290,6 +290,19 @@ namespace tsimd {
       std::cout << " " << v;
 
     std::cout << " }" << std::endl;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const pack<T, W> &p)
+  {
+    o << "{";
+
+    for (const auto &v : p)
+      o << " " << v;
+
+    o << " }";
+
+    return o;
   }
 
 }  // namespace tsimd
