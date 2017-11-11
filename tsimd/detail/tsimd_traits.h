@@ -67,7 +67,10 @@ namespace tsimd {
     {
       static const bool value = std::is_same<T, float>::value ||
                                 std::is_same<T, int>::value ||
-                                std::is_same<T, bool32_t>::value;
+                                std::is_same<T, bool32_t>::value ||
+                                std::is_same<T, double>::value ||
+                                std::is_same<T, long long>::value ||
+                                std::is_same<T, bool64_t>::value;
     };
 
     template <typename T>
@@ -103,6 +106,38 @@ namespace tsimd {
 #endif
     };
 
+    template <>
+    struct simd_type<bool32_t, 4>
+    {
+      using type = simd_type<float, 4>::type;
+    };
+
+    template <>
+    struct simd_type<double, 4>
+    {
+#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+      using type = __m256d;
+#else
+      using type = double[4];
+#endif
+    };
+
+    template <>
+    struct simd_type<long long, 4>
+    {
+#if defined(__AVX512__) || defined(__AVX2__)
+      using type = __m256i;
+#else
+      using type = long long[4];
+#endif
+    };
+
+    template <>
+    struct simd_type<bool64_t, 4>
+    {
+      using type = simd_type<double, 4>::type;
+    };
+
     // 8-wide //
 
     template <>
@@ -132,13 +167,7 @@ namespace tsimd {
     template <>
     struct simd_type<bool32_t, 8>
     {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
-      using type = __m256;
-#elif defined(__SSE__)
-      using type = __m128[2];
-#else
-      using type = float[8];
-#endif
+      using type = simd_type<float, 8>::type;
     };
 
     // 16-wide //
@@ -200,11 +229,7 @@ namespace tsimd {
     template <>
     struct half_simd_type<bool32_t, 8>
     {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
-      using type = __m128;
-#else
-      using type = float[4];
-#endif
+      using type = half_simd_type<float, 8>::type;
     };
 
     // 16-wide //

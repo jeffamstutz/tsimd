@@ -28,6 +28,8 @@
 
 namespace tsimd {
 
+  // 32-bit bool type /////////////////////////////////////////////////////////
+
   // NOTE: this type is to be used for the per-element 32-bit SIMD mask types
   struct bool32_t
   {
@@ -69,6 +71,54 @@ namespace tsimd {
   }
 
   TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const bool32_t &v)
+  {
+    o << static_cast<bool>(v);
+    return o;
+  }
+
+  // 64-bit bool type /////////////////////////////////////////////////////////
+
+  // NOTE: this type is to be used for the per-element 64-bit SIMD mask types
+  struct bool64_t
+  {
+    bool64_t()                 = default;
+    bool64_t(const bool64_t &) = default;
+    bool64_t(bool64_t &&)      = default;
+    bool64_t &operator=(const bool64_t &) = default;
+    bool64_t &operator=(bool64_t &&) = default;
+
+    TSIMD_INLINE bool64_t(bool b) noexcept
+    {
+      value = b ? 0xFFFFFFFFFFFFFFFF : 0x0;
+    }
+
+    TSIMD_INLINE bool64_t &operator=(bool b) noexcept
+    {
+      value = b ? 0xFFFFFFFFFFFFFFFF : 0x0;
+      return *this;
+    }
+
+    TSIMD_INLINE operator bool() const noexcept
+    {
+      return value == 0xFFFFFFFFFFFFFFFF;
+    }
+
+    long long value;
+  };
+
+  // Inlined operators ////////////////////////////////////////////////////////
+
+  TSIMD_INLINE bool64_t operator|(const bool64_t &p1, const bool64_t &p2)
+  {
+    return p1.value | p2.value;
+  }
+
+  TSIMD_INLINE bool64_t operator&(const bool64_t &p1, const bool64_t &p2)
+  {
+    return p1.value & p2.value;
+  }
+
+  TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const bool64_t &v)
   {
     o << static_cast<bool>(v);
     return o;
