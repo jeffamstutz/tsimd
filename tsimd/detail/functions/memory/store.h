@@ -36,7 +36,8 @@ namespace tsimd {
   template <typename PACK_T>
   TSIMD_INLINE void store(const PACK_T &p,
                           void *_dst,
-                          const mask<PACK_T::static_size> &m);
+                          const mask<typename PACK_T::value_t,
+                                     PACK_T::static_size> &m);
 
   // 1-wide //
 

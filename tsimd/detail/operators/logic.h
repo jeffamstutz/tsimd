@@ -36,9 +36,9 @@ namespace tsimd {
   // binary operator<=() //
 
   template <typename T, int W>
-  TSIMD_INLINE mask<W> operator<=(const pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE mask<T, W> operator<=(const pack<T, W> &p1, const pack<T, W> &p2)
   {
-    mask<W> result;
+    mask<T, W> result;
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -51,9 +51,9 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator<=(const pack<T, W> &p1, const OTHER_T &v)
+  TSIMD_INLINE mask<T, W> operator<=(const pack<T, W> &p1, const OTHER_T &v)
   {
-    mask<W> result;
+    mask<T, W> result;
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -66,7 +66,7 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator<=(const OTHER_T &v, const pack<T, W> &p1)
+  TSIMD_INLINE mask<T, W> operator<=(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) <= p1;
   }
@@ -74,9 +74,9 @@ namespace tsimd {
   // binary operator>() //
 
   template <typename T, int W>
-  TSIMD_INLINE mask<W> operator>(const pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE mask<T, W> operator>(const pack<T, W> &p1, const pack<T, W> &p2)
   {
-    mask<W> result;
+    mask<T, W> result;
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -89,9 +89,9 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator>(const pack<T, W> &p1, const OTHER_T &v)
+  TSIMD_INLINE mask<T, W> operator>(const pack<T, W> &p1, const OTHER_T &v)
   {
-    mask<W> result;
+    mask<T, W> result;
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -104,7 +104,7 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator>(const OTHER_T &v, const pack<T, W> &p1)
+  TSIMD_INLINE mask<T, W> operator>(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) > p1;
   }
@@ -112,9 +112,9 @@ namespace tsimd {
   // binary operator>=() //
 
   template <typename T, int W>
-  TSIMD_INLINE mask<W> operator>=(const pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE mask<T, W> operator>=(const pack<T, W> &p1, const pack<T, W> &p2)
   {
-    mask<W> result;
+    mask<T, W> result;
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -127,9 +127,9 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator>=(const pack<T, W> &p1, const OTHER_T &v)
+  TSIMD_INLINE mask<T, W> operator>=(const pack<T, W> &p1, const OTHER_T &v)
   {
-    mask<W> result;
+    mask<T, W> result;
 
 #pragma omp simd
     for (int i = 0; i < W; ++i)
@@ -142,7 +142,7 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator>=(const OTHER_T &v, const pack<T, W> &p1)
+  TSIMD_INLINE mask<T, W> operator>=(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) >= p1;
   }

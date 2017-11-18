@@ -29,14 +29,14 @@
 namespace tsimd {
 
   template <typename T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach (pack<T, W> &p, FCN_T && fcn)
+  TSIMD_INLINE void foreach(pack<T, W> &p, FCN_T && fcn)
   {
     for (int i = 0; i < W; ++i)
       fcn(p[i], i);
   }
 
-  template <int W, typename FCN_T>
-  TSIMD_INLINE void foreach_active(const mask<W> &m, FCN_T &&fcn)
+  template <typename BOOL_T, int W, typename FCN_T>
+  TSIMD_INLINE void foreach_active(const mask<BOOL_T, W> &m, FCN_T &&fcn)
   {
     for (int i = 0; i < W; ++i)
       if (m[i])
@@ -44,7 +44,9 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach_active(const mask<W> &m, pack<T, W> &p, FCN_T &&fcn)
+  TSIMD_INLINE void foreach_active(const mask<T, W>  &m,
+                                         pack<T, W>  &p,
+                                         FCN_T      &&fcn)
   {
     for (int i = 0; i < W; ++i)
       if (m[i])
@@ -81,8 +83,8 @@ namespace tsimd {
 
   // none() ///////////////////////////////////////////////////////////////////
 
-  template <int W>
-  TSIMD_INLINE bool none(const mask<W> &m)
+  template <typename MASK_T, typename = traits::is_mask_t<MASK_T>>
+  TSIMD_INLINE bool none(const MASK_T &m)
   {
     return !any(m);
   }

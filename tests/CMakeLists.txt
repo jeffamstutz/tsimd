@@ -22,24 +22,54 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-add_executable(test_pack
+## 1-wide ##
+
+add_executable(test_pack1
   doctest/doctest.h
   test_pack.cpp
 )
 
-set(TEST_EXE ${EXECUTABLE_OUTPUT_PATH}/test_pack)
+target_compile_definitions(test_pack1 PRIVATE -DTEST_WIDTH=1)
 
-add_test(arithmetic_operators
-         ${TEST_EXE} "--test-suite=\"arithmetic operators\"")
+set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack1)
 
-add_test(bitwise_operators
-         ${TEST_EXE} "--test-suite=\"bitwise operators\"")
+add_test(arithmetic_operators1
+         ${TEST_EXE1} "--test-suite=\"arithmetic operators\"")
 
-add_test(logic_operators
-         ${TEST_EXE} "--test-suite=\"logic operators\"")
+add_test(bitwise_operators1
+         ${TEST_EXE1} "--test-suite=\"bitwise operators\"")
 
-add_test(math_functions
-         ${TEST_EXE} "--test-suite=\"math functions\"")
+add_test(logic_operators1
+         ${TEST_EXE1} "--test-suite=\"logic operators\"")
 
-add_test(algorithms
-         ${TEST_EXE} "--test-suite=\"algorithms\"")
+add_test(math_functions1
+         ${TEST_EXE1} "--test-suite=\"math functions\"")
+
+add_test(algorithms1
+         ${TEST_EXE1} "--test-suite=\"algorithms\"")
+
+## 8-wide ##
+
+add_executable(test_pack8
+  doctest/doctest.h
+  test_pack.cpp
+)
+
+target_compile_definitions(test_pack8 PRIVATE -DTEST_WIDTH=8)
+
+set(TEST_EXE8 ${EXECUTABLE_OUTPUT_PATH}/test_pack8)
+
+add_test(arithmetic_operators8
+         ${TEST_EXE8} "--test-suite=\"arithmetic operators\"")
+
+add_test(bitwise_operators8
+         ${TEST_EXE8} "--test-suite=\"bitwise operators\"")
+
+add_test(logic_operators8
+         ${TEST_EXE8} "--test-suite=\"logic operators\"")
+
+add_test(math_functions8
+         ${TEST_EXE8} "--test-suite=\"math functions\"")
+
+add_test(algorithms8
+         ${TEST_EXE8} "--test-suite=\"algorithms\"")

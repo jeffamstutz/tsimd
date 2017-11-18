@@ -34,26 +34,54 @@ namespace tsimd {
   TSIMD_INLINE PACK_T load(const void *_src);
 
   template <typename PACK_T>
-  TSIMD_INLINE PACK_T load(const void *_src, const vboolf8 &mask);
+  TSIMD_INLINE PACK_T load(const void *_src,
+                           const mask<typename PACK_T::value_t,
+                                      PACK_T::static_size> &m);
 
   // 1-wide //
 
-  template <
-      typename PACK_T,
-      typename = traits::is_pack_of_width_t<PACK_T, 1>>
-  TSIMD_INLINE PACK_T load(const void *_src)
+  namespace detail {
+    template <
+        typename PACK_T,
+        typename = traits::is_pack_of_width_t<PACK_T, 1>>
+    TSIMD_INLINE PACK_T load1(const void *_src)
+    {
+      using T = typename PACK_T::value_t;
+      return PACK_T(*((T*)_src));
+    }
+
+    template <
+        typename PACK_T,
+        typename = traits::is_pack_of_width_t<PACK_T, 1>>
+    TSIMD_INLINE PACK_T load1(const void *_src, const vboolf1 &mask)
+    {
+      using T = typename PACK_T::value_t;
+      return PACK_T(mask[0] ? *((T*)_src) : T());
+    }
+  } // ::tsimd::detail
+
+  template <>
+  TSIMD_INLINE vfloat1 load(const void *_src)
   {
-    using T = typename PACK_T::value_t;
-    return PACK_T(*((T*)_src));
+    return detail::load1<vfloat1>(_src);
   }
 
-  template <
-      typename PACK_T,
-      typename = traits::is_pack_of_width_t<PACK_T, 1>>
-  TSIMD_INLINE PACK_T load(const void *_src, const vboolf1 &mask)
+  template <>
+  TSIMD_INLINE vfloat1 load(const void *_src, const vboolf1 &m)
   {
-    using T = typename PACK_T::value_t;
-    return PACK_T(mask[0] ? *((T*)_src) : T());
+    return detail::load1<vfloat1>(_src, m);
+  }
+
+  template <>
+  TSIMD_INLINE vint1 load(const void *_src)
+  {
+    return detail::load1<vint1>(_src);
+  }
+
+  template <>
+  TSIMD_INLINE vint1 load(const void *_src, const vboolf1 &m)
+  {
+    return detail::load1<vint1>(_src, m);
   }
 
   // 4-wide //

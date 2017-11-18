@@ -28,11 +28,14 @@
 
 #include <algorithm>
 
-using tsimd::bool32_t;
-using tsimd::vbool;
-using tsimd::vfloat;
-using tsimd::vint;
-using vmask = tsimd::vbool;
+#ifndef TEST_WIDTH
+#define TEST_WIDTH 1
+#endif
+
+using bool32_t = tsimd::bool32_t;
+using vbool    = tsimd::pack<bool32_t, TEST_WIDTH>;
+using vfloat   = tsimd::pack<float, TEST_WIDTH>;
+using vint     = tsimd::pack<int, TEST_WIDTH>;
 
 /* TODO: add tests for -->
  *         - operator<<()
@@ -292,25 +295,25 @@ TEST_CASE("binary operator>=()")
 
 TEST_CASE("binary operator&&()")
 {
-  vmask m1(true);
-  vmask m2(false);
+  vbool m1(true);
+  vbool m2(false);
 
   REQUIRE(tsimd::none(m1 && m2));
 }
 
 TEST_CASE("binary operator||()")
 {
-  vmask m1(true);
-  vmask m2(false);
+  vbool m1(true);
+  vbool m2(false);
 
   REQUIRE(tsimd::all(m1 || m2));
 }
 
 TEST_CASE("unary operator!()")
 {
-  vmask v(true);
+  vbool v(true);
 
-  REQUIRE(tsimd::all(!v == vmask(false)));
+  REQUIRE(tsimd::all(!v == vbool(false)));
 }
 
 TEST_CASE("unary operator-()")
@@ -399,7 +402,7 @@ TEST_CASE("foreach_active()")
 
 TEST_CASE("any()")
 {
-  vmask m(false);
+  vbool m(false);
   REQUIRE(!tsimd::any(m));
   m[0] = true;
   REQUIRE(tsimd::any(m));
@@ -407,7 +410,7 @@ TEST_CASE("any()")
 
 TEST_CASE("none()")
 {
-  vmask m(false);
+  vbool m(false);
   REQUIRE(tsimd::none(m));
   m[0] = true;
   REQUIRE(!tsimd::none(m));
@@ -415,10 +418,14 @@ TEST_CASE("none()")
 
 TEST_CASE("all()")
 {
-  vmask m(false);
+  vbool m(false);
   REQUIRE(!tsimd::all(m));
-  m[0] = true;
-  REQUIRE(!tsimd::all(m));
+
+  if (vbool::static_size > 1) {
+    m[0] = true;
+    REQUIRE(!tsimd::all(m));
+  }
+
   foreach (m, [](bool32_t &l, int) { l = true; })
     ;
   REQUIRE(tsimd::all(m));
@@ -426,24 +433,38 @@ TEST_CASE("all()")
 
 TEST_CASE("select()")
 {
-  vbool m(false);
-  m[0] = true;
-  m[2] = true;
+  if (vbool::static_size > 1) {
+    vbool m(false);
+    m[0] = true;
+    m[2] = true;
 
-  vint v1(0);
-  vint v2(2);
+    vint v1(0);
+    vint v2(2);
 
-  REQUIRE(tsimd::all(v1 != v2));
+    REQUIRE(tsimd::all(v1 != v2));
 
-  auto result = tsimd::select(m, v1, v2);
+    auto result = tsimd::select(m, v1, v2);
 
-  vint expected(2);
-  expected[0] = 0;
-  expected[2] = 0;
+    vint expected(2);
+    expected[0] = 0;
+    expected[2] = 0;
 
-  REQUIRE(tsimd::all(result == expected));
-  REQUIRE(tsimd::any(v1 != expected));
-  REQUIRE(tsimd::any(v2 != expected));
+    REQUIRE(tsimd::all(result == expected));
+    REQUIRE(tsimd::any(v1 != expected));
+    REQUIRE(tsimd::any(v2 != expected));
+  } else {
+    vbool mt(true);
+    vbool mf(false);
+
+    vint v1(0);
+    vint v2(2);
+
+    auto result_true  = tsimd::select(mt, v1, v2);
+    auto result_false = tsimd::select(mf, v1, v2);
+
+    REQUIRE(result_true  == v1);
+    REQUIRE(result_false == v2);
+  }
 }
 
 TEST_SUITE_END();

@@ -50,7 +50,8 @@ namespace tsimd {
   template <typename PACK_T, typename OFFSET_T>
   TSIMD_INLINE PACK_T gather(void *_src,
                              const pack<OFFSET_T, PACK_T::static_size> &o,
-                             const mask<PACK_T::static_size> &m)
+                             const mask<typename PACK_T::value_t,
+                                        PACK_T::static_size> &m)
   {
     auto *src = (typename PACK_T::value_t *)_src;
     PACK_T result;
@@ -81,7 +82,8 @@ namespace tsimd {
   TSIMD_INLINE void scatter(const PACK_T &p,
                             void *_dst,
                             const pack<OFFSET_T, PACK_T::static_size> &o,
-                            const mask<PACK_T::static_size> &m)
+                            const mask<typename PACK_T::value_t,
+                                       PACK_T::static_size> &m)
   {
     auto *dst = (typename PACK_T::value_t *)_dst;
 

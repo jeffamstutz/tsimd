@@ -76,12 +76,63 @@ namespace tsimd {
     template <typename T>
     using valid_type_for_pack_t = enable_if_t<valid_type_for_pack<T>::value>;
 
+    // If given pack is a mask (vbool) or not /////////////////////////////////
+
+    template <typename MASK_T>
+    struct is_mask
+    {
+      using value_t = typename MASK_T::value_t;
+      static const bool value = std::is_same<value_t, bool32_t>::value ||
+                                std::is_same<value_t, bool64_t>::value;
+    };
+
+    template <typename MASK_T>
+    using is_mask_t = enable_if_t<is_mask<MASK_T>::value>;
+
     // Provide intrinsic type given a SIMD width //////////////////////////////
 
     template <typename T, int W>
     struct simd_type
     {
       using type = undefined_type;
+    };
+
+    // 1-wide //
+
+    template <>
+    struct simd_type<float, 1>
+    {
+      using type = float;
+    };
+
+    template <>
+    struct simd_type<int, 1>
+    {
+      using type = int;
+    };
+
+    template <>
+    struct simd_type<bool32_t, 1>
+    {
+      using type = simd_type<float, 1>::type;
+    };
+
+    template <>
+    struct simd_type<double, 1>
+    {
+      using type = double;
+    };
+
+    template <>
+    struct simd_type<long long, 1>
+    {
+      using type = long long;
+    };
+
+    template <>
+    struct simd_type<bool64_t, 1>
+    {
+      using type = simd_type<double, 1>::type;
     };
 
     // 4-wide //
@@ -235,6 +286,54 @@ namespace tsimd {
     // 16-wide //
 
     // TODO
+
+    // Bool type for given primitive type /////////////////////////////////////
+
+    template <typename T>
+    struct bool_type
+    {
+      using type = undefined_type;
+    };
+
+    // 32-bit //
+
+    template <>
+    struct bool_type<float>
+    {
+      using type = bool32_t;
+    };
+
+    template <>
+    struct bool_type<int>
+    {
+      using type = bool32_t;
+    };
+
+    template <>
+    struct bool_type<bool32_t>
+    {
+      using type = bool32_t;
+    };
+
+    // 64-bit //
+
+    template <>
+    struct bool_type<double>
+    {
+      using type = bool64_t;
+    };
+
+    template <>
+    struct bool_type<long long>
+    {
+      using type = bool64_t;
+    };
+
+    template <>
+    struct bool_type<bool64_t>
+    {
+      using type = bool64_t;
+    };
 
   }  // namespace traits
 }  // namespace tsimd
