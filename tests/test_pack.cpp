@@ -22,7 +22,6 @@
 // DEALINGS IN THE SOFTWARE.                                                  //
 // ========================================================================== //
 
-#define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 
 #include "tsimd/tsimd.h"

@@ -22,14 +22,14 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
+add_library(tsimd_catch_main STATIC catch/catch_main.cpp)
+
 ## 1-wide ##
 
-add_executable(test_pack32x1
-  doctest/doctest.h
-  test_pack.cpp
-)
+add_executable(test_pack32x1 test_pack.cpp)
 
 target_compile_definitions(test_pack32x1 PRIVATE -DTEST_WIDTH=1)
+target_link_libraries(test_pack32x1 tsimd_catch_main)
 
 set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack32x1)
 
@@ -39,13 +39,11 @@ add_test(logic_operators32x1      ${TEST_EXE1} "[logic_operators]")
 add_test(math_functions32x1       ${TEST_EXE1} "[math_functions]")
 add_test(algorithms32x1           ${TEST_EXE1} "[algorithms]")
 
-add_executable(test_pack64x1
-  doctest/doctest.h
-  test_pack.cpp
-)
+add_executable(test_pack64x1 test_pack.cpp)
 
 target_compile_definitions(test_pack64x1 PRIVATE -DTEST_WIDTH=1)
 target_compile_definitions(test_pack64x1 PRIVATE -DTEST_DOUBLE_PRECISION=1)
+target_link_libraries(test_pack64x1 tsimd_catch_main)
 
 set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack64x1)
 
@@ -57,12 +55,10 @@ add_test(algorithms64x1           ${TEST_EXE1} "[algorithms]")
 
 ## 8-wide ##
 
-add_executable(test_pack32x8
-  doctest/doctest.h
-  test_pack.cpp
-)
+add_executable(test_pack32x8 test_pack.cpp)
 
 target_compile_definitions(test_pack32x8 PRIVATE -DTEST_WIDTH=8)
+target_link_libraries(test_pack32x8 tsimd_catch_main)
 
 set(TEST_EXE8 ${EXECUTABLE_OUTPUT_PATH}/test_pack32x8)
 
