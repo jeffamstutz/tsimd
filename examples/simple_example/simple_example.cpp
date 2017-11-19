@@ -57,7 +57,7 @@ int main()
   std::cout << "test any()" << std::endl;
 
   {
-    vbool m(false);
+    vboolf m(false);
 
     print(m);
 
@@ -101,7 +101,7 @@ int main()
   std::cout << "test foreach_active()" << std::endl;
 
   {
-    vbool m(false);
+    vboolf m(false);
 
     m[0] = true;
     m[2] = true;
@@ -127,7 +127,7 @@ int main()
     std::vector<int> values(vint::static_size);
     std::fill(values.begin(), values.end(), 5);
 
-    vbool m(false);
+    vboolf m(false);
     m[2] = true;
 
     vint v1(0);

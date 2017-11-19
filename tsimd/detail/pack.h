@@ -122,8 +122,6 @@ namespace tsimd {
   template <int W = TSIMD_DEFAULT_WIDTH>
   using maskd = pack<bool64_t, W>;
 
-  using vmask = maskf<TSIMD_DEFAULT_WIDTH>;
-
   // Mask type for a given pack ///////////////////////////////////////////////
 
   template <typename MASK_T>
@@ -144,7 +142,6 @@ namespace tsimd {
   using vuint1   = pack<unsigned int, 1>;
   using vllong1  = pack<long long, 1>;
   using vboolf1  = maskf<1>;
-  using vbool1   = vboolf1;
   using vboold1  = maskd<1>;
 
   /* 4-wide shortcuts */
@@ -154,7 +151,6 @@ namespace tsimd {
   using vuint4   = pack<unsigned int, 4>;
   using vllong4  = pack<long long, 4>;
   using vboolf4  = maskf<4>;
-  using vbool4   = vboolf4;
   using vboold4  = maskd<4>;
 
   /* 8-wide shortcuts */
@@ -164,7 +160,6 @@ namespace tsimd {
   using vuint8   = pack<unsigned int, 8>;
   using vllong8  = pack<long long, 8>;
   using vboolf8  = maskf<8>;
-  using vbool8   = vboolf8;
   using vboold8  = maskd<8>;
 
   /* 16-wide shortcuts */
@@ -174,7 +169,6 @@ namespace tsimd {
   using vuint16   = pack<unsigned int, 16>;
   using vllong16  = pack<long long, 16>;
   using vboolf16  = maskf<16>;
-  using vbool16   = vboolf16;
   using vboold16  = maskd<16>;
 
   /* default shortcuts */
@@ -184,7 +178,6 @@ namespace tsimd {
   using vuint   = pack<unsigned int, TSIMD_DEFAULT_WIDTH / 2>;
   using vllong  = pack<long long, TSIMD_DEFAULT_WIDTH / 2>;
   using vboolf  = maskf<TSIMD_DEFAULT_WIDTH>;
-  using vbool   = vboolf;
   using vboold  = maskd<TSIMD_DEFAULT_WIDTH>;
 
   // pack<> inlined members ///////////////////////////////////////////////////

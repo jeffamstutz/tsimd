@@ -78,7 +78,7 @@ namespace tsimd {
 #endif
   }
 
-  TSIMD_INLINE vboolf8 operator==(const vbool8 &p1, const vbool8 &p2)
+  TSIMD_INLINE vboolf8 operator==(const vboolf8 &p1, const vboolf8 &p2)
   {
 #if defined(__AVX512__)
     return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_EQ);

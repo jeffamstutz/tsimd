@@ -69,7 +69,7 @@ namespace tsimd {
 
   // varying == TSIMD_DEFAULT_WIDTH //
 
-  inline vint mandel(const vbool &_active,
+  inline vint mandel(const vboolf &_active,
                      const vfloat &c_re,
                      const vfloat &c_im,
                      int maxIters)
@@ -123,7 +123,7 @@ namespace tsimd {
 
   // varying == 1 //
 
-  inline vint1 mandel1(const vbool1 &_active,
+  inline vint1 mandel1(const vboolf1 &_active,
                        const vfloat1 &c_re,
                        const vfloat1 &c_im,
                        int maxIters)
