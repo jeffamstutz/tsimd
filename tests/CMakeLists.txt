@@ -48,6 +48,31 @@ add_test(math_functions32x1
 add_test(algorithms32x1
          ${TEST_EXE1} "--test-suite=\"algorithms\"")
 
+add_executable(test_pack64x1
+  doctest/doctest.h
+  test_pack.cpp
+)
+
+target_compile_definitions(test_pack64x1 PRIVATE -DTEST_WIDTH=1)
+target_compile_definitions(test_pack64x1 PRIVATE -DTEST_DOUBLE_PRECISION=1)
+
+set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack64x1)
+
+add_test(arithmetic_operators64x1
+         ${TEST_EXE1} "--test-suite=\"arithmetic operators\"")
+
+add_test(bitwise_operators64x1
+         ${TEST_EXE1} "--test-suite=\"bitwise operators\"")
+
+add_test(logic_operators64x1
+         ${TEST_EXE1} "--test-suite=\"logic operators\"")
+
+add_test(math_functions64x1
+         ${TEST_EXE1} "--test-suite=\"math functions\"")
+
+add_test(algorithms64x1
+         ${TEST_EXE1} "--test-suite=\"algorithms\"")
+
 ## 8-wide ##
 
 add_executable(test_pack32x8

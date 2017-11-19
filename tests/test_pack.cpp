@@ -38,16 +38,18 @@
 #endif
 
 #if TEST_DOUBLE_PRECISION
-using bool_t = tsimd::bool64_t;
-using vbool  = tsimd::pack<bool_t, TEST_WIDTH>;
-using vfloat = tsimd::pack<double, TEST_WIDTH>;
-using vint   = tsimd::pack<long long, TEST_WIDTH>;
+using bool_type  = tsimd::bool64_t;
+using float_type = double;
+using int_type   = long long;
 #else
-using bool_t = tsimd::bool32_t;
-using vbool  = tsimd::pack<bool_t, TEST_WIDTH>;
-using vfloat = tsimd::pack<float, TEST_WIDTH>;
-using vint   = tsimd::pack<int, TEST_WIDTH>;
+using bool_type  = tsimd::bool32_t;
+using float_type = float;
+using int_type   = int;
 #endif
+
+using vbool   = tsimd::pack<bool_type, TEST_WIDTH>;
+using vfloat  = tsimd::pack<float_type, TEST_WIDTH>;
+using vint    = tsimd::pack<int_type, TEST_WIDTH>;
 
 /* TODO: add tests for -->
  *         - operator<<()
@@ -388,7 +390,7 @@ TEST_CASE("foreach()")
   vfloat v1(0.f);
   vfloat v2(1.f);
 
-  foreach (v1, [](float &l, int) { l = 1; })
+  foreach (v1, [](float_type &l, int) { l = 1; })
     ;
 
   REQUIRE(tsimd::all(v1 == v2));
@@ -407,7 +409,7 @@ TEST_CASE("foreach_active()")
   expected[0] = 2;
   expected[2] = 2;
 
-  tsimd::foreach_active(m, v1, [](int &v) { v = 2; });
+  tsimd::foreach_active(m, v1, [](int_type &v) { v = 2; });
 
   REQUIRE(tsimd::all(v1 == expected));
 }
@@ -438,7 +440,7 @@ TEST_CASE("all()")
     REQUIRE(!tsimd::all(m));
   }
 
-  foreach (m, [](bool_t &l, int) { l = true; })
+  foreach (m, [](bool_type &l, int) { l = true; })
     ;
   REQUIRE(tsimd::all(m));
 }
@@ -487,7 +489,7 @@ TEST_SUITE_BEGIN("memory operations");
 
 TEST_CASE("unmasked load()")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
   auto v1 = tsimd::load<vint>(values.data());
@@ -496,7 +498,7 @@ TEST_CASE("unmasked load()")
 
 TEST_CASE("masked load()")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
   vbool m(true);
@@ -512,7 +514,7 @@ TEST_CASE("masked load()")
 
 TEST_CASE("unmasked gather()")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 4);
 
   vint offset;
@@ -525,18 +527,19 @@ TEST_CASE("unmasked gather()")
 
 TEST_CASE("unmasked store()")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
 
   vint v1(7);
 
   tsimd::store(v1, values.data());
 
-  std::for_each(values.begin(), values.end(), [](int v) { REQUIRE(v == 7); });
+  std::for_each(values.begin(), values.end(),
+                [](int_type v) { REQUIRE(v == 7); });
 }
 
 TEST_CASE("unmasked scatter()")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
 
   vint v1(5);
 
@@ -545,7 +548,8 @@ TEST_CASE("unmasked scatter()")
 
   tsimd::scatter(v1, values.data(), offset);
 
-  std::for_each(values.begin(), values.end(), [](int v) { REQUIRE(v == 5); });
+  std::for_each(values.begin(), values.end(),
+                [](int_type v) { REQUIRE(v == 5); });
 }
 
 TEST_SUITE_END();

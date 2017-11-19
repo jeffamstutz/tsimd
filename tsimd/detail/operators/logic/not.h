@@ -32,9 +32,10 @@ namespace tsimd {
 
   // 1-wide //
 
-  TSIMD_INLINE vboolf1 operator!(const vboolf1 &m)
+  template <typename T, typename = traits::is_bool_t<T>>
+  TSIMD_INLINE mask<T, 1> operator!(const mask<T, 1> &m)
   {
-    return vboolf1(!m[0]);
+    return mask<T, 1>(!m[0]);
   }
 
   // 4-wide //

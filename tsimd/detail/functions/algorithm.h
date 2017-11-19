@@ -57,7 +57,8 @@ namespace tsimd {
 
   // 1-wide //
 
-  TSIMD_INLINE bool any(const vboolf1 &a)
+  template <typename T, typename = traits::is_bool_t<T>>
+  TSIMD_INLINE bool any(const pack<T, 1> &a)
   {
     return a[0];
   }
@@ -98,6 +99,11 @@ namespace tsimd {
     return any(a);
   }
 
+  TSIMD_INLINE bool all(const vboold1 &a)
+  {
+    return any(a);
+  }
+
   // 4-wide //
 
   // TODO
@@ -122,7 +128,7 @@ namespace tsimd {
   // 1-wide //
 
   template <typename T>
-  TSIMD_INLINE pack<T, 1> select(const vboolf1 &m,
+  TSIMD_INLINE pack<T, 1> select(const pack<bool_t<T>, 1> &m,
                                  const pack<T, 1> &t,
                                  const pack<T, 1> &f)
   {

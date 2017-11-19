@@ -33,9 +33,9 @@ namespace tsimd {
   // 1-wide //
 
   template <typename T>
-  TSIMD_INLINE vboolf1 operator<(const pack<T, 1> &p1, const pack<T, 1> &p2)
+  TSIMD_INLINE mask<T, 1> operator<(const pack<T, 1> &p1, const pack<T, 1> &p2)
   {
-    return vboolf1(p1[0] < p2[0]);
+    return mask<T, 1>(p1[0] < p2[0]);
   }
 
   // 4-wide //

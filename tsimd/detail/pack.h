@@ -52,7 +52,7 @@ namespace tsimd {
 
     // (ugly syntax here) --> contstruct from intrinsic_t by value
     template <typename IT = intrinsic_t>
-    pack(typename std::enable_if<W != 1, IT>::type value);
+    pack(traits::enable_if_t<W != 1, IT> value);
 
     pack(half_intrinsic_t a, half_intrinsic_t b);
 
@@ -110,8 +110,11 @@ namespace tsimd {
 
   // mask types and true/false value aliases //////////////////////////////////
 
+  template <typename T>
+  using bool_t = typename traits::bool_type_for<T>::type;
+
   template <typename T, int W = TSIMD_DEFAULT_WIDTH>
-  using mask = pack<typename traits::bool_type<T>::type, W>;
+  using mask = pack<bool_t<T>, W>;
 
   template <int W = TSIMD_DEFAULT_WIDTH>
   using maskf = pack<bool32_t, W>;
@@ -120,6 +123,17 @@ namespace tsimd {
   using maskd = pack<bool64_t, W>;
 
   using vmask = maskf<TSIMD_DEFAULT_WIDTH>;
+
+  // Mask type for a given pack ///////////////////////////////////////////////
+
+  template <typename MASK_T>
+  struct mask_for_pack
+  {
+    using type = pack<bool_t<typename MASK_T::value_t>, MASK_T::static_size>;
+  };
+
+  template <typename MASK_T>
+  using mask_for_pack_t = typename mask_for_pack<MASK_T>::type;
 
   // pack<> aliases ///////////////////////////////////////////////////////////
 
@@ -131,7 +145,7 @@ namespace tsimd {
   using vllong1  = pack<long long, 1>;
   using vboolf1  = maskf<1>;
   using vbool1   = vboolf1;
-  using vboold1  = vllong1;
+  using vboold1  = maskd<1>;
 
   /* 4-wide shortcuts */
   using vfloat4  = pack<float, 4>;
@@ -141,7 +155,7 @@ namespace tsimd {
   using vllong4  = pack<long long, 4>;
   using vboolf4  = maskf<4>;
   using vbool4   = vboolf4;
-  using vboold4  = vllong4;
+  using vboold4  = maskd<4>;
 
   /* 8-wide shortcuts */
   using vfloat8  = pack<float, 8>;
@@ -151,7 +165,7 @@ namespace tsimd {
   using vllong8  = pack<long long, 8>;
   using vboolf8  = maskf<8>;
   using vbool8   = vboolf8;
-  using vboold8  = vllong8;
+  using vboold8  = maskd<8>;
 
   /* 16-wide shortcuts */
   using vfloat16  = pack<float, 16>;
@@ -161,7 +175,7 @@ namespace tsimd {
   using vllong16  = pack<long long, 16>;
   using vboolf16  = maskf<16>;
   using vbool16   = vboolf16;
-  using vboold16  = vllong16;
+  using vboold16  = maskd<16>;
 
   /* default shortcuts */
   using vfloat  = pack<float, TSIMD_DEFAULT_WIDTH>;
@@ -169,9 +183,9 @@ namespace tsimd {
   using vint    = pack<int, TSIMD_DEFAULT_WIDTH>;
   using vuint   = pack<unsigned int, TSIMD_DEFAULT_WIDTH / 2>;
   using vllong  = pack<long long, TSIMD_DEFAULT_WIDTH / 2>;
-  using vbool   = maskf<TSIMD_DEFAULT_WIDTH>;
-  using vboolf  = vfloat;
-  using vboold  = vllong;
+  using vboolf  = maskf<TSIMD_DEFAULT_WIDTH>;
+  using vbool   = vboolf;
+  using vboold  = maskd<TSIMD_DEFAULT_WIDTH>;
 
   // pack<> inlined members ///////////////////////////////////////////////////
 

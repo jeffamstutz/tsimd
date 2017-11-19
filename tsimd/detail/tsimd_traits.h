@@ -76,6 +76,18 @@ namespace tsimd {
     template <typename T>
     using valid_type_for_pack_t = enable_if_t<valid_type_for_pack<T>::value>;
 
+    // If given type is a bool32_t or bool64_t ////////////////////////////////
+
+    template <typename T>
+    struct is_bool
+    {
+      static const bool value = std::is_same<T, bool32_t>::value ||
+                                std::is_same<T, bool64_t>::value;
+    };
+
+    template <typename T>
+    using is_bool_t = enable_if_t<is_bool<T>::value>;
+
     // If given pack is a mask (vbool) or not /////////////////////////////////
 
     template <typename MASK_T>
@@ -290,7 +302,7 @@ namespace tsimd {
     // Bool type for given primitive type /////////////////////////////////////
 
     template <typename T>
-    struct bool_type
+    struct bool_type_for
     {
       using type = undefined_type;
     };
@@ -298,19 +310,19 @@ namespace tsimd {
     // 32-bit //
 
     template <>
-    struct bool_type<float>
+    struct bool_type_for<float>
     {
       using type = bool32_t;
     };
 
     template <>
-    struct bool_type<int>
+    struct bool_type_for<int>
     {
       using type = bool32_t;
     };
 
     template <>
-    struct bool_type<bool32_t>
+    struct bool_type_for<bool32_t>
     {
       using type = bool32_t;
     };
@@ -318,19 +330,19 @@ namespace tsimd {
     // 64-bit //
 
     template <>
-    struct bool_type<double>
+    struct bool_type_for<double>
     {
       using type = bool64_t;
     };
 
     template <>
-    struct bool_type<long long>
+    struct bool_type_for<long long>
     {
       using type = bool64_t;
     };
 
     template <>
-    struct bool_type<bool64_t>
+    struct bool_type_for<bool64_t>
     {
       using type = bool64_t;
     };
