@@ -22,48 +22,34 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
+# precompile CATCH2 main() function
 add_library(tsimd_catch_main STATIC catch/catch_main.cpp)
 
-## 1-wide ##
+# this macro encapsulates the common code for defining a unique test
+macro(tsimd_add_pack_test TEST_NAME TEST_WIDTH TEST_DOUBLE)
+  add_executable(test_pack${TEST_NAME} test_pack.cpp)
 
-add_executable(test_pack32x1 test_pack.cpp)
+  target_compile_definitions(test_pack${TEST_NAME} PRIVATE
+                             -DTEST_WIDTH=${TEST_WIDTH})
+  target_compile_definitions(test_pack${TEST_NAME} PRIVATE
+                             -DTEST_DOUBLE_PRECISION=${TEST_DOUBLE})
+  target_link_libraries(test_pack${TEST_NAME} tsimd_catch_main)
 
-target_compile_definitions(test_pack32x1 PRIVATE -DTEST_WIDTH=1)
-target_link_libraries(test_pack32x1 tsimd_catch_main)
+  set(TEST_EXE ${EXECUTABLE_OUTPUT_PATH}/test_pack${TEST_NAME})
 
-set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack32x1)
+  add_test(arithmetic_operators${TEST_NAME} ${TEST_EXE} "[arithmetic_operators]")
+  add_test(bitwise_operators${TEST_NAME}    ${TEST_EXE} "[bitwise_operators]")
+  add_test(logic_operators${TEST_NAME}      ${TEST_EXE} "[logic_operators]")
+  add_test(math_functions${TEST_NAME}       ${TEST_EXE} "[math_functions]")
+  add_test(algorithms${TEST_NAME}           ${TEST_EXE} "[algorithms]")
+endmacro()
 
-add_test(arithmetic_operators32x1 ${TEST_EXE1} "[arithmetic_operators]")
-add_test(bitwise_operators32x1    ${TEST_EXE1} "[bitwise_operators]")
-add_test(logic_operators32x1      ${TEST_EXE1} "[logic_operators]")
-add_test(math_functions32x1       ${TEST_EXE1} "[math_functions]")
-add_test(algorithms32x1           ${TEST_EXE1} "[algorithms]")
-
-add_executable(test_pack64x1 test_pack.cpp)
-
-target_compile_definitions(test_pack64x1 PRIVATE -DTEST_WIDTH=1)
-target_compile_definitions(test_pack64x1 PRIVATE -DTEST_DOUBLE_PRECISION=1)
-target_link_libraries(test_pack64x1 tsimd_catch_main)
-
-set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack64x1)
-
-add_test(arithmetic_operators64x1 ${TEST_EXE1} "[arithmetic_operators]")
-add_test(bitwise_operators64x1    ${TEST_EXE1} "[bitwise_operators]")
-add_test(logic_operators64x1      ${TEST_EXE1} "[logic_operators]")
-add_test(math_functions64x1       ${TEST_EXE1} "[math_functions]")
-add_test(algorithms64x1           ${TEST_EXE1} "[algorithms]")
-
-## 8-wide ##
-
-add_executable(test_pack32x8 test_pack.cpp)
-
-target_compile_definitions(test_pack32x8 PRIVATE -DTEST_WIDTH=8)
-target_link_libraries(test_pack32x8 tsimd_catch_main)
-
-set(TEST_EXE8 ${EXECUTABLE_OUTPUT_PATH}/test_pack32x8)
-
-add_test(arithmetic_operators32x8 ${TEST_EXE8} "[arithmetic_operators]")
-add_test(bitwise_operators32x8    ${TEST_EXE8} "[bitwise_operators]")
-add_test(logic_operators32x8      ${TEST_EXE8} "[logic_operators]")
-add_test(math_functions32x8       ${TEST_EXE8} "[math_functions]")
-add_test(algorithms32x8           ${TEST_EXE8} "[algorithms]")
+# define the tests
+tsimd_add_pack_test(32x1  1  0)
+tsimd_add_pack_test(64x1  1  1)
+#tsimd_add_pack_test(32x4  4  0)
+#tsimd_add_pack_test(64x4  4  1)
+tsimd_add_pack_test(32x8  8  0)
+#tsimd_add_pack_test(64x8  8  1)
+#tsimd_add_pack_test(32x16 16 0)
+#tsimd_add_pack_test(64x16 16 1)
