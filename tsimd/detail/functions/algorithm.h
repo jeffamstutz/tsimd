@@ -35,8 +35,12 @@ namespace tsimd {
       fcn(p[i], i);
   }
 
-  template <typename BOOL_T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach_active(const mask<BOOL_T, W> &m, FCN_T &&fcn)
+  template <
+      typename BOOL_T,
+      int W,
+      typename FCN_T,
+      typename = traits::is_bool_t<BOOL_T>>
+  TSIMD_INLINE void foreach_active(const pack<BOOL_T, W> &m, FCN_T &&fcn)
   {
     for (int i = 0; i < W; ++i)
       if (m[i])

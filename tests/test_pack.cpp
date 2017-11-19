@@ -380,20 +380,32 @@ TEST_CASE("foreach()", "[algorithms]")
 
 TEST_CASE("foreach_active()", "[algorithms]")
 {
-  vbool m(false);
+  if (vbool::static_size > 1) {
+    vbool m(false);
 
-  m[0] = true;
-  m[2] = true;
+    m[0] = true;
+    m[2] = true;
 
-  vint v1(0);
+    vint v1(0);
 
-  vint expected(0);
-  expected[0] = 2;
-  expected[2] = 2;
+    vint expected(0);
+    expected[0] = 2;
+    expected[2] = 2;
 
-  tsimd::foreach_active(m, v1, [](int_type &v) { v = 2; });
+    tsimd::foreach_active(m, v1, [](int_type &v) { v = 2; });
 
-  REQUIRE(tsimd::all(v1 == expected));
+    REQUIRE(tsimd::all(v1 == expected));
+  } else {
+    vbool mf(false);
+    vbool mt(true);
+
+    int checker = 0;
+
+    tsimd::foreach_active(mf, [&](int) { checker++; });
+    REQUIRE(checker == 0);
+    tsimd::foreach_active(mt, [&](int) { checker++; });
+    REQUIRE(checker == 1);
+  }
 }
 
 TEST_CASE("any()", "[algorithms]")
