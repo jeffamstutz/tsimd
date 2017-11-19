@@ -178,7 +178,7 @@ namespace tsimd {
     template <>
     struct simd_type<double, 4>
     {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m256d;
 #else
       using type = double[4];
@@ -188,7 +188,7 @@ namespace tsimd {
     template <>
     struct simd_type<long long, 4>
     {
-#if defined(__AVX512__) || defined(__AVX2__)
+#if defined(__AVX512F__) || defined(__AVX2__)
       using type = __m256i;
 #else
       using type = long long[4];
@@ -206,10 +206,8 @@ namespace tsimd {
     template <>
     struct simd_type<float, 8>
     {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m256;
-#elif defined(__SSE__)
-      using type = __m128[2];
 #else
       using type = float[8];
 #endif
@@ -218,10 +216,8 @@ namespace tsimd {
     template <>
     struct simd_type<int, 8>
     {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m256i;
-#elif defined(__SSE__)
-      using type = __m128i[2];
 #else
       using type = int[8];
 #endif
@@ -235,7 +231,35 @@ namespace tsimd {
 
     // 16-wide //
 
-    // TODO
+    template <>
+    struct simd_type<float, 16>
+    {
+#if defined(__AVX512F__)
+      using type = __m512;
+#else
+      using type = float[16];
+#endif
+    };
+
+    template <>
+    struct simd_type<int, 16>
+    {
+#if defined(__AVX512F__)
+      using type = __m512;
+#else
+      using type = int[16];
+#endif
+    };
+
+    template <>
+    struct simd_type<bool32_t, 16>
+    {
+#if defined(__AVX512F__)
+      using type = __mmask32;
+#else
+      using type = int[16];
+#endif
+    };
 
     // Provide intrinsic type half the size of given width ////////////////////
 
@@ -272,7 +296,7 @@ namespace tsimd {
     template <>
     struct half_simd_type<float, 8>
     {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m128;
 #else
       using type = float[4];
@@ -282,7 +306,7 @@ namespace tsimd {
     template <>
     struct half_simd_type<int, 8>
     {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
       using type = __m128i;
 #else
       using type = int[4];
@@ -297,7 +321,31 @@ namespace tsimd {
 
     // 16-wide //
 
-    // TODO
+    template <>
+    struct half_simd_type<float, 16>
+    {
+#if defined(__AVX512F__)
+      using type = __m256;
+#else
+      using type = float[8];
+#endif
+    };
+
+    template <>
+    struct half_simd_type<int, 16>
+    {
+#if defined(__AVX512F__)
+      using type = __m256i;
+#else
+      using type = int[8];
+#endif
+    };
+
+    template <>
+    struct half_simd_type<bool32_t, 16>
+    {
+      using type = half_simd_type<float, 16>::type;
+    };
 
     // Bool type for given primitive type /////////////////////////////////////
 

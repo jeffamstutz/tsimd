@@ -79,7 +79,35 @@ namespace tsimd {
 
   // 16-wide //
 
-  // TODO
+  TSIMD_INLINE vboolf16 operator<(const vfloat16 &p1, const vfloat16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_cmp_ps_mask(p1, p2, _MM_CMPINT_LT);
+#else
+    vboolf16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = (p1[i] + p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf16 operator<(const vint16 &p1, const vint16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_cmp_epi32_mask(p1, p2, _MM_CMPINT_LT);
+#else
+    vboolf16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = (p1[i] + p2[i]);
+
+    return result;
+#endif
+  }
+
+  // Inferred pack-scalar operators ///////////////////////////////////////////
 
   template <typename T,
             int W,

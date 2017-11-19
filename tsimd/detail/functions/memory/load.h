@@ -204,6 +204,70 @@ namespace tsimd {
 
   // 16-wide //
 
-  // TODO
+  template <>
+  TSIMD_INLINE vfloat16 load(const void *_src)
+  {
+#if defined(__AVX512F__)
+    return _mm512_load_ps((float*)_src); 
+#else
+    auto *src = (typename vfloat16::value_t *)_src;
+    vfloat16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = src[i];
+
+    return result;
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE vfloat16 load(const void *_src, const vboolf16 &mask)
+  {
+#if  defined(__AVX512F__)
+    return _mm512_mask_load_ps(_mm512_setzero_ps(), mask, (float*)_src); 
+#else
+    auto *src = (typename vfloat16::value_t *)_src;
+    vfloat16 result;
+
+    for (int i = 0; i < 16; ++i)
+      if (mask[i])
+        result[i] = src[i];
+
+    return result;
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE vint16 load(const void *_src)
+  {
+#if defined(__AVX512F__)
+    return _mm512_load_si512((int*)_src); 
+#else
+    auto *src = (typename vint16::value_t *)_src;
+    vint16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = src[i];
+
+    return result;
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE vint16 load(const void *_src, const vboolf16 &mask)
+  {
+#if defined(__AVX512F__)
+    return _mm512_mask_load_epi32 (_mm512_setzero_epi32(), mask, _src); 
+#else
+    auto *src = (typename vint16::value_t *)_src;
+    vint16 result;
+
+    for (int i = 0; i < 16; ++i)
+      if (mask[i])
+        result[i] = src[i];
+
+    return result;
+#endif
+  }
 
 }  // namespace tsimd

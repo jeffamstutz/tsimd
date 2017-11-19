@@ -80,7 +80,7 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_or_ps(p1, p2);
 #else
-    vbool8 result;
+    vboolf8 result;
 
     for (int i = 0; i < 8; ++i)
       result[i] = p1[i] | p2[i];
@@ -91,7 +91,44 @@ namespace tsimd {
 
   // 16-wide //
 
-  // TODO
+  TSIMD_INLINE vfloat16 operator|(const vfloat16 &p1, const vfloat16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_or_ps(p1, p2);
+#else
+    NOT_YET_IMPLEMENTED;
+#endif
+  }
+
+  TSIMD_INLINE vint16 operator|(const vint16 &p1, const vint16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_or_epi32(p1, p2);
+#else
+    vint16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = (p1[i] | p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf16 operator|(const vboolf16 &p1, const vboolf16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_kxnor(p1, p2);
+#else
+    vboolf16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = (p1[i] | p2[i]);
+
+    return result;
+#endif
+  }
+
+  // Inferred pack-scalar operators ///////////////////////////////////////////
 
   template <typename T,
             int W,

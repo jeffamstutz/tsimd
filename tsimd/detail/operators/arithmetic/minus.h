@@ -78,7 +78,35 @@ namespace tsimd {
 
   // 16-wide //
 
-  // TODO
+  TSIMD_INLINE vfloat16 operator-(const vfloat16 &p1, const vfloat16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_sub_ps(p1, p2);
+#else
+    vfloat16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = (p1[i] - p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vint16 operator-(const vint16 &p1, const vint16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_sub_epi32(p1, p2);
+#else
+    vint16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = (p1[i] - p2[i]);
+
+    return result;
+#endif
+  }
+
+  // Inferred pack-scalar operators ///////////////////////////////////////////
 
   template <typename T,
             int W,

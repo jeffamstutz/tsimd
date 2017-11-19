@@ -75,16 +75,33 @@ namespace tsimd {
 
   TSIMD_INLINE bool any(const vboolf8 &a)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return !_mm256_testz_ps(a, a);
 #else
-    NOT_YET_IMPLEMENTED;
+    for (int i = 0; i < 8; ++i) {
+      if (a[i])
+        return true;
+    }
+
+    return false;
 #endif
   }
 
   // 16-wide //
 
-  // TODO
+  TSIMD_INLINE bool any(const vboolf16 &a)
+  {
+#if defined(__AVX512F__)
+    return _mm512_kortestz(a, a) == 0;
+#else
+    for (int i = 0; i < 16; ++i) {
+      if (a[i])
+        return true;
+    }
+
+    return false;
+#endif
+  }
 
   // none() ///////////////////////////////////////////////////////////////////
 
@@ -116,16 +133,33 @@ namespace tsimd {
 
   TSIMD_INLINE bool all(const vboolf8 &a)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_movemask_ps(a) == (unsigned int)0xff;
 #else
-    NOT_YET_IMPLEMENTED;
+    for (int i = 0; i < 8; ++i) {
+      if (!a[i])
+        return false;
+    }
+
+    return true;
 #endif
   }
 
   // 16-wide //
 
-  // TODO
+  TSIMD_INLINE bool all(const vboolf16 &a)
+  {
+#if defined(__AVX512F__)
+    return _mm512_kortestc(a, a) != 0;
+#else
+    for (int i = 0; i < 16; ++i) {
+      if (!a[i])
+        return false;
+    }
+
+    return true;
+#endif
+  }
 
   // select() /////////////////////////////////////////////////////////////////
 
@@ -149,9 +183,7 @@ namespace tsimd {
                               const vfloat8 &t,
                               const vfloat8 &f)
   {
-#if defined(__AVX512__)
-    return _mm256_mask_blend_ps(m, f, t);
-#elif defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_blendv_ps(f, t, m);
 #else
     vfloat8 result;
@@ -165,7 +197,7 @@ namespace tsimd {
 
   TSIMD_INLINE vint8 select(const vboolf8 &m, const vint8 &t, const vint8 &f)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_castps_si256(
         _mm256_blendv_ps(_mm256_castsi256_ps(f), _mm256_castsi256_ps(t), m));
 #else
@@ -180,6 +212,36 @@ namespace tsimd {
 
   // 16-wide //
 
-  // TODO
+  TSIMD_INLINE vfloat16 select(const vboolf16 &m,
+                               const vfloat16 &t,
+                               const vfloat16 &f)
+  {
+#if defined(__AVX512F__)
+    return _mm512_mask_blend_ps(m, f, t);
+#else
+    vfloat16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = m[i] ? t[i] : f[i];
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vint16 select(const vboolf16 &m,
+                             const vint16 &t,
+                             const vint16 &f)
+  {
+#if defined(__AVX512F__)
+    return _mm512_mask_or_epi32(f, m, t, t);
+#else
+    vint16 result;
+
+    for (int i = 0; i < 16; ++i)
+      result[i] = m[i] ? t[i] : f[i];
+
+    return result;
+#endif
+  }
 
 }  // namespace tsimd

@@ -470,8 +470,8 @@ TEST_CASE("select()", "[algorithms]")
     auto result_true  = tsimd::select(mt, v1, v2);
     auto result_false = tsimd::select(mf, v1, v2);
 
-    REQUIRE(result_true  == v1);
-    REQUIRE(result_false == v2);
+    REQUIRE(tsimd::all(result_true  == v1));
+    REQUIRE(tsimd::all(result_false == v2));
   }
 }
 

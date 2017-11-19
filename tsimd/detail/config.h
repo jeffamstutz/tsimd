@@ -62,8 +62,19 @@
 #define TSIMD_INLINE inline __attribute__((always_inline))
 #endif
 
+#if 0
 #define NOT_YET_IMPLEMENTED \
   static_assert(false, "This function is not yet implemented!");
+#elif 0
+#define NOT_YET_IMPLEMENTED \
+  throw std::runtime_error("This function is not yet implemented!");
+#else
+#define NOT_YET_IMPLEMENTED \
+  throw std::runtime_error( \
+      __FUNCTION__ + \
+      std::string(" is not yet implemented!") \
+  );
+#endif
 
 #define DO_NOT_USE \
   static_assert(false, "This function should not be used in this context!");

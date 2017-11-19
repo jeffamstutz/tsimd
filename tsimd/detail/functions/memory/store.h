@@ -135,6 +135,58 @@ namespace tsimd {
 
   // 16-wide //
 
-  // TODO
+  template <>
+  TSIMD_INLINE void store(const vfloat16 &v, void *_dst)
+  {
+#if defined(__AVX512__)
+    _mm512_store_ps((float*)_dst, v); 
+#else
+    auto *dst = (typename vfloat16::value_t *)_dst;
+
+    for (int i = 0; i < 16; ++i)
+      dst[i] = v[i];
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE void store(const vfloat16 &v, void *_dst, const vboolf16 &mask)
+  {
+#if defined(__AVX512F__)
+    _mm512_mask_store_ps((float*)_dst, mask, v); 
+#else
+    auto *dst = (typename vfloat16::value_t *)_dst;
+
+    for (int i = 0; i < 16; ++i)
+      if (mask[i])
+        dst[i] = v[i];
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE void store(const vint16 &v, void *_dst)
+  {
+#if defined(__AVX512F__)
+    _mm512_store_si512(_dst, v); 
+#else
+    auto *dst = (typename vint16::value_t *)_dst;
+
+    for (int i = 0; i < 16; ++i)
+      dst[i] = v[i];
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE void store(const vint16 &v, void *_dst, const vboolf16 &mask)
+  {
+#if defined(__AVX512F__)
+    _mm512_mask_store_epi32(_dst, mask, v); 
+#else
+    auto *dst = (typename vint16::value_t *)_dst;
+
+    for (int i = 0; i < 16; ++i)
+      if (mask[i])
+        dst[i] = v[i];
+#endif
+  }
 
 }  // namespace tsimd
