@@ -33,10 +33,21 @@
 #define TEST_WIDTH 1
 #endif
 
-using bool32_t = tsimd::bool32_t;
-using vbool    = tsimd::pack<bool32_t, TEST_WIDTH>;
-using vfloat   = tsimd::pack<float, TEST_WIDTH>;
-using vint     = tsimd::pack<int, TEST_WIDTH>;
+#ifndef TEST_DOUBLE_PRECISION
+#define TEST_DOUBLE_PRECISION 0
+#endif
+
+#if TEST_DOUBLE_PRECISION
+using bool_t = tsimd::bool64_t;
+using vbool  = tsimd::pack<bool_t, TEST_WIDTH>;
+using vfloat = tsimd::pack<double, TEST_WIDTH>;
+using vint   = tsimd::pack<long long, TEST_WIDTH>;
+#else
+using bool_t = tsimd::bool32_t;
+using vbool  = tsimd::pack<bool_t, TEST_WIDTH>;
+using vfloat = tsimd::pack<float, TEST_WIDTH>;
+using vint   = tsimd::pack<int, TEST_WIDTH>;
+#endif
 
 /* TODO: add tests for -->
  *         - operator<<()
@@ -427,7 +438,7 @@ TEST_CASE("all()")
     REQUIRE(!tsimd::all(m));
   }
 
-  foreach (m, [](bool32_t &l, int) { l = true; })
+  foreach (m, [](bool_t &l, int) { l = true; })
     ;
   REQUIRE(tsimd::all(m));
 }

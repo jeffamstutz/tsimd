@@ -24,52 +24,52 @@
 
 ## 1-wide ##
 
-add_executable(test_pack1
+add_executable(test_pack32x1
   doctest/doctest.h
   test_pack.cpp
 )
 
-target_compile_definitions(test_pack1 PRIVATE -DTEST_WIDTH=1)
+target_compile_definitions(test_pack32x1 PRIVATE -DTEST_WIDTH=1)
 
-set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack1)
+set(TEST_EXE1 ${EXECUTABLE_OUTPUT_PATH}/test_pack32x1)
 
-add_test(arithmetic_operators1
+add_test(arithmetic_operators32x1
          ${TEST_EXE1} "--test-suite=\"arithmetic operators\"")
 
-add_test(bitwise_operators1
+add_test(bitwise_operators32x1
          ${TEST_EXE1} "--test-suite=\"bitwise operators\"")
 
-add_test(logic_operators1
+add_test(logic_operators32x1
          ${TEST_EXE1} "--test-suite=\"logic operators\"")
 
-add_test(math_functions1
+add_test(math_functions32x1
          ${TEST_EXE1} "--test-suite=\"math functions\"")
 
-add_test(algorithms1
+add_test(algorithms32x1
          ${TEST_EXE1} "--test-suite=\"algorithms\"")
 
 ## 8-wide ##
 
-add_executable(test_pack8
+add_executable(test_pack32x8
   doctest/doctest.h
   test_pack.cpp
 )
 
-target_compile_definitions(test_pack8 PRIVATE -DTEST_WIDTH=8)
+target_compile_definitions(test_pack32x8 PRIVATE -DTEST_WIDTH=8)
 
-set(TEST_EXE8 ${EXECUTABLE_OUTPUT_PATH}/test_pack8)
+set(TEST_EXE8 ${EXECUTABLE_OUTPUT_PATH}/test_pack32x8)
 
-add_test(arithmetic_operators8
+add_test(arithmetic_operators32x8
          ${TEST_EXE8} "--test-suite=\"arithmetic operators\"")
 
-add_test(bitwise_operators8
+add_test(bitwise_operators32x8
          ${TEST_EXE8} "--test-suite=\"bitwise operators\"")
 
-add_test(logic_operators8
+add_test(logic_operators32x8
          ${TEST_EXE8} "--test-suite=\"logic operators\"")
 
-add_test(math_functions8
+add_test(math_functions32x8
          ${TEST_EXE8} "--test-suite=\"math functions\"")
 
-add_test(algorithms8
+add_test(algorithms32x8
          ${TEST_EXE8} "--test-suite=\"algorithms\"")
