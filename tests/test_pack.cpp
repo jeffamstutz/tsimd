@@ -22,8 +22,9 @@
 // DEALINGS IN THE SOFTWARE.                                                  //
 // ========================================================================== //
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest/doctest.h"
+#define CATCH_CONFIG_MAIN
+#include "catch/catch.hpp"
+
 #include "tsimd/tsimd.h"
 
 #include <algorithm>
@@ -61,9 +62,7 @@ using vint    = tsimd::pack<int_type, TEST_WIDTH>;
 
 // pack<> arithmetic operators ////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("arithmetic operators");
-
-TEST_CASE("binary operator+()")
+TEST_CASE("binary operator+()", "[arithmetic_operators]")
 {
   vfloat v1(1.f), v2(2.f);
 
@@ -78,7 +77,7 @@ TEST_CASE("binary operator+()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator+=()")
+TEST_CASE("binary operator+=()", "[arithmetic_operators]")
 {
   vfloat v1(1.f), v2(2.f);
 
@@ -89,7 +88,7 @@ TEST_CASE("binary operator+=()")
   REQUIRE(tsimd::all(v2 == vfloat(3.f)));
 }
 
-TEST_CASE("binary operator-()")
+TEST_CASE("binary operator-()", "[arithmetic_operators]")
 {
   vfloat v1(2.f), v2(1.f);
 
@@ -104,7 +103,7 @@ TEST_CASE("binary operator-()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator-=()")
+TEST_CASE("binary operator-=()", "[arithmetic_operators]")
 {
   vint v1(1), v2(2);
 
@@ -115,7 +114,7 @@ TEST_CASE("binary operator-=()")
   REQUIRE(tsimd::all(v2 == vint(1)));
 }
 
-TEST_CASE("binary operator*()")
+TEST_CASE("binary operator*()", "[arithmetic_operators]")
 {
   vfloat v1(2.f), v2(1.f);
 
@@ -130,7 +129,7 @@ TEST_CASE("binary operator*()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator*=()")
+TEST_CASE("binary operator*=()", "[arithmetic_operators]")
 {
   vint v1(1), v2(2);
 
@@ -141,7 +140,7 @@ TEST_CASE("binary operator*=()")
   REQUIRE(tsimd::all(v2 == vint(4)));
 }
 
-TEST_CASE("binary operator/()")
+TEST_CASE("binary operator/()", "[arithmetic_operators]")
 {
   vint v1(4), v2(2);
 
@@ -156,7 +155,7 @@ TEST_CASE("binary operator/()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator/=()")
+TEST_CASE("binary operator/=()", "[arithmetic_operators]")
 {
   vint v1(8), v2(4);
 
@@ -167,7 +166,7 @@ TEST_CASE("binary operator/=()")
   REQUIRE(tsimd::all(v2 == vint(2)));
 }
 
-TEST_CASE("binary operator%()")
+TEST_CASE("binary operator%()", "[arithmetic_operators]")
 {
   vint v1(4), v2(3);
 
@@ -180,7 +179,7 @@ TEST_CASE("binary operator%()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator%=()")
+TEST_CASE("binary operator%=()", "[arithmetic_operators]")
 {
   vint v1(5), v2(4);
 
@@ -191,13 +190,9 @@ TEST_CASE("binary operator%=()")
   REQUIRE(tsimd::all(v2 == vint(1)));
 }
 
-TEST_SUITE_END();
-
 // pack<> bitwise operators ///////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("bitwise operators");
-
-TEST_CASE("binary operator<<()")
+TEST_CASE("binary operator<<()", "[bitwise_operators]")
 {
   vint v1(1);
   vint v2(1);
@@ -207,7 +202,7 @@ TEST_CASE("binary operator<<()")
   REQUIRE(tsimd::all((1 << v1) == vint(2)));
 }
 
-TEST_CASE("binary operator>>()")
+TEST_CASE("binary operator>>()", "[bitwise_operators]")
 {
   vint v1(2);
   vint v2(1);
@@ -217,7 +212,7 @@ TEST_CASE("binary operator>>()")
   REQUIRE(tsimd::all((4 >> v1) == vint(1)));
 }
 
-TEST_CASE("binary operator^()")
+TEST_CASE("binary operator^()", "[bitwise_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -227,13 +222,9 @@ TEST_CASE("binary operator^()")
   REQUIRE(tsimd::all((2 ^ v1) == vint(3)));
 }
 
-TEST_SUITE_END();
-
 // pack<> logic operators /////////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("logic operators");
-
-TEST_CASE("binary operator==()")
+TEST_CASE("binary operator==()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(1);
@@ -249,7 +240,7 @@ TEST_CASE("binary operator==()")
   REQUIRE(!tsimd::all(v1 == 1));
 }
 
-TEST_CASE("binary operator==()")
+TEST_CASE("binary operator!=()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -263,7 +254,7 @@ TEST_CASE("binary operator==()")
   REQUIRE(!tsimd::all(v1 != v2));
 }
 
-TEST_CASE("binary operator<()")
+TEST_CASE("binary operator<()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -273,7 +264,7 @@ TEST_CASE("binary operator<()")
   REQUIRE(tsimd::all(v1 < 2));
 }
 
-TEST_CASE("binary operator<=()")
+TEST_CASE("binary operator<=()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -285,7 +276,7 @@ TEST_CASE("binary operator<=()")
   REQUIRE(tsimd::all(v1 <= 2));
 }
 
-TEST_CASE("binary operator>()")
+TEST_CASE("binary operator>()", "[logic_operators]")
 {
   vint v1(2);
   vint v2(1);
@@ -295,7 +286,7 @@ TEST_CASE("binary operator>()")
   REQUIRE(tsimd::all(v1 > 1));
 }
 
-TEST_CASE("binary operator>=()")
+TEST_CASE("binary operator>=()", "[logic_operators]")
 {
   vint v1(2);
   vint v2(1);
@@ -307,7 +298,7 @@ TEST_CASE("binary operator>=()")
   REQUIRE(tsimd::all(v1 >= 2));
 }
 
-TEST_CASE("binary operator&&()")
+TEST_CASE("binary operator&&()", "[logic_operators]")
 {
   vbool m1(true);
   vbool m2(false);
@@ -315,7 +306,7 @@ TEST_CASE("binary operator&&()")
   REQUIRE(tsimd::none(m1 && m2));
 }
 
-TEST_CASE("binary operator||()")
+TEST_CASE("binary operator||()", "[logic_operators]")
 {
   vbool m1(true);
   vbool m2(false);
@@ -323,27 +314,23 @@ TEST_CASE("binary operator||()")
   REQUIRE(tsimd::all(m1 || m2));
 }
 
-TEST_CASE("unary operator!()")
+TEST_CASE("unary operator!()", "[logic_operators]")
 {
   vbool v(true);
 
   REQUIRE(tsimd::all(!v == vbool(false)));
 }
 
-TEST_CASE("unary operator-()")
+TEST_CASE("unary operator-()", "[logic_operators]")
 {
   vint v1(2);
 
   REQUIRE(tsimd::all(-v1 == vint(-2)));
 }
 
-TEST_SUITE_END();
-
 // pack<> math functions //////////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("math functions");
-
-TEST_CASE("abs()")
+TEST_CASE("abs()", "[math_functions]")
 {
   vint v1(-4);
   REQUIRE(tsimd::all((v1) != vint(4)));
@@ -351,41 +338,37 @@ TEST_CASE("abs()")
   REQUIRE(tsimd::all((v1) == vint(4)));
 }
 
-TEST_CASE("sqrt()")
+TEST_CASE("sqrt()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::sqrt(v1);
   REQUIRE(tsimd::all((v1) == vfloat(2.f)));
 }
 
-TEST_CASE("sin()")
+TEST_CASE("sin()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::sin(v1);
   REQUIRE(tsimd::all((v1) == vfloat(sin(4.f))));
 }
 
-TEST_CASE("cos()")
+TEST_CASE("cos()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::cos(v1);
   REQUIRE(tsimd::all((v1) == vfloat(cos(4.f))));
 }
 
-TEST_CASE("tan()")
+TEST_CASE("tan()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::tan(v1);
   REQUIRE(tsimd::all((v1) == vfloat(tan(4.f))));
 }
 
-TEST_SUITE_END();
-
 // pack<> algorithms //////////////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("algorithms");
-
-TEST_CASE("foreach()")
+TEST_CASE("foreach()", "[algorithms]")
 {
   vfloat v1(0.f);
   vfloat v2(1.f);
@@ -396,7 +379,7 @@ TEST_CASE("foreach()")
   REQUIRE(tsimd::all(v1 == v2));
 }
 
-TEST_CASE("foreach_active()")
+TEST_CASE("foreach_active()", "[algorithms]")
 {
   vbool m(false);
 
@@ -414,7 +397,7 @@ TEST_CASE("foreach_active()")
   REQUIRE(tsimd::all(v1 == expected));
 }
 
-TEST_CASE("any()")
+TEST_CASE("any()", "[algorithms]")
 {
   vbool m(false);
   REQUIRE(!tsimd::any(m));
@@ -422,7 +405,7 @@ TEST_CASE("any()")
   REQUIRE(tsimd::any(m));
 }
 
-TEST_CASE("none()")
+TEST_CASE("none()", "[algorithms]")
 {
   vbool m(false);
   REQUIRE(tsimd::none(m));
@@ -430,7 +413,7 @@ TEST_CASE("none()")
   REQUIRE(!tsimd::none(m));
 }
 
-TEST_CASE("all()")
+TEST_CASE("all()", "[algorithms]")
 {
   vbool m(false);
   REQUIRE(!tsimd::all(m));
@@ -445,7 +428,7 @@ TEST_CASE("all()")
   REQUIRE(tsimd::all(m));
 }
 
-TEST_CASE("select()")
+TEST_CASE("select()", "[algorithms]")
 {
   if (vbool::static_size > 1) {
     vbool m(false);
@@ -481,13 +464,9 @@ TEST_CASE("select()")
   }
 }
 
-TEST_SUITE_END();
-
 // pack<> memory operations ///////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("memory operations");
-
-TEST_CASE("unmasked load()")
+TEST_CASE("unmasked load()", "[memory_operations]")
 {
   TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
@@ -496,7 +475,7 @@ TEST_CASE("unmasked load()")
   REQUIRE(tsimd::all(v1 == 5));
 }
 
-TEST_CASE("masked load()")
+TEST_CASE("masked load()", "[memory_operations]")
 {
   TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
@@ -512,7 +491,7 @@ TEST_CASE("masked load()")
   REQUIRE(tsimd::all(v1 == expected));
 }
 
-TEST_CASE("unmasked gather()")
+TEST_CASE("unmasked gather()", "[memory_operations]")
 {
   TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 4);
@@ -525,7 +504,7 @@ TEST_CASE("unmasked gather()")
   REQUIRE(tsimd::all(result == 4));
 }
 
-TEST_CASE("unmasked store()")
+TEST_CASE("unmasked store()", "[memory_operations]")
 {
   TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
 
@@ -537,7 +516,7 @@ TEST_CASE("unmasked store()")
                 [](int_type v) { REQUIRE(v == 7); });
 }
 
-TEST_CASE("unmasked scatter()")
+TEST_CASE("unmasked scatter()", "[memory_operations]")
 {
   TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
 
@@ -551,5 +530,3 @@ TEST_CASE("unmasked scatter()")
   std::for_each(values.begin(), values.end(),
                 [](int_type v) { REQUIRE(v == 5); });
 }
-
-TEST_SUITE_END();
