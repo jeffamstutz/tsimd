@@ -102,10 +102,11 @@ namespace tsimd {
     // Interface checks //
 
     static_assert(traits::valid_type_for_pack<T>::value,
-                  "SIMD T type currently must be 'float', 'int', or a mask!");
+                  "pack 'T' type currently must be 'float', 'int', 'double',"
+                  " 'long long', 'bool32_t', or 'bool64_t'!");
 
     static_assert(W == 1 || W == 4 || W == 8 || W == 16,
-                  "SIMD width must be 1, 4, 8, or 16!");
+                  "pack 'W' size must be 1, 4, 8, or 16!");
   };
 
   // mask types and true/false value aliases //////////////////////////////////
