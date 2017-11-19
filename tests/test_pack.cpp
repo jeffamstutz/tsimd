@@ -27,6 +27,7 @@
 #include "tsimd/tsimd.h"
 
 #include <algorithm>
+#include <numeric>
 
 #ifndef TEST_WIDTH
 #define TEST_WIDTH 1
@@ -504,8 +505,7 @@ TEST_CASE("unmasked gather()")
   std::fill(values.begin(), values.end(), 4);
 
   vint offset;
-  for (int i = 0; i < TSIMD_DEFAULT_WIDTH; ++i)
-    offset[i] = i;
+  std::iota(offset.begin(), offset.end(), 0);
 
   auto result = tsimd::gather<vint>(values.data(), offset);
 
@@ -530,8 +530,7 @@ TEST_CASE("unmasked scatter()")
   vint v1(5);
 
   vint offset;
-  for (int i = 0; i < TSIMD_DEFAULT_WIDTH; ++i)
-    offset[i] = i;
+  std::iota(offset.begin(), offset.end(), 0);
 
   tsimd::scatter(v1, values.data(), offset);
 
