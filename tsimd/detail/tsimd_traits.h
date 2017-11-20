@@ -245,7 +245,7 @@ namespace tsimd {
     struct simd_type<int, 16>
     {
 #if defined(__AVX512F__)
-      using type = __m512;
+      using type = __m512i;
 #else
       using type = int[16];
 #endif
