@@ -61,12 +61,7 @@ namespace tsimd {
 #if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_xor_ps(m, vboolf8(true));
 #else
-    vboolf8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = !m[i];
-
-    return result;
+    return vboolf8(!vboolf4(m.vl), !vboolf4(m.vh));
 #endif
   }
 
@@ -77,12 +72,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_knot(m);
 #else
-    vboolf16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = !m[i];
-
-    return result;
+    return vboolf16(!vboolf8(m.vl), !vboolf8(m.vh));
 #endif
   }
 

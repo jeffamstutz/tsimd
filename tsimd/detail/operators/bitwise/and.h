@@ -96,12 +96,7 @@ namespace tsimd {
     return _mm256_castps_si256(
         _mm256_and_ps(_mm256_castsi256_ps(p1), _mm256_castsi256_ps(p2)));
 #else
-    vint8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = p1[i] & p2[i];
-
-    return result;
+    return vint8(vint4(p1.vl) & vint4(p2.vl), vint4(p1.vh) & vint4(p2.vh));
 #endif
   }
 
@@ -110,12 +105,8 @@ namespace tsimd {
 #if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_and_ps(p1, p2);
 #else
-    vboolf8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = p1[i] & p2[i];
-
-    return result;
+    return vboolf8(vboolf4(p1.vl) & vboolf4(p2.vl),
+                   vboolf4(p1.vh) & vboolf4(p2.vh));
 #endif
   }
 
@@ -135,12 +126,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_and_epi32(p1, p2);
 #else
-    vint16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = p1[i] & p2[i];
-
-    return result;
+    return vint16(vint8(p1.vl) & vint8(p2.vl), vint8(p1.vh) & vint8(p2.vh));
 #endif
   }
 
@@ -149,12 +135,8 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_kand(p1, p2);
 #else
-    vboolf16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = p1[i] & p2[i];
-
-    return result;
+    return vboolf16(vboolf8(p1.vl) & vboolf8(p2.vl),
+                    vboolf8(p1.vh) & vboolf8(p2.vh));
 #endif
   }
 

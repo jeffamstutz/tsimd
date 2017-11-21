@@ -331,7 +331,19 @@ namespace tsimd {
     template <typename T, int W>
     struct half_simd_type
     {
+      #if 0
       using type = half_simd_undefined_type<T>;
+      #else
+      using type = std::array<T, W/2>;
+      #endif
+    };
+
+    // 8-wide //
+
+    template <typename T>
+    struct half_simd_type<T, 1>
+    {
+      using type = std::array<T, 1>;
     };
 
     // 8-wide //
@@ -379,6 +391,24 @@ namespace tsimd {
       using type = __m256i;
     };
 #endif
+
+    // Provide half_simd_type is a std::array<T, W/2> /////////////////////////
+
+    template <typename T, int W>
+    struct half_simd_is_array
+    {
+      static const bool value =
+          std::is_same<typename half_simd_type<T, W>::type,
+                       std::array<T, W/2>>::value;
+    };
+
+    template <typename T>
+    struct half_simd_is_array<T, 1>
+    {
+      static const bool value =
+          std::is_same<typename half_simd_type<T, 1>::type,
+                       std::array<T, 1>>::value;
+    };
 
     // Bool type for given primitive type /////////////////////////////////////
 

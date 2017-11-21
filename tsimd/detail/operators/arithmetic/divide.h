@@ -70,24 +70,14 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_div_ps(p1, p2);
 #else
-    vfloat8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] / p2[i]);
-
-    return result;
+    return vfloat8(vfloat4(p1.vl) / vfloat4(p2.vl),
+                   vfloat4(p1.vh) / vfloat4(p2.vh));
 #endif
   }
 
   TSIMD_INLINE vint8 operator/(const vint8 &p1, const vint8 &p2)
   {
-    vint8 result;
-
-#pragma omp simd
-    for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] / p2[i]);
-
-    return result;
+    return vint8(vint4(p1.vl) / vint4(p2.vl), vint4(p1.vh) / vint4(p2.vh));
   }
 
   // 16-wide //
@@ -97,24 +87,14 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_div_ps(p1, p2);
 #else
-    vfloat16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = (p1[i] / p2[i]);
-
-    return result;
+    return vfloat16(vfloat8(p1.vl) / vfloat8(p2.vl),
+                    vfloat8(p1.vh) / vfloat8(p2.vh));
 #endif
   }
 
   TSIMD_INLINE vint16 operator/(const vint16 &p1, const vint16 &p2)
   {
-    vint16 result;
-
-#pragma omp simd
-    for (int i = 0; i < 16; ++i)
-      result[i] = (p1[i] / p2[i]);
-
-    return result;
+    return vint16(vint8(p1.vl) / vint8(p2.vl), vint8(p1.vh) / vint8(p2.vh));
   }
 
   // Inferred pack-scalar operators ///////////////////////////////////////////

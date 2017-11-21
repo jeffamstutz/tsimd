@@ -55,7 +55,13 @@ namespace tsimd {
     template <typename IT = intrinsic_t>
     pack(traits::enable_if_t<W != 1, IT> value);
 
-    pack(half_intrinsic_t a, half_intrinsic_t b);
+    // (ugly syntax here) --> contstruct from 2 x half_intrinsic_t by value
+    template <typename IT = half_intrinsic_t>
+    pack(traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
+         half_intrinsic_t b);
+
+    explicit pack(const std::array<T, W/2> &a, const std::array<T, W/2> &b);
+    explicit pack(const std::array<T, W> &arr);
 
     pack<T, W> &operator=(const value_t &);
 
@@ -76,6 +82,9 @@ namespace tsimd {
 
     operator const cast_intrinsic_t &() const;
     operator cast_intrinsic_t &();
+
+    operator const std::array<T, W> &() const;
+    operator std::array<T, W> &();
 
     operator const T *() const;
     operator T *();
@@ -210,10 +219,29 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::pack(pack<T, W>::half_intrinsic_t a,
-                                pack<T, W>::half_intrinsic_t b)
-      : vl(a), vh(b)
+  template <typename IT>
+  TSIMD_INLINE pack<T, W>::pack(
+    traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
+    half_intrinsic_t b
+  ) : vl(a), vh(b)
   {
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W> &_arr)
+      : arr(_arr)
+  {
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W/2> &a,
+                                const std::array<T, W/2> &b)
+  {
+    int i = 0;
+    for (int j = 0; j < W/2; j++, i++)
+      arr[i] = a[j];
+    for (int j = 0; j < W/2; j++, i++)
+      arr[i] = b[j];
   }
 
   template <typename T, int W>
@@ -270,6 +298,18 @@ namespace tsimd {
   TSIMD_INLINE pack<T, W>::operator cast_intrinsic_t &()
   {
     return cv;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator const std::array<T, W> &() const
+  {
+    return arr;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator std::array<T, W> &()
+  {
+    return arr;
   }
 
   template <typename T, int W>

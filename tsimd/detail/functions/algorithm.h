@@ -90,12 +90,7 @@ namespace tsimd {
 #if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return !_mm256_testz_ps(a, a);
 #else
-    for (int i = 0; i < 8; ++i) {
-      if (a[i])
-        return true;
-    }
-
-    return false;
+    return any(vboolf4(a.vl)) || any(vboolf4(a.vh));
 #endif
   }
 
@@ -106,12 +101,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_kortestz(a, a) == 0;
 #else
-    for (int i = 0; i < 16; ++i) {
-      if (a[i])
-        return true;
-    }
-
-    return false;
+    return any(vboolf8(a.vl)) || any(vboolf8(a.vh));
 #endif
   }
 
@@ -160,12 +150,7 @@ namespace tsimd {
 #if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_movemask_ps(a) == (unsigned int)0xff;
 #else
-    for (int i = 0; i < 8; ++i) {
-      if (!a[i])
-        return false;
-    }
-
-    return true;
+    return all(vboolf4(a.vl)) && all(vboolf4(a.vh));
 #endif
   }
 
@@ -176,12 +161,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_kortestc(a, a) != 0;
 #else
-    for (int i = 0; i < 16; ++i) {
-      if (!a[i])
-        return false;
-    }
-
-    return true;
+    return all(vboolf8(a.vl)) && all(vboolf8(a.vh));
 #endif
   }
 
@@ -240,15 +220,11 @@ namespace tsimd {
                               const vfloat8 &t,
                               const vfloat8 &f)
   {
-#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX2__) || defined(__AVX__)
     return _mm256_blendv_ps(f, t, m);
 #else
-    vfloat8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = m[i] ? t[i] : f[i];
-
-    return result;
+    return vfloat8(select(vboolf4(m.vl), vfloat4(t.vl), vfloat4(f.vl)),
+                   select(vboolf4(m.vh), vfloat4(t.vh), vfloat4(f.vh)));
 #endif
   }
 
@@ -258,12 +234,8 @@ namespace tsimd {
     return _mm256_castps_si256(
         _mm256_blendv_ps(_mm256_castsi256_ps(f), _mm256_castsi256_ps(t), m));
 #else
-    vint8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = m[i] ? t[i] : f[i];
-
-    return result;
+    return vint8(select(vboolf4(m.vl), vint4(t.vl), vint4(f.vl)),
+                 select(vboolf4(m.vh), vint4(t.vh), vint4(f.vh)));
 #endif
   }
 
@@ -276,12 +248,8 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_mask_blend_ps(m, f, t);
 #else
-    vfloat16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = m[i] ? t[i] : f[i];
-
-    return result;
+    return vfloat16(select(vboolf8(m.vl), vfloat8(t.vl), vfloat8(f.vl)),
+                    select(vboolf8(m.vh), vfloat8(t.vh), vfloat8(f.vh)));
 #endif
   }
 
@@ -292,12 +260,8 @@ namespace tsimd {
 #if defined(__AVX512F__)
     return _mm512_mask_or_epi32(f, m, t, t);
 #else
-    vint16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = m[i] ? t[i] : f[i];
-
-    return result;
+    return vint16(select(vboolf8(m.vl), vint8(t.vl), vint8(f.vl)),
+                  select(vboolf8(m.vh), vint8(t.vh), vint8(f.vh)));
 #endif
   }
 
