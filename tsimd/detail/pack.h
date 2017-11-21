@@ -181,8 +181,13 @@ namespace tsimd {
   using vfloat  = pack<float, TSIMD_DEFAULT_WIDTH>;
   using vdouble = pack<double, TSIMD_DEFAULT_WIDTH>;
   using vint    = pack<int, TSIMD_DEFAULT_WIDTH>;
+  #if TSIMD_DEFAULT_WIDTH > 1
   using vuint   = pack<unsigned int, TSIMD_DEFAULT_WIDTH / 2>;
   using vllong  = pack<long long, TSIMD_DEFAULT_WIDTH / 2>;
+  #else
+  using vuint   = vuint1;
+  using vllong  = vllong1;
+  #endif
   using vboolf  = maskf<TSIMD_DEFAULT_WIDTH>;
   using vboold  = maskd<TSIMD_DEFAULT_WIDTH>;
 
