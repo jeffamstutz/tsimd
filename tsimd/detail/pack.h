@@ -44,6 +44,7 @@ namespace tsimd {
     using value_t          = typename std::decay<T>::type;
     using intrinsic_t      = typename traits::simd_type<value_t, W>::type;
     using half_intrinsic_t = typename traits::half_simd_type<value_t, W>::type;
+    using cast_intrinsic_t = typename traits::cast_simd_type<value_t, W>::type;
 
     // Construction //
 
@@ -73,6 +74,9 @@ namespace tsimd {
     operator const intrinsic_t &() const;
     operator intrinsic_t &();
 
+    operator const cast_intrinsic_t &() const;
+    operator cast_intrinsic_t &();
+
     operator const T *() const;
     operator T *();
 
@@ -93,6 +97,7 @@ namespace tsimd {
     {
       std::array<T, W> arr;
       intrinsic_t v;
+      cast_intrinsic_t cv;
       struct
       {
         half_intrinsic_t vl, vh;
@@ -248,6 +253,18 @@ namespace tsimd {
   TSIMD_INLINE pack<T, W>::operator intrinsic_t &()
   {
     return v;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator const cast_intrinsic_t &() const
+  {
+    return cv;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::operator cast_intrinsic_t &()
+  {
+    return cv;
   }
 
   template <typename T, int W>

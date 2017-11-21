@@ -265,6 +265,88 @@ namespace tsimd {
 #endif
     };
 
+    // Provide a cast (float|int) intrinsic type given a SIMD width ///////
+
+    template <typename T, int W>
+    struct cast_simd_type
+    {
+      using type = undefined_type;
+    };
+
+    // 1-wide //
+
+    template <>
+    struct cast_simd_type<float, 1>
+    {
+      using type = simd_type<int, 1>::type;
+    };
+
+    template <>
+    struct cast_simd_type<int, 1>
+    {
+      using type = simd_type<float, 1>::type;
+    };
+
+    template <>
+    struct cast_simd_type<double, 1>
+    {
+      using type = simd_type<long long, 1>::type;
+    };
+
+    template <>
+    struct cast_simd_type<long long, 1>
+    {
+      using type = simd_type<double, 1>::type;
+    };
+
+    // 4-wide //
+
+    template <>
+    struct cast_simd_type<float, 4>
+    {
+      using type = simd_type<int, 4>::type;
+    };
+
+    template <>
+    struct cast_simd_type<int, 4>
+    {
+      using type = simd_type<float, 4>::type;
+    };
+
+    template <>
+    struct cast_simd_type<bool32_t, 4>
+    {
+      using type = simd_type<int, 4>::type;
+    };
+
+    // 8-wide //
+
+    template <>
+    struct cast_simd_type<float, 8>
+    {
+      using type = simd_type<int, 8>::type;
+    };
+
+    template <>
+    struct cast_simd_type<int, 8>
+    {
+      using type = simd_type<float, 8>::type;
+    };
+
+    // 16-wide //
+
+    template <>
+    struct cast_simd_type<float, 16>
+    {
+      using type = simd_type<int, 16>::type;
+    };
+
+    template <>
+    struct cast_simd_type<int, 16>
+    {
+      using type = simd_type<float, 16>::type;
+    };
+
     // Provide intrinsic type half the size of given width ////////////////////
 
     template <typename T, int W>
