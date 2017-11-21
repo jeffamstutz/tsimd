@@ -31,7 +31,9 @@
 
 #include "tsimd/tsimd.h"
 
+#ifdef TSIMD_ENABLE_EMBREE
 #include "../embc/simd/simd.h"
+#endif
 
 // ispc
 #ifdef TSIMD_ENABLE_ISPC
@@ -179,6 +181,7 @@ namespace tsimd {
 
 // embree version /////////////////////////////////////////////////////////////
 
+#ifdef TSIMD_ENABLE_EMBREE
 namespace embc {
 
   // foreach //
@@ -251,6 +254,7 @@ namespace embc {
   }
 
 }  // namespace embc
+#endif
 
 // omp version ////////////////////////////////////////////////////////////////
 
@@ -362,7 +366,9 @@ int main()
   std::vector<int> buf(width * height);
 
   std::iota(tsimd::programIndex.begin(), tsimd::programIndex.end(), 0);
+#ifdef TSIMD_ENABLE_EMBREE
   embc::foreach_v(embc::programIndex, [](int &v, int i) { v = i; });
+#endif
 
   auto bencher = pico_bench::Benchmarker<milliseconds>{64, seconds{10}};
 
@@ -418,6 +424,7 @@ int main()
 
   // embree run ///////////////////////////////////////////////////////////////
 
+#ifdef TSIMD_ENABLE_EMBREE
   std::fill(buf.begin(), buf.end(), 0);
 
   stats = bencher([&]() {
@@ -427,6 +434,7 @@ int main()
   const float embree_min = stats.min().count();
 
   std::cout << '\n' << "embree " << stats << '\n';
+#endif
 
   // ispc run /////////////////////////////////////////////////////////////////
 
@@ -460,10 +468,6 @@ int main()
             << "--> scalar was " << tsimdn_min / scalar_min
             << "x the speed of tsimd_n" << '\n';
 
-  std::cout << '\n'
-            << "--> scalar was " << embree_min / scalar_min
-            << "x the speed of embc" << '\n';
-
   // omp //
 
   std::cout << '\n'
@@ -477,10 +481,6 @@ int main()
   std::cout << '\n'
             << "--> omp was " << tsimdn_min / omp_min
             << "x the speed of tsimd_n" << '\n';
-
-  std::cout << '\n'
-            << "--> omp was " << embree_min / omp_min << "x the speed of embc"
-            << '\n';
 
   // tsimd_1 //
 
@@ -496,10 +496,6 @@ int main()
             << "--> tsimd_1 was " << tsimdn_min / tsimd1_min
             << "x the speed of tsimd_n" << '\n';
 
-  std::cout << '\n'
-            << "--> tsimd_1 was " << embree_min / tsimd1_min
-            << "x the speed of embc" << '\n';
-
   // tsimd_n //
 
   std::cout << '\n'
@@ -514,12 +510,9 @@ int main()
             << "--> tsimd_n was " << tsimd1_min / tsimdn_min
             << "x the speed of tsimd_1" << '\n';
 
-  std::cout << '\n'
-            << "--> tsimd_n was " << embree_min / tsimdn_min
-            << "x the speed of embc" << '\n';
-
   // embree //
 
+#ifdef TSIMD_ENABLE_EMBREE
   std::cout << '\n'
             << "--> embc was " << scalar_min / embree_min
             << "x the speed of scalar" << '\n';
@@ -535,6 +528,7 @@ int main()
   std::cout << '\n'
             << "--> embc was " << omp_min / embree_min << "x the speed of omp"
             << '\n';
+#endif
 
   // ispc //
 
@@ -555,9 +549,11 @@ int main()
             << "--> ispc was " << omp_min / ispc_min << "x the speed of omp"
             << '\n';
 
+#  ifdef TSIMD_ENABLE_EMBREE
   std::cout << '\n'
             << "--> ispc was " << embree_min / ispc_min << "x the speed of embc"
             << '\n';
+#  endif
 #endif
 
   writePPM("mandelbrot.ppm", width, height, buf.data());

@@ -172,7 +172,11 @@ namespace tsimd {
     template <>
     struct simd_type<bool32_t, 4>
     {
+#if 0//defined(__SSE__)
+      using type = __mmask8;
+#else
       using type = simd_type<float, 4>::type;
+#endif
     };
 
     template <>

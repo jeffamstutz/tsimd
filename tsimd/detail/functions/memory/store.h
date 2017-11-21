@@ -25,6 +25,7 @@
 #pragma once
 
 #include "../../pack.h"
+#include "load.h"
 
 namespace tsimd {
 
@@ -61,14 +62,54 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vfloat4 &v, void *_dst)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__) || \
-    defined(__SSE__)
+#if defined(__SSE__)
     _mm_store_ps((float *)_dst, v);
 #else
     auto *dst = (typename vfloat4::value_t *)_dst;
 
     for (int i = 0; i < 4; ++i)
       dst[i] = v[i];
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE void store(const vfloat4 &v, void *_dst, const vboolf4 &mask)
+  {
+#if defined(__SSE__)
+    store(select(mask, v, load<vfloat4>(_dst)), _dst);
+#else
+    auto *dst = (typename vfloat4::value_t *)_dst;
+
+    for (int i = 0; i < 4; ++i)
+      if (mask[i])
+        dst[i] = v[i];
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE void store(const vint4 &v, void *_dst)
+  {
+#if defined(__SSE__)
+    _mm_store_si128((__m128i*)_dst, v);
+#else
+    auto *dst = (typename vint4::value_t *)_dst;
+
+    for (int i = 0; i < 4; ++i)
+      dst[i] = v[i];
+#endif
+  }
+
+  template <>
+  TSIMD_INLINE void store(const vint4 &v, void *_dst, const vboolf4 &mask)
+  {
+#if defined(__SSE__)
+    store(select(mask, v, load<vint4>(_dst)), _dst);
+#else
+    auto *dst = (typename vint4::value_t *)_dst;
+
+    for (int i = 0; i < 4; ++i)
+      if (mask[i])
+        dst[i] = v[i];
 #endif
   }
 
@@ -139,7 +180,7 @@ namespace tsimd {
   TSIMD_INLINE void store(const vfloat16 &v, void *_dst)
   {
 #if defined(__AVX512__)
-    _mm512_store_ps((float*)_dst, v); 
+    _mm512_store_ps((float*)_dst, v);
 #else
     auto *dst = (typename vfloat16::value_t *)_dst;
 
@@ -152,7 +193,7 @@ namespace tsimd {
   TSIMD_INLINE void store(const vfloat16 &v, void *_dst, const vboolf16 &mask)
   {
 #if defined(__AVX512F__)
-    _mm512_mask_store_ps((float*)_dst, mask, v); 
+    _mm512_mask_store_ps((float*)_dst, mask, v);
 #else
     auto *dst = (typename vfloat16::value_t *)_dst;
 
@@ -166,7 +207,7 @@ namespace tsimd {
   TSIMD_INLINE void store(const vint16 &v, void *_dst)
   {
 #if defined(__AVX512F__)
-    _mm512_store_si512(_dst, v); 
+    _mm512_store_si512(_dst, v);
 #else
     auto *dst = (typename vint16::value_t *)_dst;
 
@@ -179,7 +220,7 @@ namespace tsimd {
   TSIMD_INLINE void store(const vint16 &v, void *_dst, const vboolf16 &mask)
   {
 #if defined(__AVX512F__)
-    _mm512_mask_store_epi32(_dst, mask, v); 
+    _mm512_mask_store_epi32(_dst, mask, v);
 #else
     auto *dst = (typename vint16::value_t *)_dst;
 

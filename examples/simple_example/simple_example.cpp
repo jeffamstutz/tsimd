@@ -54,6 +54,25 @@ int main()
 
   std::cout << std::endl;
 
+  std::cout << "test operator*=()" << std::endl;
+
+  {
+    vint v1(1), v2(2);
+
+    std::cout << "before..." << std::endl;
+    std::cout << "#1: " << v1 << std::endl;
+    std::cout << "#2: " << v2 << std::endl;
+
+    v1 *= v2;
+    v2 *= 2;
+
+    std::cout << "after..." << std::endl;
+    std::cout << "#1: " << v1 << std::endl;
+    std::cout << "#2: " << v2 << std::endl;
+  }
+
+  std::cout << std::endl;
+
   std::cout << "test any()" << std::endl;
 
   {

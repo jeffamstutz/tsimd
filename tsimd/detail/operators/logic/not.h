@@ -40,7 +40,19 @@ namespace tsimd {
 
   // 4-wide //
 
-  // TODO
+  TSIMD_INLINE vboolf4 operator!(const vboolf4 &m)
+  {
+#if defined(__SSE__)
+    return _mm_xor_ps(m, vboolf4(true));
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = !m[i];
+
+    return result;
+#endif
+  }
 
   // 8-wide //
 

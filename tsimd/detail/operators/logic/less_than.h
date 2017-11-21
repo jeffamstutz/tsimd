@@ -40,7 +40,33 @@ namespace tsimd {
 
   // 4-wide //
 
-  // TODO
+  TSIMD_INLINE vboolf4 operator<(const vfloat4 &p1, const vfloat4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_cmplt_ps(p1, p2);
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] < p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf4 operator<(const vint4 &p1, const vint4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_castsi128_ps(_mm_cmplt_epi32(p1, p2));
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] < p2[i]);
+
+    return result;
+#endif
+  }
 
   // 8-wide //
 

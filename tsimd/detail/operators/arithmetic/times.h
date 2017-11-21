@@ -38,7 +38,33 @@ namespace tsimd {
 
   // 4-wide //
 
-  // TODO
+  TSIMD_INLINE vfloat4 operator*(const vfloat4 &p1, const vfloat4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_mul_ps(p1, p2);
+#else
+    vfloat4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] * p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vint4 operator*(const vint4 &p1, const vint4 &p2)
+  {
+#if defined(__SSE4_1__)
+    return _mm_mullo_epi32(p1, p2);
+#else
+    vint4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] * p2[i]);
+
+    return result;
+#endif
+  }
 
   // 8-wide //
 
@@ -46,8 +72,6 @@ namespace tsimd {
   {
 #if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_mul_ps(p1, p2);
-#elif defined(__SSE__)
-    NOT_YET_IMPLEMENTED;
 #else
     vfloat8 result;
 
@@ -64,8 +88,6 @@ namespace tsimd {
     return _mm256_mullo_epi32(p1, p2);
 #elif defined(__AVX__)
     return vint8(_mm_mullo_epi32(p1.vl, p2.vl), _mm_mullo_epi32(p1.vh, p2.vh));
-#elif defined(__SSE__)
-    NOT_YET_IMPLEMENTED;
 #else
     vint8 result;
 

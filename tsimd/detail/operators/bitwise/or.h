@@ -40,7 +40,42 @@ namespace tsimd {
 
   // 4-wide //
 
-  // TODO
+  TSIMD_INLINE vfloat4 operator|(const vfloat4 &p1, const vfloat4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_or_ps(p1, p2);
+#else
+    NOT_YET_IMPLEMENTED;
+#endif
+  }
+
+  TSIMD_INLINE vint4 operator|(const vint4 &p1, const vint4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_or_si128(p1, p2);
+#else
+    vint4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = p1[i] | p2[i];
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf4 operator|(const vboolf4 &p1, const vboolf4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_or_ps(p1, p2);
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = p1[i] | p2[i];
+
+    return result;
+#endif
+  }
 
   // 8-wide //
 
@@ -49,12 +84,7 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_or_ps(p1, p2);
 #else
-    vfloat8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = p1[i] | p2[i];
-
-    return result;
+    NOT_YET_IMPLEMENTED;
 #endif
   }
 

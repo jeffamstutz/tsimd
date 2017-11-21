@@ -47,7 +47,7 @@ endmacro()
 # define the tests
 tsimd_add_pack_test(32x1  1  0)
 tsimd_add_pack_test(64x1  1  1)
-#tsimd_add_pack_test(32x4  4  0)
+tsimd_add_pack_test(32x4  4  0)
 #tsimd_add_pack_test(64x4  4  1)
 tsimd_add_pack_test(32x8  8  0)
 #tsimd_add_pack_test(64x8  8  1)
