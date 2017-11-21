@@ -16,4 +16,3 @@ TODO:
 - 64-bit element pack of widths > 1
 - replace ```#pragma omp simd``` loop implementations with intrinsics where
   appropriate
-- cascade fallbacks when native ISA width not available (e.g. 1x16 --> 2x8)
