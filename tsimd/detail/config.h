@@ -24,6 +24,12 @@
 
 #pragma once
 
+#ifdef _MSVC_LANG
+#define TSIMD_WIN 1
+#else
+#define TSIMD_WIN 0
+#endif
+
 #include <immintrin.h>
 
 #if defined(__AVX512F__)
@@ -54,7 +60,7 @@
 #define AVX_ZERO_UPPER()
 #endif
 
-#ifdef _WIN32
+#if TSIMD_WIN
 #define TSIMD_ALIGN(...) __declspec(align(__VA_ARGS__))
 #define TSIMD_INLINE inline
 #else
@@ -76,3 +82,9 @@
 
 #define DO_NOT_USE \
   static_assert(false, "This function should not be used in this context!");
+
+#if TSIMD_WIN
+#define TSIMD_USE_OPENMP 0
+#else
+#define TSIMD_USE_OPENMP 1
+#endif

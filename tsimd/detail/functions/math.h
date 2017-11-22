@@ -36,7 +36,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::abs(p[i]);
 
@@ -48,7 +50,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::sqrt(p[i]);
 
@@ -60,7 +64,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::sin(p[i]);
 
@@ -72,7 +78,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::cos(p[i]);
 
@@ -84,7 +92,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::tan(p[i]);
 
@@ -96,7 +106,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::pow(v[i], b);
 
@@ -108,7 +120,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::max(a[i], b[i]);
 
@@ -120,7 +134,9 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::min(a[i], b[i]);
 

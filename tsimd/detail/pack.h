@@ -52,13 +52,17 @@ namespace tsimd {
     explicit pack(T value);
 
     // (ugly syntax here) --> contstruct from intrinsic_t by value
+    // NOTE(jda) - must define here because of MSVC...
     template <typename IT = intrinsic_t>
-    pack(traits::enable_if_t<W != 1, IT> value);
+    TSIMD_INLINE
+    pack(traits::enable_if_t<W != 1, IT> value) : v(value) {}
 
     // (ugly syntax here) --> contstruct from 2 x half_intrinsic_t by value
+    // NOTE(jda) - must define here because of MSVC...
     template <typename IT = half_intrinsic_t>
+    TSIMD_INLINE
     pack(traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
-         half_intrinsic_t b);
+         half_intrinsic_t b) : vl(a), vh(b) {}
 
     explicit pack(const std::array<T, W / 2> &a, const std::array<T, W / 2> &b);
     explicit pack(const std::array<T, W> &arr);
@@ -221,25 +225,11 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(T value)
   {
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       arr[i] = value;
-  }
-
-  template <typename T, int W>
-  template <typename IT>
-  TSIMD_INLINE pack<T, W>::pack(typename std::enable_if<W != 1, IT>::type value)
-      : v(value)
-  {
-  }
-
-  template <typename T, int W>
-  template <typename IT>
-  TSIMD_INLINE pack<T, W>::pack(
-      traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
-      half_intrinsic_t b)
-      : vl(a), vh(b)
-  {
   }
 
   template <typename T, int W>
@@ -283,7 +273,9 @@ namespace tsimd {
   {
     pack<OTHER_T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = arr[i];
 
@@ -341,25 +333,33 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE T *pack<T, W>::begin()
   {
+#if TSIMD_WIN
+    return &arr[0];
+#else
     return arr.begin();
+#endif
   }
 
   template <typename T, int W>
   TSIMD_INLINE T *pack<T, W>::end()
   {
-    return arr.end();
+    return begin() + W;
   }
 
   template <typename T, int W>
   TSIMD_INLINE const T *pack<T, W>::begin() const
   {
+#if TSIMD_WIN
+    return &arr[0];
+#else
     return arr.begin();
+#endif
   }
 
   template <typename T, int W>
   TSIMD_INLINE const T *pack<T, W>::end() const
   {
-    return arr.end();
+    return begin() + W;
   }
 
   template <typename T, int W>

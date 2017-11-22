@@ -40,7 +40,9 @@ namespace tsimd {
   {
     mask<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] <= p2[i]);
 
@@ -55,7 +57,9 @@ namespace tsimd {
   {
     mask<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] <= v);
 
@@ -78,7 +82,9 @@ namespace tsimd {
   {
     mask<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] > p2[i]);
 
@@ -93,7 +99,9 @@ namespace tsimd {
   {
     mask<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] > v);
 
@@ -115,8 +123,9 @@ namespace tsimd {
   TSIMD_INLINE mask<T, W> operator>=(const pack<T, W> &p1, const pack<T, W> &p2)
   {
     mask<T, W> result;
-
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] >= p2[i]);
 
@@ -131,7 +140,9 @@ namespace tsimd {
   {
     mask<T, W> result;
 
-#pragma omp simd
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
     for (int i = 0; i < W; ++i)
       result[i] = (p1[i] >= v);
 

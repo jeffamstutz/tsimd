@@ -209,7 +209,9 @@ namespace embc {
 
 namespace omp {
 
+#if TSIMD_USE_OPENMP
 #pragma omp declare simd
+#endif
   template <typename T>
   inline int mandel(T c_re, T c_im, int count)
   {
@@ -241,7 +243,9 @@ namespace omp {
     float dy = (y1 - y0) / height;
 
     for (int j = 0; j < height; j++) {
+#if TSIMD_USE_OPENMP
 #pragma omp simd
+#endif
       for (int i = 0; i < width; ++i) {
         float x = x0 + i * dx;
         float y = y0 + j * dy;
