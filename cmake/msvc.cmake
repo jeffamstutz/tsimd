@@ -22,4 +22,19 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-# NOTE(jda) - No compiler flags to add at this time for MSVC.
+SET(FLAGS_SSE2  "/D__SSE__ /D__SSE2__")
+SET(FLAGS_SSE42 "${FLAGS_SSE2} /D__SSE3__ /D__SSSE3__ /D__SSE4_1__ /D__SSE4_2__")
+SET(FLAGS_AVX   "${FLAGS_SSE42} /arch:AVX")
+SET(FLAGS_AVX2  "${FLAGS_SSE42} /arch:AVX2")
+
+# TODO: KNL/SKX?
+
+if (TSIMD_BUILD_ISA STREQUAL "AVX2")
+  set (ISA_FLAGS ${FLAGS_AVX2})
+elseif (TSIMD_BUILD_ISA STREQUAL "AVX")
+  set (ISA_FLAGS ${FLAGS_AVX})
+else()
+  set (ISA_FLAGS ${FLAGS_SSE42})
+endif()
+
+set(CMAKE_CXX_FLAGS "${ISA_FLAGS} ${CMAKE_CXX_FLAGS}")
