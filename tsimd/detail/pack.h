@@ -150,55 +150,71 @@ namespace tsimd {
 
   // pack<> aliases ///////////////////////////////////////////////////////////
 
+  /* width-independant shortcuts */
+  template <int W> using vfloatn = pack<float, W>;
+  template <int W> using vintn   = pack<int, W>;
+  template <int W> using vuintn  = pack<unsigned int, W>;
+  template <int W> using vboolfn = maskf<W>;
+
+  template <int W> using vdoublen = pack<double, W>;
+  template <int W> using vllongn  = pack<long long, W>;
+  template <int W> using vbooldn  = maskd<W>;
+
   /* 1-wide shortcuts */
-  using vfloat1  = pack<float, 1>;
-  using vdouble1 = pack<double, 1>;
-  using vint1    = pack<int, 1>;
-  using vuint1   = pack<unsigned int, 1>;
-  using vllong1  = pack<long long, 1>;
+  using vfloat1  = vfloatn<1>;
+  using vint1    = vintn<1>;
+  using vuint1   = vuintn<1>;
   using vboolf1  = maskf<1>;
+
+  using vllong1  = vllongn<1>;
+  using vdouble1 = vdoublen<1>;
   using vboold1  = maskd<1>;
 
   /* 4-wide shortcuts */
-  using vfloat4  = pack<float, 4>;
-  using vdouble4 = pack<double, 4>;
-  using vint4    = pack<int, 4>;
-  using vuint4   = pack<unsigned int, 4>;
-  using vllong4  = pack<long long, 4>;
+  using vfloat4  = vfloatn<4>;
+  using vint4    = vintn<4>;
+  using vuint4   = vuintn<4>;
   using vboolf4  = maskf<4>;
+
+  using vdouble4 = vdoublen<4>;
+  using vllong4  = vllongn<4>;
   using vboold4  = maskd<4>;
 
   /* 8-wide shortcuts */
-  using vfloat8  = pack<float, 8>;
-  using vdouble8 = pack<double, 8>;
-  using vint8    = pack<int, 8>;
-  using vuint8   = pack<unsigned int, 8>;
-  using vllong8  = pack<long long, 8>;
+  using vfloat8  = vfloatn<8>;
+  using vint8    = vintn<8>;
+  using vuint8   = vuintn<8>;
   using vboolf8  = maskf<8>;
+
+  using vdouble8 = vdoublen<8>;
+  using vllong8  = vllongn<8>;
   using vboold8  = maskd<8>;
 
   /* 16-wide shortcuts */
-  using vfloat16  = pack<float, 16>;
-  using vdouble16 = pack<double, 16>;
-  using vint16    = pack<int, 16>;
-  using vuint16   = pack<unsigned int, 16>;
-  using vllong16  = pack<long long, 16>;
+  using vfloat16  = vfloatn<16>;
+  using vint16    = vintn<16>;
+  using vuint16   = vuintn<16>;
   using vboolf16  = maskf<16>;
+
+  using vdouble16 = vdoublen<16>;
+  using vllong16  = vllongn<16>;
   using vboold16  = maskd<16>;
 
   /* default shortcuts */
-  using vfloat  = pack<float, TSIMD_DEFAULT_WIDTH>;
-  using vdouble = pack<double, TSIMD_DEFAULT_WIDTH>;
-  using vint    = pack<int, TSIMD_DEFAULT_WIDTH>;
+  using vfloat  = vfloatn<TSIMD_DEFAULT_WIDTH>;
+  using vint    = vintn<TSIMD_DEFAULT_WIDTH>;
+  using vuint   = vuintn<TSIMD_DEFAULT_WIDTH>;
+  using vboolf  = maskf<TSIMD_DEFAULT_WIDTH>;
+
 #if TSIMD_DEFAULT_WIDTH > 1
-  using vuint  = pack<unsigned int, TSIMD_DEFAULT_WIDTH / 2>;
-  using vllong = pack<long long, TSIMD_DEFAULT_WIDTH / 2>;
+  using vdouble = vdoublen<TSIMD_DEFAULT_WIDTH / 2>;
+  using vllong  = vllongn<TSIMD_DEFAULT_WIDTH / 2>;
+  using vboold  = maskd<TSIMD_DEFAULT_WIDTH / 2>;
 #else
-  using vuint  = vuint1;
-  using vllong = vllong1;
+  using vdouble = vdouble1;
+  using vllong  = vllong1;
+  using vboold  = maskd1;
 #endif
-  using vboolf = maskf<TSIMD_DEFAULT_WIDTH>;
-  using vboold = maskd<TSIMD_DEFAULT_WIDTH>;
 
   // pack<> inlined members ///////////////////////////////////////////////////
 

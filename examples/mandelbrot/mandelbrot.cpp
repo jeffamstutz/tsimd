@@ -67,28 +67,26 @@ inline void writePPM(const std::string &fileName,
 
 namespace tsimd {
 
-  static vfloat programIndex(0);
-
-  // varying == TSIMD_DEFAULT_WIDTH //
-
-  inline vint mandel(const vboolf &_active,
-                     const vfloat &c_re,
-                     const vfloat &c_im,
-                     int maxIters)
+  template <int W>
+  inline vintn<W> mandel(const vboolfn<W> &_active,
+                         const vfloatn<W> &c_re,
+                         const vfloatn<W> &c_im,
+                         int maxIters)
   {
-    vfloat z_re = c_re;
-    vfloat z_im = c_im;
-    vint vi(0);
+    vfloatn<W> z_re = c_re;
+    vfloatn<W> z_im = c_im;
+    vintn<W> vi(0);
 
     for (int i = 0; i < maxIters; ++i) {
       auto active = _active && ((z_re * z_re + z_im * z_im) <= 4.f);
       if (tsimd::none(active))
         break;
 
-      vfloat new_re = z_re * z_re - z_im * z_im;
-      vfloat new_im = 2.f * z_re * z_im;
-      z_re          = c_re + new_re;
-      z_im          = c_im + new_im;
+      vfloatn<W> new_re = z_re * z_re - z_im * z_im;
+      vfloatn<W> new_im = 2.f * z_re * z_im;
+
+      z_re = c_re + new_re;
+      z_im = c_im + new_im;
 
       vi = tsimd::select(active, vi + 1, vi);
     }
@@ -96,6 +94,7 @@ namespace tsimd {
     return vi;
   }
 
+  template <int W>
   void mandelbrot(float x0,
                   float y0,
                   float x1,
@@ -108,69 +107,18 @@ namespace tsimd {
     float dx = (x1 - x0) / width;
     float dy = (y1 - y0) / height;
 
+    vfloatn<W> programIndex(0);
+    std::iota(programIndex.begin(), programIndex.end(), 0.f);
+
     for (int j = 0; j < height; j++) {
-      for (int i = 0; i < width; i += vfloat::static_size) {
-        vfloat x = x0 + (i + programIndex) * dx;
-        vfloat y = vfloat(y0 + j * dy);
+      for (int i = 0; i < width; i += W) {
+        vfloatn<W> x = x0 + (i + programIndex) * dx;
+        vfloatn<W> y = vfloatn<W>(y0 + j * dy);
 
         auto active = x < width;
 
         int base_index = (j * width + i);
         auto result    = mandel(active, x, y, maxIters);
-
-        tsimd::store(result, output + base_index, active);
-      }
-    }
-  }
-
-  // varying == 1 //
-
-  inline vint1 mandel1(const vboolf1 &_active,
-                       const vfloat1 &c_re,
-                       const vfloat1 &c_im,
-                       int maxIters)
-  {
-    vfloat1 z_re = c_re;
-    vfloat1 z_im = c_im;
-    vint1 vi(0);
-
-    for (int i = 0; i < maxIters; ++i) {
-      auto active = _active && ((z_re * z_re + z_im * z_im) <= 4.f);
-      if (tsimd::none(active))
-        break;
-
-      vfloat1 new_re = z_re * z_re - z_im * z_im;
-      vfloat1 new_im = 2.f * z_re * z_im;
-      z_re           = c_re + new_re;
-      z_im           = c_im + new_im;
-
-      vi = tsimd::select(active, vi + 1, vi);
-    }
-
-    return vi;
-  }
-
-  void mandelbrot1(float x0,
-                   float y0,
-                   float x1,
-                   float y1,
-                   int width,
-                   int height,
-                   int maxIters,
-                   int output[])
-  {
-    float dx = (x1 - x0) / width;
-    float dy = (y1 - y0) / height;
-
-    for (int j = 0; j < height; j++) {
-      for (int i = 0; i < width; i++) {
-        vfloat1 x = vfloat1(x0 + (i * dx));
-        vfloat1 y = vfloat1(y0 + j * dy);
-
-        auto active = x < width;
-
-        int base_index = (j * width + i);
-        auto result    = mandel1(active, x, y, maxIters);
 
         tsimd::store(result, output + base_index, active);
       }
@@ -365,7 +313,6 @@ int main()
   const int maxIters = 256;
   std::vector<int> buf(width * height);
 
-  std::iota(tsimd::programIndex.begin(), tsimd::programIndex.end(), 0);
 #ifdef TSIMD_ENABLE_EMBREE
   embc::foreach_v(embc::programIndex, [](int &v, int i) { v = i; });
 #endif
@@ -403,7 +350,7 @@ int main()
   std::fill(buf.begin(), buf.end(), 0);
 
   stats = bencher([&]() {
-    tsimd::mandelbrot1(x0, y0, x1, y1, width, height, maxIters, buf.data());
+    tsimd::mandelbrot<1>(x0, y0, x1, y1, width, height, maxIters, buf.data());
   });
 
   const float tsimd1_min = stats.min().count();
@@ -415,7 +362,7 @@ int main()
   std::fill(buf.begin(), buf.end(), 0);
 
   stats = bencher([&]() {
-    tsimd::mandelbrot(x0, y0, x1, y1, width, height, maxIters, buf.data());
+    tsimd::mandelbrot<8>(x0, y0, x1, y1, width, height, maxIters, buf.data());
   });
 
   const float tsimdn_min = stats.min().count();
