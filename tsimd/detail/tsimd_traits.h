@@ -106,6 +106,20 @@ namespace tsimd {
       using type = simd_undefined_type<T, W>;
     };
 
+    // bool types all widths //
+
+    template <int W>
+    struct simd_type<bool32_t, W>
+    {
+      using type = typename simd_type<float, W>::type;
+    };
+
+    template <int W>
+    struct simd_type<bool64_t, W>
+    {
+      using type = typename simd_type<double, W>::type;
+    };
+
     // 1-wide //
 
     template <>
@@ -121,12 +135,6 @@ namespace tsimd {
     };
 
     template <>
-    struct simd_type<bool32_t, 1>
-    {
-      using type = simd_type<float, 1>::type;
-    };
-
-    template <>
     struct simd_type<double, 1>
     {
       using type = double;
@@ -136,12 +144,6 @@ namespace tsimd {
     struct simd_type<long long, 1>
     {
       using type = long long;
-    };
-
-    template <>
-    struct simd_type<bool64_t, 1>
-    {
-      using type = simd_type<double, 1>::type;
     };
 
     // 4-wide //
@@ -158,12 +160,6 @@ namespace tsimd {
     {
       using type = __m128i;
     };
-
-    template <>
-    struct simd_type<bool32_t, 4>
-    {
-      using type = simd_type<float, 4>::type;
-    };
 #endif
 
 #if defined(__AVX2__) || defined(__AVX__)
@@ -171,12 +167,6 @@ namespace tsimd {
     struct simd_type<double, 4>
     {
       using type = __m256d;
-    };
-
-    template <>
-    struct simd_type<bool64_t, 4>
-    {
-      using type = simd_type<double, 4>::type;
     };
 #endif
 
@@ -201,12 +191,6 @@ namespace tsimd {
     struct simd_type<int, 8>
     {
       using type = __m256i;
-    };
-
-    template <>
-    struct simd_type<bool32_t, 8>
-    {
-      using type = simd_type<float, 8>::type;
     };
 #endif
 
@@ -321,22 +305,13 @@ namespace tsimd {
 
     // Provide intrinsic type half the size of given width ////////////////////
 
-    template <typename T>
-    struct half_simd_undefined_type
-    {
-    };
-
     template <typename T, int W>
     struct half_simd_type
     {
-#if 0
-      using type = half_simd_undefined_type<T>;
-#else
       using type = std::array<T, W / 2>;
-#endif
     };
 
-    // 8-wide //
+    // 1-wide //
 
     template <typename T>
     struct half_simd_type<T, 1>
@@ -350,13 +325,13 @@ namespace tsimd {
     template <>
     struct half_simd_type<float, 8>
     {
-      using type = __m128;
+      using type = simd_type<float, 4>::type;
     };
 
     template <>
     struct half_simd_type<int, 8>
     {
-      using type = __m128i;
+      using type = simd_type<int, 4>::type;
     };
 
     template <>
@@ -372,7 +347,7 @@ namespace tsimd {
     template <>
     struct half_simd_type<float, 16>
     {
-      using type = __m256;
+      using type = simd_type<float, 8>::type;
     };
 
     template <>
@@ -382,11 +357,11 @@ namespace tsimd {
     };
 #endif
 
-#if defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX__)
     template <>
     struct half_simd_type<int, 16>
     {
-      using type = __m256i;
+      using type = simd_type<int, 8>::type;
     };
 #endif
 
