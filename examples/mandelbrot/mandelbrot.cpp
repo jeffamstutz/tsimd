@@ -336,6 +336,8 @@ int main()
 
   std::cout << '\n' << "scalar " << stats << '\n';
 
+  writePPM("mandelbrot_scalar.ppm", width, height, buf.data());
+
   // omp run //////////////////////////////////////////////////////////////////
 
   std::fill(buf.begin(), buf.end(), 0);
@@ -347,6 +349,8 @@ int main()
   const float omp_min = stats.min().count();
 
   std::cout << '\n' << "omp " << stats << '\n';
+
+  writePPM("mandelbrot_omp.ppm", width, height, buf.data());
 
   // tsimd_1 run //////////////////////////////////////////////////////////////
 
@@ -360,6 +364,8 @@ int main()
 
   std::cout << '\n' << "tsimd_1 " << stats << '\n';
 
+  writePPM("mandelbrot_tsimd1.ppm", width, height, buf.data());
+
   // tsimd_4 run //////////////////////////////////////////////////////////////
 
   std::fill(buf.begin(), buf.end(), 0);
@@ -371,6 +377,8 @@ int main()
   const float tsimd4_min = stats.min().count();
 
   std::cout << '\n' << "tsimd_4 " << stats << '\n';
+
+  writePPM("mandelbrot_tsimd4.ppm", width, height, buf.data());
 
   // tsimd_8 run //////////////////////////////////////////////////////////////
 
@@ -384,6 +392,8 @@ int main()
 
   std::cout << '\n' << "tsimd_8 " << stats << '\n';
 
+  writePPM("mandelbrot_tsimd8.ppm", width, height, buf.data());
+
   // tsimd_16 run /////////////////////////////////////////////////////////////
 
   std::fill(buf.begin(), buf.end(), 0);
@@ -395,6 +405,8 @@ int main()
   const float tsimd16_min = stats.min().count();
 
   std::cout << '\n' << "tsimd_16 " << stats << '\n';
+
+  writePPM("mandelbrot_tsimd16.ppm", width, height, buf.data());
 
   // embree run ///////////////////////////////////////////////////////////////
 
@@ -408,6 +420,8 @@ int main()
   const float embree_min = stats.min().count();
 
   std::cout << '\n' << "embree " << stats << '\n';
+
+  writePPM("mandelbrot_embree.ppm", width, height, buf.data());
 #endif
 
   // ispc run /////////////////////////////////////////////////////////////////
@@ -422,6 +436,8 @@ int main()
   const float ispc_min = stats.min().count();
 
   std::cout << '\n' << "ispc " << stats << '\n';
+
+  writePPM("mandelbrot_ispc.ppm", width, height, buf.data());
 #endif
 
   // conclusions //////////////////////////////////////////////////////////////
@@ -621,9 +637,7 @@ int main()
 #endif
 #endif
 
-  writePPM("mandelbrot.ppm", width, height, buf.data());
-
-  std::cout << '\n' << "wrote output image to 'mandelbrot.ppm'" << '\n';
+  std::cout << '\n' << "wrote output images to 'mandelbrot_[type].ppm'" << '\n';
 
   return 0;
 }
