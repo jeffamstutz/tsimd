@@ -319,6 +319,8 @@ int main()
 
   auto bencher = pico_bench::Benchmarker<milliseconds>{64, seconds{10}};
 
+  std::cout << "TSIMD_DEFAULT_WIDTH == " << TSIMD_DEFAULT_WIDTH << '\n' << '\n';
+
   std::cout << "starting benchmarks (results in 'ms')... " << '\n';
 
   // scalar run ///////////////////////////////////////////////////////////////
@@ -357,7 +359,19 @@ int main()
 
   std::cout << '\n' << "tsimd_1 " << stats << '\n';
 
-  // tsimd_n run //////////////////////////////////////////////////////////////
+  // tsimd_4 run //////////////////////////////////////////////////////////////
+
+  std::fill(buf.begin(), buf.end(), 0);
+
+  stats = bencher([&]() {
+    tsimd::mandelbrot<4>(x0, y0, x1, y1, width, height, maxIters, buf.data());
+  });
+
+  const float tsimd4_min = stats.min().count();
+
+  std::cout << '\n' << "tsimd_4 " << stats << '\n';
+
+  // tsimd_8 run //////////////////////////////////////////////////////////////
 
   std::fill(buf.begin(), buf.end(), 0);
 
@@ -365,9 +379,21 @@ int main()
     tsimd::mandelbrot<8>(x0, y0, x1, y1, width, height, maxIters, buf.data());
   });
 
-  const float tsimdn_min = stats.min().count();
+  const float tsimd8_min = stats.min().count();
 
-  std::cout << '\n' << "tsimd_n " << stats << '\n';
+  std::cout << '\n' << "tsimd_8 " << stats << '\n';
+
+  // tsimd_16 run /////////////////////////////////////////////////////////////
+
+  std::fill(buf.begin(), buf.end(), 0);
+
+  stats = bencher([&]() {
+    tsimd::mandelbrot<16>(x0, y0, x1, y1, width, height, maxIters, buf.data());
+  });
+
+  const float tsimd16_min = stats.min().count();
+
+  std::cout << '\n' << "tsimd_16 " << stats << '\n';
 
   // embree run ///////////////////////////////////////////////////////////////
 
@@ -404,73 +430,157 @@ int main()
   // scalar //
 
   std::cout << '\n'
-            << "--> scalar was " << omp_min / scalar_min << "x the speed of omp"
-            << '\n';
+            << "--> scalar was " << omp_min / scalar_min
+            << "x the speed of omp";
 
   std::cout << '\n'
             << "--> scalar was " << tsimd1_min / scalar_min
-            << "x the speed of tsimd_1" << '\n';
+            << "x the speed of tsimd_1";
 
   std::cout << '\n'
-            << "--> scalar was " << tsimdn_min / scalar_min
-            << "x the speed of tsimd_n" << '\n';
+            << "--> scalar was " << tsimd4_min / scalar_min
+            << "x the speed of tsimd_4";
+
+  std::cout << '\n'
+            << "--> scalar was " << tsimd8_min / scalar_min
+            << "x the speed of tsimd_8";
+
+  std::cout << '\n'
+            << "--> scalar was " << tsimd16_min / scalar_min
+            << "x the speed of tsimd_16" << '\n';
 
   // omp //
 
   std::cout << '\n'
-            << "--> omp was " << scalar_min / omp_min << "x the speed of scalar"
-            << '\n';
+            << "--> omp was " << scalar_min / omp_min
+            << "x the speed of scalar";
 
   std::cout << '\n'
             << "--> omp was " << tsimd1_min / omp_min
-            << "x the speed of tsimd_1" << '\n';
+            << "x the speed of tsimd_1";
 
   std::cout << '\n'
-            << "--> omp was " << tsimdn_min / omp_min
-            << "x the speed of tsimd_n" << '\n';
-
-  // tsimd_1 //
+            << "--> omp was " << tsimd4_min / omp_min
+            << "x the speed of tsimd_4";
 
   std::cout << '\n'
-            << "--> tsimd_1 was " << scalar_min / tsimd1_min
-            << "x the speed of scalar" << '\n';
+            << "--> omp was " << tsimd8_min / omp_min
+            << "x the speed of tsimd_8";
 
   std::cout << '\n'
-            << "--> tsimd_1 was " << omp_min / tsimd1_min
-            << "x the speed of omp" << '\n';
+            << "--> omp was " << tsimd16_min / omp_min
+            << "x the speed of tsimd_16" << '\n';
+
+  // tsimd1 //
 
   std::cout << '\n'
-            << "--> tsimd_1 was " << tsimdn_min / tsimd1_min
-            << "x the speed of tsimd_n" << '\n';
-
-  // tsimd_n //
+            << "--> tsimd1 was " << scalar_min / tsimd1_min
+            << "x the speed of scalar";
 
   std::cout << '\n'
-            << "--> tsimd_n was " << scalar_min / tsimdn_min
-            << "x the speed of scalar" << '\n';
+            << "--> tsimd1 was " << omp_min / tsimd1_min
+            << "x the speed of omp";
 
   std::cout << '\n'
-            << "--> tsimd_n was " << omp_min / tsimdn_min
-            << "x the speed of omp" << '\n';
+            << "--> tsimd1 was " << tsimd4_min / tsimd1_min
+            << "x the speed of tsimd_4";
 
   std::cout << '\n'
-            << "--> tsimd_n was " << tsimd1_min / tsimdn_min
-            << "x the speed of tsimd_1" << '\n';
+            << "--> tsimd1 was " << tsimd8_min / tsimd1_min
+            << "x the speed of tsimd_8";
+
+  std::cout << '\n'
+            << "--> tsimd1 was " << tsimd16_min / tsimd1_min
+            << "x the speed of tsimd_16" << '\n';
+
+  // tsimd4 //
+
+  std::cout << '\n'
+            << "--> tsimd4 was " << scalar_min / tsimd4_min
+            << "x the speed of scalar";
+
+  std::cout << '\n'
+            << "--> tsimd4 was " << omp_min / tsimd4_min
+            << "x the speed of omp";
+
+  std::cout << '\n'
+            << "--> tsimd4 was " << tsimd1_min / tsimd4_min
+            << "x the speed of tsimd_1";
+
+  std::cout << '\n'
+            << "--> tsimd4 was " << tsimd8_min / tsimd4_min
+            << "x the speed of tsimd_8";
+
+  std::cout << '\n'
+            << "--> tsimd4 was " << tsimd16_min / tsimd4_min
+            << "x the speed of tsimd_16" << '\n';
+
+  // tsimd8 //
+
+  std::cout << '\n'
+            << "--> tsimd8 was " << scalar_min / tsimd8_min
+            << "x the speed of scalar";
+
+  std::cout << '\n'
+            << "--> tsimd8 was " << omp_min / tsimd8_min
+            << "x the speed of omp";
+
+  std::cout << '\n'
+            << "--> tsimd8 was " << tsimd1_min / tsimd8_min
+            << "x the speed of tsimd_1";
+
+  std::cout << '\n'
+            << "--> tsimd8 was " << tsimd4_min / tsimd8_min
+            << "x the speed of tsimd_4";
+
+  std::cout << '\n'
+            << "--> tsimd8 was " << tsimd16_min / tsimd8_min
+            << "x the speed of tsimd_16" << '\n';
+
+  // tsimd16 //
+
+  std::cout << '\n'
+            << "--> tsimd16 was " << scalar_min / tsimd16_min
+            << "x the speed of scalar";
+
+  std::cout << '\n'
+            << "--> tsimd16 was " << omp_min / tsimd16_min
+            << "x the speed of omp";
+
+  std::cout << '\n'
+            << "--> tsimd16 was " << tsimd1_min / tsimd16_min
+            << "x the speed of tsimd_1";
+
+  std::cout << '\n'
+            << "--> tsimd16 was " << tsimd4_min / tsimd16_min
+            << "x the speed of tsimd_4";
+
+  std::cout << '\n'
+            << "--> tsimd16 was " << tsimd8_min / tsimd16_min
+            << "x the speed of tsimd_8" << '\n';
 
   // embree //
 
 #ifdef TSIMD_ENABLE_EMBREE
   std::cout << '\n'
             << "--> embc was " << scalar_min / embree_min
-            << "x the speed of scalar" << '\n';
+            << "x the speed of scalar";
 
   std::cout << '\n'
             << "--> embc was " << tsimd1_min / embree_min
-            << "x the speed of tsimd_1" << '\n';
+            << "x the speed of tsimd_1";
 
   std::cout << '\n'
-            << "--> embc was " << tsimdn_min / embree_min
-            << "x the speed of tsimd_n" << '\n';
+            << "--> embc was " << tsimd4_min / embree_min
+            << "x the speed of tsimd_4";
+
+  std::cout << '\n'
+            << "--> embc was " << tsimd8_min / embree_min
+            << "x the speed of tsimd_8";
+
+  std::cout << '\n'
+            << "--> embc was " << tsimd16_min / embree_min
+            << "x the speed of tsimd_16";
 
   std::cout << '\n'
             << "--> embc was " << omp_min / embree_min << "x the speed of omp"
@@ -482,19 +592,26 @@ int main()
 #ifdef TSIMD_ENABLE_ISPC
   std::cout << '\n'
             << "--> ispc was " << scalar_min / ispc_min
-            << "x the speed of scalar" << '\n';
+            << "x the speed of scalar";
 
   std::cout << '\n'
             << "--> ispc was " << tsimd1_min / ispc_min
-            << "x the speed of tsimd_1" << '\n';
+            << "x the speed of tsimd_1";
 
   std::cout << '\n'
-            << "--> ispc was " << tsimdn_min / ispc_min
-            << "x the speed of tsimd_n" << '\n';
+            << "--> ispc was " << tsimd4_min / ispc_min
+            << "x the speed of tsimd_4";
 
   std::cout << '\n'
-            << "--> ispc was " << omp_min / ispc_min << "x the speed of omp"
-            << '\n';
+            << "--> ispc was " << tsimd8_min / ispc_min
+            << "x the speed of tsimd_8";
+
+  std::cout << '\n'
+            << "--> ispc was " << tsimd16_min / ispc_min
+            << "x the speed of tsimd_16";
+
+  std::cout << '\n'
+            << "--> ispc was " << omp_min / ispc_min << "x the speed of omp";
 
 #ifdef TSIMD_ENABLE_EMBREE
   std::cout << '\n'
