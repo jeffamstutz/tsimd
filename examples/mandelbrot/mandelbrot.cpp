@@ -147,8 +147,6 @@ namespace embc {
   using vint   = embree::vintx;
   using vmask  = embree::vboolx;
 
-  static vint programIndex(0);
-
   inline vint mandel(const vmask &_active,
                      const vfloat &c_re,
                      const vfloat &c_im,
@@ -185,6 +183,9 @@ namespace embc {
   {
     float dx = (x1 - x0) / width;
     float dy = (y1 - y0) / height;
+
+    vint programIndex(0);
+    embc::foreach_v(programIndex, [](int &v, int i) { v = i; });
 
     for (int j = 0; j < height; j++) {
       for (int i = 0; i < width; i += vfloat::size) {
@@ -312,10 +313,6 @@ int main()
 
   const int maxIters = 256;
   std::vector<int> buf(width * height);
-
-#ifdef TSIMD_ENABLE_EMBREE
-  embc::foreach_v(embc::programIndex, [](int &v, int i) { v = i; });
-#endif
 
   auto bencher = pico_bench::Benchmarker<milliseconds>{64, seconds{10}};
 
