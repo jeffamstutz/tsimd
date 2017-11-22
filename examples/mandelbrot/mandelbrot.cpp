@@ -179,7 +179,7 @@ namespace tsimd {
 
 }  // namespace tsimd
 
-// embree version /////////////////////////////////////////////////////////////
+  // embree version ///////////////////////////////////////////////////////////
 
 #ifdef TSIMD_ENABLE_EMBREE
 namespace embc {
@@ -549,11 +549,11 @@ int main()
             << "--> ispc was " << omp_min / ispc_min << "x the speed of omp"
             << '\n';
 
-#  ifdef TSIMD_ENABLE_EMBREE
+#ifdef TSIMD_ENABLE_EMBREE
   std::cout << '\n'
             << "--> ispc was " << embree_min / ispc_min << "x the speed of embc"
             << '\n';
-#  endif
+#endif
 #endif
 
   writePPM("mandelbrot.ppm", width, height, buf.data());

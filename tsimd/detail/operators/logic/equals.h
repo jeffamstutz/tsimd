@@ -44,7 +44,7 @@ namespace tsimd {
   TSIMD_INLINE vboolf4 operator==(const vfloat4 &p1, const vfloat4 &p2)
   {
 #if defined(__SSE__)
-    return _mm_cmpeq_ps (p1, p2);
+    return _mm_cmpeq_ps(p1, p2);
 #else
     vboolf4 result;
 

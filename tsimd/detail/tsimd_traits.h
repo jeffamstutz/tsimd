@@ -24,8 +24,8 @@
 
 #pragma once
 
-#include "config.h"
 #include "bool_t.h"
+#include "config.h"
 
 namespace tsimd {
   namespace traits {
@@ -59,12 +59,10 @@ namespace tsimd {
     template <typename T>
     struct valid_type_for_pack
     {
-      static const bool value = std::is_same<T, float>::value ||
-                                std::is_same<T, int>::value ||
-                                std::is_same<T, bool32_t>::value ||
-                                std::is_same<T, double>::value ||
-                                std::is_same<T, long long>::value ||
-                                std::is_same<T, bool64_t>::value;
+      static const bool value =
+          std::is_same<T, float>::value || std::is_same<T, int>::value ||
+          std::is_same<T, bool32_t>::value || std::is_same<T, double>::value ||
+          std::is_same<T, long long>::value || std::is_same<T, bool64_t>::value;
     };
 
     template <typename T>
@@ -75,8 +73,8 @@ namespace tsimd {
     template <typename T>
     struct is_bool
     {
-      static const bool value = std::is_same<T, bool32_t>::value ||
-                                std::is_same<T, bool64_t>::value;
+      static const bool value =
+          std::is_same<T, bool32_t>::value || std::is_same<T, bool64_t>::value;
     };
 
     template <typename T>
@@ -87,7 +85,7 @@ namespace tsimd {
     template <typename MASK_T>
     struct is_mask
     {
-      using value_t = typename MASK_T::value_t;
+      using value_t           = typename MASK_T::value_t;
       static const bool value = std::is_same<value_t, bool32_t>::value ||
                                 std::is_same<value_t, bool64_t>::value;
     };
@@ -331,11 +329,11 @@ namespace tsimd {
     template <typename T, int W>
     struct half_simd_type
     {
-      #if 0
+#if 0
       using type = half_simd_undefined_type<T>;
-      #else
-      using type = std::array<T, W/2>;
-      #endif
+#else
+      using type = std::array<T, W / 2>;
+#endif
     };
 
     // 8-wide //
@@ -399,7 +397,7 @@ namespace tsimd {
     {
       static const bool value =
           std::is_same<typename half_simd_type<T, W>::type,
-                       std::array<T, W/2>>::value;
+                       std::array<T, W / 2>>::value;
     };
 
     template <typename T>

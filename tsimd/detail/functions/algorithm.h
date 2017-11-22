@@ -29,17 +29,16 @@
 namespace tsimd {
 
   template <typename T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach(pack<T, W> &p, FCN_T && fcn)
+  TSIMD_INLINE void foreach (pack<T, W> &p, FCN_T && fcn)
   {
     for (int i = 0; i < W; ++i)
       fcn(p[i], i);
   }
 
-  template <
-      typename BOOL_T,
-      int W,
-      typename FCN_T,
-      typename = traits::is_bool_t<BOOL_T>>
+  template <typename BOOL_T,
+            int W,
+            typename FCN_T,
+            typename = traits::is_bool_t<BOOL_T>>
   TSIMD_INLINE void foreach_active(const pack<BOOL_T, W> &m, FCN_T &&fcn)
   {
     for (int i = 0; i < W; ++i)
@@ -48,9 +47,9 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach_active(const mask<T, W>  &m,
-                                         pack<T, W>  &p,
-                                         FCN_T      &&fcn)
+  TSIMD_INLINE void foreach_active(const mask<T, W> &m,
+                                   pack<T, W> &p,
+                                   FCN_T &&fcn)
   {
     for (int i = 0; i < W; ++i)
       if (m[i])
@@ -184,9 +183,9 @@ namespace tsimd {
                               const vfloat4 &f)
   {
 #if defined(__SSE4_1__)
-      return _mm_blendv_ps(f, t, m);
+    return _mm_blendv_ps(f, t, m);
 #elif defined(__SSE__)
-      return _mm_or_ps(_mm_and_ps(m, t), _mm_andnot_ps(m, f));
+    return _mm_or_ps(_mm_and_ps(m, t), _mm_andnot_ps(m, f));
 #else
     vfloat4 result;
 
@@ -200,10 +199,10 @@ namespace tsimd {
   TSIMD_INLINE vint4 select(const vboolf4 &m, const vint4 &t, const vint4 &f)
   {
 #if defined(__SSE4_1__)
-      return _mm_castps_si128(_mm_blendv_ps(_mm_castsi128_ps(f),
-                                            _mm_castsi128_ps(t), m));
+    return _mm_castps_si128(
+        _mm_blendv_ps(_mm_castsi128_ps(f), _mm_castsi128_ps(t), m));
 #elif defined(__SSE__)
-      return _mm_or_si128(_mm_and_si128(m, t), _mm_andnot_si128(m, f));
+    return _mm_or_si128(_mm_and_si128(m, t), _mm_andnot_si128(m, f));
 #else
     vint4 result;
 

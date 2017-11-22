@@ -47,9 +47,9 @@ using float_type = float;
 using int_type   = int;
 #endif
 
-using vbool   = tsimd::pack<bool_type, TEST_WIDTH>;
-using vfloat  = tsimd::pack<float_type, TEST_WIDTH>;
-using vint    = tsimd::pack<int_type, TEST_WIDTH>;
+using vbool  = tsimd::pack<bool_type, TEST_WIDTH>;
+using vfloat = tsimd::pack<float_type, TEST_WIDTH>;
+using vint   = tsimd::pack<int_type, TEST_WIDTH>;
 
 /* TODO: add tests for -->
  *         - operator<<()
@@ -470,7 +470,7 @@ TEST_CASE("select()", "[algorithms]")
     auto result_true  = tsimd::select(mt, v1, v2);
     auto result_false = tsimd::select(mf, v1, v2);
 
-    REQUIRE(tsimd::all(result_true  == v1));
+    REQUIRE(tsimd::all(result_true == v1));
     REQUIRE(tsimd::all(result_false == v2));
   }
 }
@@ -523,8 +523,8 @@ TEST_CASE("unmasked store()", "[memory_operations]")
 
   tsimd::store(v1, values.data());
 
-  std::for_each(values.begin(), values.end(),
-                [](int_type v) { REQUIRE(v == 7); });
+  std::for_each(
+      values.begin(), values.end(), [](int_type v) { REQUIRE(v == 7); });
 }
 
 TEST_CASE("unmasked scatter()", "[memory_operations]")
@@ -538,6 +538,6 @@ TEST_CASE("unmasked scatter()", "[memory_operations]")
 
   tsimd::scatter(v1, values.data(), offset);
 
-  std::for_each(values.begin(), values.end(),
-                [](int_type v) { REQUIRE(v == 5); });
+  std::for_each(
+      values.begin(), values.end(), [](int_type v) { REQUIRE(v == 5); });
 }

@@ -69,11 +69,9 @@
 #define NOT_YET_IMPLEMENTED \
   throw std::runtime_error("This function is not yet implemented!");
 #else
-#define NOT_YET_IMPLEMENTED \
-  throw std::runtime_error( \
-      __FUNCTION__ + \
-      std::string(" is not yet implemented!") \
-  );
+#define NOT_YET_IMPLEMENTED               \
+  throw std::runtime_error(__FUNCTION__ + \
+                           std::string(" is not yet implemented!"));
 #endif
 
 #define DO_NOT_USE \

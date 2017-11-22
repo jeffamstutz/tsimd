@@ -60,7 +60,7 @@ namespace tsimd {
     pack(traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
          half_intrinsic_t b);
 
-    explicit pack(const std::array<T, W/2> &a, const std::array<T, W/2> &b);
+    explicit pack(const std::array<T, W / 2> &a, const std::array<T, W / 2> &b);
     explicit pack(const std::array<T, W> &arr);
 
     pack<T, W> &operator=(const value_t &);
@@ -190,15 +190,15 @@ namespace tsimd {
   using vfloat  = pack<float, TSIMD_DEFAULT_WIDTH>;
   using vdouble = pack<double, TSIMD_DEFAULT_WIDTH>;
   using vint    = pack<int, TSIMD_DEFAULT_WIDTH>;
-  #if TSIMD_DEFAULT_WIDTH > 1
-  using vuint   = pack<unsigned int, TSIMD_DEFAULT_WIDTH / 2>;
-  using vllong  = pack<long long, TSIMD_DEFAULT_WIDTH / 2>;
-  #else
-  using vuint   = vuint1;
-  using vllong  = vllong1;
-  #endif
-  using vboolf  = maskf<TSIMD_DEFAULT_WIDTH>;
-  using vboold  = maskd<TSIMD_DEFAULT_WIDTH>;
+#if TSIMD_DEFAULT_WIDTH > 1
+  using vuint  = pack<unsigned int, TSIMD_DEFAULT_WIDTH / 2>;
+  using vllong = pack<long long, TSIMD_DEFAULT_WIDTH / 2>;
+#else
+  using vuint  = vuint1;
+  using vllong = vllong1;
+#endif
+  using vboolf = maskf<TSIMD_DEFAULT_WIDTH>;
+  using vboold = maskd<TSIMD_DEFAULT_WIDTH>;
 
   // pack<> inlined members ///////////////////////////////////////////////////
 
@@ -212,35 +212,33 @@ namespace tsimd {
 
   template <typename T, int W>
   template <typename IT>
-  TSIMD_INLINE pack<T, W>::pack(
-    typename std::enable_if<W != 1, IT>::type value
-  ) : v(value)
+  TSIMD_INLINE pack<T, W>::pack(typename std::enable_if<W != 1, IT>::type value)
+      : v(value)
   {
   }
 
   template <typename T, int W>
   template <typename IT>
   TSIMD_INLINE pack<T, W>::pack(
-    traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
-    half_intrinsic_t b
-  ) : vl(a), vh(b)
+      traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
+      half_intrinsic_t b)
+      : vl(a), vh(b)
   {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W> &_arr)
-      : arr(_arr)
+  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W> &_arr) : arr(_arr)
   {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W/2> &a,
-                                const std::array<T, W/2> &b)
+  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W / 2> &a,
+                                const std::array<T, W / 2> &b)
   {
     int i = 0;
-    for (int j = 0; j < W/2; j++, i++)
+    for (int j = 0; j < W / 2; j++, i++)
       arr[i] = a[j];
-    for (int j = 0; j < W/2; j++, i++)
+    for (int j = 0; j < W / 2; j++, i++)
       arr[i] = b[j];
   }
 
