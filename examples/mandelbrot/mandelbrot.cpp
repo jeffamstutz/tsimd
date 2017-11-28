@@ -112,8 +112,8 @@ namespace tsimd {
 
     for (int j = 0; j < height; j++) {
       for (int i = 0; i < width; i += W) {
-        vfloatn<W> x = x0 + (i + programIndex) * dx;
-        vfloatn<W> y = vfloatn<W>(y0 + j * dy);
+        vfloatn<W> x(x0 + (i + programIndex) * dx);
+        vfloatn<W> y(y0 + j * dy);
 
         auto active = x < width;
 
@@ -184,12 +184,12 @@ namespace embc {
     float dx = (x1 - x0) / width;
     float dy = (y1 - y0) / height;
 
-    vint programIndex(0);
-    embc::foreach_v(programIndex, [](int &v, int i) { v = i; });
+    vfloat programIndex;
+    embc::foreach_v(programIndex, [](float &v, int i) { v = i; });
 
     for (int j = 0; j < height; j++) {
       for (int i = 0; i < width; i += vfloat::size) {
-        vfloat x = x0 + (i + vfloat(programIndex)) * dx;
+        vfloat x = x0 + (i + programIndex) * dx;
         vfloat y = y0 + j * dy;
 
         auto active = x < width;
