@@ -24,40 +24,62 @@
 
 #pragma once
 
-#include "../pack.h"
-
-#include "algorithm/all.h"
-#include "algorithm/any.h"
-#include "algorithm/select.h"
+#include "../../pack.h"
 
 namespace tsimd {
 
-  template <typename T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach (pack<T, W> &p, FCN_T && fcn)
+  // 1-wide //
+
+  template <typename T, typename = traits::is_bool_t<T>>
+  TSIMD_INLINE bool any(const pack<T, 1> &a)
   {
-    for (int i = 0; i < W; ++i)
-      fcn(p[i], i);
+    return a[0];
   }
 
-  template <typename BOOL_T,
-            int W,
-            typename FCN_T,
-            typename = traits::is_bool_t<BOOL_T>>
-  TSIMD_INLINE void foreach_active(const pack<BOOL_T, W> &m, FCN_T &&fcn)
+  // 4-wide //
+
+  TSIMD_INLINE bool any(const vboolf4 &a)
   {
-    for (int i = 0; i < W; ++i)
-      if (m[i])
-        fcn(i);
+#if defined(__SSE__)
+    return _mm_movemask_ps(a) != 0x0;
+#else
+    for (int i = 0; i < 4; ++i) {
+      if (a[i])
+        return true;
+    }
+
+    return false;
+#endif
   }
 
-  template <typename T, int W, typename FCN_T>
-  TSIMD_INLINE void foreach_active(const mask<T, W> &m,
-                                   pack<T, W> &p,
-                                   FCN_T &&fcn)
+  // 8-wide //
+
+  TSIMD_INLINE bool any(const vboolf8 &a)
   {
-    for (int i = 0; i < W; ++i)
-      if (m[i])
-        fcn(p[i]);
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
+    return !_mm256_testz_ps(a, a);
+#else
+    return any(vboolf4(a.vl)) || any(vboolf4(a.vh));
+#endif
+  }
+
+  // 16-wide //
+
+  TSIMD_INLINE bool any(const vboolf16 &a)
+  {
+#if defined(__AVX512F__)
+    return _mm512_kortestz(a, a) == 0;
+#else
+    return any(vboolf8(a.vl)) || any(vboolf8(a.vh));
+#endif
+  }
+
+  // none() ///////////////////////////////////////////////////////////////////
+
+  template <typename MASK_T, typename = traits::is_mask_t<MASK_T>>
+  TSIMD_INLINE bool none(const MASK_T &m)
+  {
+    return !any(m);
   }
 
 }  // namespace tsimd
