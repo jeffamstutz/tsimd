@@ -182,12 +182,7 @@ namespace tsimd {
     return _mm256_load_ps((const float *)_src);
 #else
     auto *src = (typename vfloat8::value_t *)_src;
-    vfloat8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = src[i];
-
-    return result;
+    return vfloat8(load<vfloat4>(src), load<vfloat4>(src + 4));
 #endif
   }
 
@@ -199,14 +194,9 @@ namespace tsimd {
 #elif defined(__AVX__)
     return _mm256_maskload_ps((const float *)_src, _mm256_castps_si256(mask));
 #else
-    auto *src = (typename vfloat8::value_t *)_src;
-    vfloat8 result;
-
-    for (int i = 0; i < 8; ++i)
-      if (mask[i])
-        result[i] = src[i];
-
-    return result;
+    auto *src = (typename vfloat16::value_t *)_src;
+    return vfloat8(load<vfloat4>(src, vboolf4(mask.vl)),
+                   load<vfloat4>(src + 4, vboolf4(mask.vh)));
 #endif
   }
 
@@ -216,13 +206,8 @@ namespace tsimd {
 #if defined(__AVX512__) || defined(__AVX__)
     return _mm256_castps_si256(_mm256_load_ps((const float *)_src));
 #else
-    auto *src = (typename vint8::value_t *)_src;
-    vint8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = src[i];
-
-    return result;
+    auto *src = (typename vint16::value_t *)_src;
+    return vint8(load<vint4>(src), load<vint4>(src + 4));
 #endif
   }
 
@@ -235,14 +220,9 @@ namespace tsimd {
     return _mm256_castps_si256(
         _mm256_maskload_ps((const float *)_src, _mm256_castps_si256(mask)));
 #else
-    auto *src = (typename vint8::value_t *)_src;
-    vint8 result;
-
-    for (int i = 0; i < 8; ++i)
-      if (mask[i])
-        result[i] = src[i];
-
-    return result;
+    auto *src = (typename vint16::value_t *)_src;
+    return vint8(load<vint4>(src, vboolf4(mask.vl)),
+                 load<vint4>(src + 4, vboolf4(mask.vh)));
 #endif
   }
 
@@ -255,12 +235,7 @@ namespace tsimd {
     return _mm512_load_ps((float *)_src);
 #else
     auto *src = (typename vfloat16::value_t *)_src;
-    vfloat16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = src[i];
-
-    return result;
+    return vfloat16(load<vfloat8>(src), load<vfloat8>(src + 8));
 #endif
   }
 
@@ -271,13 +246,8 @@ namespace tsimd {
     return _mm512_mask_load_ps(_mm512_setzero_ps(), mask, (float *)_src);
 #else
     auto *src = (typename vfloat16::value_t *)_src;
-    vfloat16 result;
-
-    for (int i = 0; i < 16; ++i)
-      if (mask[i])
-        result[i] = src[i];
-
-    return result;
+    return vfloat16(load<vfloat8>(src, vboolf8(mask.vl)),
+                    load<vfloat8>(src + 8, vboolf8(mask.vh)));
 #endif
   }
 
@@ -288,12 +258,7 @@ namespace tsimd {
     return _mm512_load_si512((int *)_src);
 #else
     auto *src = (typename vint16::value_t *)_src;
-    vint16 result;
-
-    for (int i = 0; i < 16; ++i)
-      result[i] = src[i];
-
-    return result;
+    return vint16(load<vint8>(src), load<vint8>(src + 8));
 #endif
   }
 
@@ -304,13 +269,8 @@ namespace tsimd {
     return _mm512_mask_load_epi32(_mm512_setzero_epi32(), mask, _src);
 #else
     auto *src = (typename vint16::value_t *)_src;
-    vint16 result;
-
-    for (int i = 0; i < 16; ++i)
-      if (mask[i])
-        result[i] = src[i];
-
-    return result;
+    return vint16(load<vint8>(src, vboolf8(mask.vl)),
+                  load<vint8>(src + 8, vboolf8(mask.vh)));
 #endif
   }
 

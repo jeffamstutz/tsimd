@@ -289,6 +289,12 @@ namespace tsimd {
       using type = simd_type<float, 8>::type;
     };
 
+    template <>
+    struct cast_simd_type<bool32_t, 8>
+    {
+      using type = simd_type<int, 8>::type;
+    };
+
     // 16-wide //
 
     template <>
