@@ -222,6 +222,8 @@ namespace tsimd {
 
   // pack<> inlined members ///////////////////////////////////////////////////
 
+  // pack<>::pack(T value) + specializations //
+
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(T value)
   {
@@ -231,6 +233,56 @@ namespace tsimd {
     for (int i = 0; i < W; ++i)
       arr[i] = value;
   }
+
+  // 4-wide //
+
+#if defined(__SSE__)
+  template <>
+  TSIMD_INLINE vfloat4::pack(float value)
+      : v(_mm_set1_ps(value))
+  {
+  }
+
+  template <>
+  TSIMD_INLINE vint4::pack(int value)
+      : v(_mm_set1_epi32(value))
+  {
+  }
+#endif
+
+  // 8-wide //
+
+#if defined(__AVX__)
+  template <>
+  TSIMD_INLINE vfloat8::pack(float value)
+      : v(_mm256_set1_ps(value))
+  {
+  }
+
+  template <>
+  TSIMD_INLINE vint8::pack(int value)
+      : v(_mm256_set1_epi32(value))
+  {
+  }
+#endif
+
+  // 16-wide //
+
+#if defined(__AVX512F__)
+  template <>
+  TSIMD_INLINE vfloat16::pack(float value)
+      : v(_mm512_set1_ps(value))
+  {
+  }
+
+  template <>
+  TSIMD_INLINE vint16::pack(int value)
+      : v(_mm512_set1_epi32(value))
+  {
+  }
+#endif
+
+  // Generic pack<> members //
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(const std::array<T, W> &_arr) : arr(_arr)
