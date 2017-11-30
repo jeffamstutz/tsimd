@@ -46,6 +46,7 @@ namespace tsimd {
     return result;
   }
 
+#if 0
   template <int W>
   TSIMD_INLINE vfloatn<W> cos(const vfloatn<W> &p)
   {
@@ -92,5 +93,6 @@ namespace tsimd {
     formula = select(flipSign, -formula, formula);
     return formula;
   }
+#endif
 
 }  // namespace tsimd

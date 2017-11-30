@@ -50,6 +50,7 @@ namespace tsimd {
   // Most of the transcendental implementations in ispc code come from
   // Solomon Boulos's "syrah": https://github.com/boulos/syrah/
 
+#if 0
   template <int W>
   TSIMD_INLINE vfloatn<W> sin(const vfloatn<W> &p)
   {
@@ -97,5 +98,6 @@ namespace tsimd {
     formula = select(flipSign, -formula, formula);
     return formula;
   }
+#endif
 
 }  // namespace tsimd
