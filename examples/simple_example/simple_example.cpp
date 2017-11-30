@@ -54,6 +54,22 @@ int main()
 
   std::cout << std::endl;
 
+  std::cout << "test sin()/cos()/tan()" << std::endl;
+
+  {
+    vfloat v(1.f);
+
+    std::cout << "sin(1.f) == " << std::sin(1.f) << std::endl;
+    std::cout << "cos(1.f) == " << std::cos(1.f) << std::endl;
+    std::cout << "tan(1.f) == " << std::tan(1.f) << std::endl;
+
+    std::cout << "sin(v) == " << sin(v) << std::endl;
+    std::cout << "cos(v) == " << cos(v) << std::endl;
+    std::cout << "tan(v) == " << tan(v) << std::endl;
+  }
+
+  std::cout << std::endl;
+
   std::cout << "test operator*=()" << std::endl;
 
   {
