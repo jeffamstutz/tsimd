@@ -27,5 +27,6 @@
 #include "algorithm/all.h"
 #include "algorithm/any.h"
 #include "algorithm/foreach.h"
+#include "algorithm/near_equal.h"
 #include "algorithm/select.h"
 #include "algorithm/set_if.h"

@@ -65,9 +65,9 @@ TEST_CASE("binary operator+()", "[arithmetic_operators]")
 {
   vfloat v1(1.f), v2(2.f);
 
-  REQUIRE(tsimd::all((v1 + v2) == vfloat(3.f)));
-  REQUIRE(tsimd::all((v1 + 2.f) == vfloat(3.f)));
-  REQUIRE(tsimd::all((2.f + v1) == vfloat(3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 + v2, 3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 + 2.f, 3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(2.f + v1, 3.f)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1.f + 1.f), float>::value;
@@ -83,17 +83,17 @@ TEST_CASE("binary operator+=()", "[arithmetic_operators]")
   v1 += v2;
   v2 += 1.f;
 
-  REQUIRE(tsimd::all(v1 == vfloat(3.f)));
-  REQUIRE(tsimd::all(v2 == vfloat(3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, 3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v2, 3.f)));
 }
 
 TEST_CASE("binary operator-()", "[arithmetic_operators]")
 {
   vfloat v1(2.f), v2(1.f);
 
-  REQUIRE(tsimd::all((v1 - v2) == vfloat(1.f)));
-  REQUIRE(tsimd::all((v1 - 2.f) == vfloat(0.f)));
-  REQUIRE(tsimd::all((4.f - v1) == vfloat(2.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 - v2, 1.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 - 2.f, 0.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(4.f - v1, 2.f)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1.f - 1.f), float>::value;
@@ -117,9 +117,9 @@ TEST_CASE("binary operator*()", "[arithmetic_operators]")
 {
   vfloat v1(2.f), v2(1.f);
 
-  REQUIRE(tsimd::all((v1 * v2) == vfloat(2.f)));
-  REQUIRE(tsimd::all((v1 * 2.f) == vfloat(4.f)));
-  REQUIRE(tsimd::all((2.f * v1) == vfloat(4.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 * v2, 2.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 * 2.f, 4.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(2.f * v1, 4.f)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1.f * 1.f), float>::value;
@@ -341,28 +341,28 @@ TEST_CASE("sqrt()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::sqrt(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(2.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, 2.f)));
 }
 
 TEST_CASE("sin()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::sin(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(sin(4.f))));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, sin(4.f))));
 }
 
 TEST_CASE("cos()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::cos(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(cos(4.f))));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, cos(4.f))));
 }
 
 TEST_CASE("tan()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::tan(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(tan(4.f))));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, tan(4.f))));
 }
 
 // pack<> algorithms //////////////////////////////////////////////////////////
@@ -473,6 +473,14 @@ TEST_CASE("select()", "[algorithms]")
     REQUIRE(tsimd::all(result_true == v1));
     REQUIRE(tsimd::all(result_false == v2));
   }
+}
+
+TEST_CASE("near_equal()", "[algorithms]")
+{
+  vfloat v1(1.f);
+  vfloat v2(1.1f);
+
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, v2, vfloat::value_t(0.11))));
 }
 
 // pack<> memory operations ///////////////////////////////////////////////////

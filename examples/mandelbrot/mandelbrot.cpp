@@ -125,7 +125,7 @@ namespace tsimd {
     }
   }
 
-}  // namespace tsimd
+} // namespace tsimd
 
   // embree version ///////////////////////////////////////////////////////////
 

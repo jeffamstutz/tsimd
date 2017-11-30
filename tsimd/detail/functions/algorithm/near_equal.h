@@ -24,71 +24,44 @@
 
 #pragma once
 
-#ifdef _MSVC_LANG
-#define TSIMD_WIN 1
-#else
-#define TSIMD_WIN 0
-#endif
+#include <cmath>
 
-#include <immintrin.h>
+#include "../../pack.h"
 
-#if defined(__AVX512F__)
-#define TSIMD_DEFAULT_WIDTH 16
-#endif
+namespace tsimd {
 
-#if defined(__AVX2__) || defined(__AVX__)
-#if !defined(TSIMD_DEFAULT_WIDTH)
-#define TSIMD_DEFAULT_WIDTH 8
-#endif
-#endif
+  #define EPSILON_DEFAULT TSIMD_DEFAULT_NEAR_EQUAL_EPSILON
 
-#if defined(__SSE__)
-#if !defined(TSIMD_DEFAULT_WIDTH)
-#define TSIMD_DEFAULT_WIDTH 4
-#endif
-#endif
+  template <typename T, int W, typename = traits::is_floating_point_t<T>>
+  TSIMD_INLINE mask<T, W> near_equal(const pack<T, W> &p1,
+                                     const pack<T, W> &p2,
+                                     T epsilon = EPSILON_DEFAULT)
+  {
+    return ((p1 + epsilon) > p2) || ((p1 - epsilon) < p2);
+  }
 
-#if !defined(TSIMD_DEFAULT_WIDTH)
-#define TSIMD_DEFAULT_WIDTH 1
-#endif
+  template <typename T,
+            typename U,
+            int W,
+            typename = traits::is_floating_point_t<T>>
+  TSIMD_INLINE mask<T, W> near_equal(const pack<T, W> &p,
+                                     U value,
+                                     T epsilon = EPSILON_DEFAULT)
+  {
+    return near_equal(p, pack<T, W>(value), epsilon);
+  }
 
-#if defined(__AVX512F__)
-#define AVX_ZERO_UPPER()
-#elif defined(__AVX2__) || defined(__AVX__)
-#define AVX_ZERO_UPPER() _mm256_zeroupper()
-#else
-#define AVX_ZERO_UPPER()
-#endif
+  template <typename T,
+            typename U,
+            int W,
+            typename = traits::is_floating_point_t<T>>
+  TSIMD_INLINE mask<T, W> near_equal(U value,
+                                     const pack<T, W> &p,
+                                     T epsilon = EPSILON_DEFAULT)
+  {
+    return near_equal(pack<T, W>(value), p, epsilon);
+  }
 
-#if TSIMD_WIN
-#define TSIMD_ALIGN(...) __declspec(align(__VA_ARGS__))
-#define TSIMD_INLINE inline
-#else
-#define TSIMD_ALIGN(...) __attribute__((aligned(__VA_ARGS__)))
-#define TSIMD_INLINE inline __attribute__((always_inline))
-#endif
+  #undef EPSILON_DEFAULT
 
-#if 0
-#define NOT_YET_IMPLEMENTED \
-  static_assert(false, "This function is not yet implemented!");
-#elif 0
-#define NOT_YET_IMPLEMENTED \
-  throw std::runtime_error("This function is not yet implemented!");
-#else
-#define NOT_YET_IMPLEMENTED               \
-  throw std::runtime_error(__FUNCTION__ + \
-                           std::string(" is not yet implemented!"));
-#endif
-
-#define DO_NOT_USE \
-  static_assert(false, "This function should not be used in this context!");
-
-#if TSIMD_WIN
-#define TSIMD_USE_OPENMP 0
-#else
-#define TSIMD_USE_OPENMP 1
-#endif
-
-#if !defined(TSIMD_DEFAULT_NEAR_EQUAL_EPSILON)
-#define TSIMD_DEFAULT_NEAR_EQUAL_EPSILON 1e-6f
-#endif
+}  // namespace tsimd

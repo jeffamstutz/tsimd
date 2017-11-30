@@ -93,6 +93,18 @@ namespace tsimd {
     template <typename MASK_T>
     using is_mask_t = enable_if_t<is_mask<MASK_T>::value>;
 
+    // If given type is a floating point type (float/double) //////////////////
+
+    template <typename T>
+    struct is_floating_point
+    {
+      static const bool value =
+          std::is_same<T, float>::value || std::is_same<T, double>::value;
+    };
+
+    template <typename T>
+    using is_floating_point_t = enable_if_t<is_floating_point<T>::value>;
+
     // Provide intrinsic type given a SIMD width //////////////////////////////
 
     template <typename T, int W>
