@@ -126,4 +126,28 @@ namespace tsimd {
 #endif
   }
 
+  // Inferred pack-scalar select //////////////////////////////////////////////
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> select(const mask<T, W> &m,
+                                 const pack<T, W> &t,
+                                 const OTHER_T &f)
+  {
+    return select(m, t, pack<T, W>(f));
+  }
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> select(const mask<T, W> &m,
+                                 const OTHER_T &t,
+                                 const pack<T, W> &f)
+  {
+    return select(m, pack<T, W>(t), f);
+  }
+
 }  // namespace tsimd
