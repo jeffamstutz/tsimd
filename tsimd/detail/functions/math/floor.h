@@ -24,7 +24,24 @@
 
 #pragma once
 
-#include "memory/gather.h"
-#include "memory/load.h"
-#include "memory/scatter.h"
-#include "memory/store.h"
+#include <cmath>
+
+#include "../../pack.h"
+
+namespace tsimd {
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> floor(const pack<T, W> &p)
+  {
+    pack<T, W> result;
+
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
+    for (int i = 0; i < W; ++i)
+      result[i] = std::floor(p[i]);
+
+    return result;
+  }
+
+}  // namespace tsimd

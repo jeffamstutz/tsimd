@@ -24,7 +24,18 @@
 
 #pragma once
 
-#include "memory/gather.h"
-#include "memory/load.h"
-#include "memory/scatter.h"
-#include "memory/store.h"
+#include "../../pack.h"
+
+#include "select.h"
+
+namespace tsimd {
+
+  template <typename T, int W>
+  TSIMD_INLINE void set_if(pack<T, W>& a,
+                           const pack<T, W>& b,
+                           const mask<T, W>& mask)
+  {
+    a = select(mask, b, a);
+  }
+
+}  // namespace tsimd
