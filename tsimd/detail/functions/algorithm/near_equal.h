@@ -28,6 +28,8 @@
 
 #include "../../pack.h"
 
+#include "../math/abs.h"
+
 namespace tsimd {
 
   #define EPSILON_DEFAULT TSIMD_DEFAULT_NEAR_EQUAL_EPSILON
@@ -37,7 +39,7 @@ namespace tsimd {
                                      const pack<T, W> &p2,
                                      T epsilon = EPSILON_DEFAULT)
   {
-    return ((p1 + epsilon) > p2) || ((p1 - epsilon) < p2);
+    return abs(p1 - p2) < epsilon;
   }
 
   template <typename T,

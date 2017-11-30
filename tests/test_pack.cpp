@@ -478,9 +478,13 @@ TEST_CASE("select()", "[algorithms]")
 TEST_CASE("near_equal()", "[algorithms]")
 {
   vfloat v1(1.f);
-  vfloat v2(1.1f);
+  vfloat v2(1.01f);
 
   REQUIRE(tsimd::all(tsimd::near_equal(v1, v2, vfloat::value_t(0.11))));
+
+  v1 = 2.1f;
+
+  REQUIRE(tsimd::none(tsimd::near_equal(v1, v2, vfloat::value_t(0.11))));
 }
 
 // pack<> memory operations ///////////////////////////////////////////////////
