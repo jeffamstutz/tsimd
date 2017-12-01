@@ -31,6 +31,9 @@
 #include "../algorithm/select.h"
 #include "../algorithm/set_if.h"
 
+#include "cos.h"
+#include "sin.h"
+
 namespace tsimd {
 
   template <typename T, int W>
@@ -117,6 +120,12 @@ namespace tsimd {
     }
 
     return select(xLt0, -z, z);
+  }
+#else
+  template <int W>
+  TSIMD_INLINE vfloatn<W> tan(const vfloatn<W> &p)
+  {
+    return sin(p) / cos(p);
   }
 #endif
 
