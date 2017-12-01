@@ -57,12 +57,15 @@ int main()
   std::cout << "test sin()/cos()/tan()" << std::endl;
 
   {
-    vfloat v(1.f);
+    float value = M_PI;
+    vfloat v(value);
 
-    std::cout << "sin(1.f) == " << std::sin(1.f) << std::endl;
-    std::cout << "cos(1.f) == " << std::cos(1.f) << std::endl;
-    std::cout << "tan(1.f) == " << std::tan(1.f) << std::endl;
+    std::cout << "value == " << value << std::endl;
+    std::cout << "sin(value) == " << std::sin(value) << std::endl;
+    std::cout << "cos(value) == " << std::cos(value) << std::endl;
+    std::cout << "tan(value) == " << std::tan(value) << std::endl;
 
+    std::cout << "v = vfloat(value)" << std::endl;
     std::cout << "sin(v) == " << sin(v) << std::endl;
     std::cout << "cos(v) == " << cos(v) << std::endl;
     std::cout << "tan(v) == " << tan(v) << std::endl;
