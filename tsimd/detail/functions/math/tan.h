@@ -50,8 +50,6 @@ namespace tsimd {
     return result;
   }
 
-#if 0 //NOTE(jda) - this comes from ispc, but generates a different answer to
-      //            std::tan() on each value...
   template <int W>
   TSIMD_INLINE vfloatn<W> tan(const vfloatn<W> &p)
   {
@@ -121,12 +119,5 @@ namespace tsimd {
 
     return select(xLt0, -z, z);
   }
-#else
-  template <int W>
-  TSIMD_INLINE vfloatn<W> tan(const vfloatn<W> &p)
-  {
-    return sin(p) / cos(p);
-  }
-#endif
 
 }  // namespace tsimd
