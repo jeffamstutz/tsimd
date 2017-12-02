@@ -33,6 +33,12 @@
 namespace tsimd {
 
   template <typename T, int W = TSIMD_DEFAULT_WIDTH>
+  struct pack;
+
+  template <typename OTHER_T, typename T, int W>
+  pack<OTHER_T, W> pack_element_cast(const pack<T, W> &from);
+
+  template <typename T, int W>
   struct pack
   {
     // Compile-time info //
@@ -50,6 +56,12 @@ namespace tsimd {
 
     pack() = default;
     explicit pack(T value);
+
+    template <typename OT, typename = traits::is_not_same_t<T, OT>>
+    explicit pack(const pack<OT, W> &other)
+    {
+      *this = pack_element_cast<T>(other);
+    }
 
     // (ugly syntax here) --> contstruct from intrinsic_t by value
     // NOTE(jda) - must define here because of MSVC...
@@ -320,21 +332,6 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  template <typename OTHER_T>
-  TSIMD_INLINE pack<OTHER_T, W> pack<T, W>::as()
-  {
-    pack<OTHER_T, W> result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = arr[i];
-
-    return result;
-  }
-
-  template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator const intrinsic_t &() const
   {
     return v;
@@ -446,5 +443,22 @@ namespace tsimd {
   {
     std::cout << p << std::endl;
   }
+
+  // pack<> cast definition ///////////////////////////////////////////////////
+
+  template <typename OTHER_T, typename T, int W>
+  TSIMD_INLINE pack<OTHER_T, W> pack_element_cast(const pack<T, W> &from)
+  {
+    pack<OTHER_T, W> to;
+
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
+    for (int i = 0; i < W; ++i)
+      to[i] = from[i];
+
+    return to;
+  }
+
 
 }  // namespace tsimd

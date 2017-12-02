@@ -40,6 +40,14 @@ namespace tsimd {
     template <typename FROM, typename TO>
     using can_convert = enable_if_t<std::is_convertible<TO, FROM>::value>;
 
+    // Type is same (for SFINAE) //////////////////////////////////////////////
+
+    template <typename T1, typename T2>
+    using is_same_t = enable_if_t<std::is_same<T1, T2>::value>;
+
+    template <typename T1, typename T2>
+    using is_not_same_t = enable_if_t<!std::is_same<T1, T2>::value>;
+
     // Is a pack<> with given width ///////////////////////////////////////////
 
     // TODO: verify if it is indeed a pack! this trait fails if given anything

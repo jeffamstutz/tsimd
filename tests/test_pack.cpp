@@ -59,6 +59,15 @@ using vint   = tsimd::pack<int_type, TEST_WIDTH>;
  *         - store()
  */
 
+// pack<> member functions ////////////////////////////////////////////////////
+
+TEST_CASE("cast construction", "[member_functions]")
+{
+  vfloat v1(3.5f);
+
+  REQUIRE(tsimd::all(vint(v1) == 3));
+}
+
 // pack<> arithmetic operators ////////////////////////////////////////////////
 
 TEST_CASE("binary operator+()", "[arithmetic_operators]")
