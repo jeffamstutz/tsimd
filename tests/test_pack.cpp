@@ -28,6 +28,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <random>
 
 #ifndef TEST_WIDTH
 #define TEST_WIDTH 1
@@ -561,4 +562,15 @@ TEST_CASE("unmasked scatter()", "[memory_operations]")
 
   std::for_each(
       values.begin(), values.end(), [](int_type v) { REQUIRE(v == 5); });
+}
+
+// random numbers /////////////////////////////////////////////////////////////
+
+TEST_CASE("uniform_random_distribution()", "[random]]")
+{
+  tsimd::default_halton_engine2<vfloat::static_size> rng;
+  tsimd::uniform_real_distribution<vfloat> dist(1.f, 2.f);
+  vfloat v = dist(rng);
+
+  REQUIRE(tsimd::all(v >= 1.f && v < 2.f));
 }
