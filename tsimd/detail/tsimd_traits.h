@@ -232,7 +232,7 @@ namespace tsimd {
     template <>
     struct simd_type<bool32_t, 16>
     {
-      using type = __mmask32;
+      using type = __mmask16;
     };
 #endif
 
