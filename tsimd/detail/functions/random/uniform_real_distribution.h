@@ -26,8 +26,6 @@
 
 #include "../../pack.h"
 
-#include <random>
-
 namespace tsimd {
 
   // TODO: verify PACK_T is indeed a pack<>!

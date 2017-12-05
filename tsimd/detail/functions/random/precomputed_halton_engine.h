@@ -28,6 +28,8 @@
 
 #include "../memory/gather.h"
 
+#include <random>
+
 namespace tsimd {
 
   namespace detail {
@@ -69,6 +71,8 @@ namespace tsimd {
 
     precomputed_halton_engine();
 
+    //NOTE(jda) - TODO: still need to be able to seed via constructor
+
     vfloatn<W> operator()();
 
     vfloatn<W> min() const;
@@ -105,6 +109,12 @@ namespace tsimd {
       for (int i = 0; i < NUM_PRECOMPUTED; i++)
         values[i] = detail::radicalInverse(i,5);
     }
+
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist(0, NUM_PRECOMPUTED);
+
+    for (int i = 0; i < W; i++)
+      index[i] = dist(rd);
   };
 
   template <int NUM_PRECOMPUTED, int SERIES, int W>
