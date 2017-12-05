@@ -30,18 +30,50 @@
 
 namespace tsimd {
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> sqrt(const pack<T, W> &p)
-  {
-    pack<T, W> result;
+  // 1-wide //
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
+  template <typename T>
+  TSIMD_INLINE pack<T, 1> sqrt(const pack<T, 1> &p)
+  {
+    return pack<T, 1>(std::sqrt(p[0]));
+  }
+
+  // 4-wide //
+
+  TSIMD_INLINE vfloat4 sqrt(const vfloat4 &p)
+  {
+#if defined(__SSE__)
+    return _mm_sqrt_ps(p);
+#else
+    vfloat4 result;
+
+    for (int i = 0; i < 4; ++i)
       result[i] = std::sqrt(p[i]);
 
     return result;
+#endif
+  }
+
+  // 8-wide //
+
+  TSIMD_INLINE vfloat8 sqrt(const vfloat8 &p)
+  {
+#if defined(__AVX2__) || defined(__AVX__)
+    return _mm256_sqrt_ps(p);
+#else
+    return vfloat8(sqrt(vfloat4(p.vl)), sqrt(vfloat4(p.vh)));
+#endif
+  }
+
+  // 16-wide //
+
+  TSIMD_INLINE vfloat16 sqrt(const vfloat16 &p)
+  {
+#if defined(__AVX512F__)
+    return _mm512_sqrt_ps(p);
+#else
+    return vfloat16(sqrt(vfloat8(p.vl)), sqrt(vfloat8(p.vh)));
+#endif
   }
 
 }  // namespace tsimd
