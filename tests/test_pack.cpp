@@ -312,7 +312,7 @@ TEST_CASE("binary operator&&()", "[logic_operators]")
   vbool m1(true);
   vbool m2(false);
 
-  REQUIRE(tsimd::none(m1 && m2));
+  REQUIRE(tsimd::none(m1 & m2));
 }
 
 TEST_CASE("binary operator||()", "[logic_operators]")
@@ -320,7 +320,7 @@ TEST_CASE("binary operator||()", "[logic_operators]")
   vbool m1(true);
   vbool m2(false);
 
-  REQUIRE(tsimd::all(m1 || m2));
+  REQUIRE(tsimd::all(m1 | m2));
 }
 
 TEST_CASE("unary operator!()", "[logic_operators]")
@@ -584,7 +584,7 @@ TEST_CASE("uniform_random_distribution()", "[random]]")
   tsimd::uniform_real_distribution<vfloat> dist(1.f, 2.f);
   vfloat v = dist(rng);
 
-  REQUIRE(tsimd::all(v >= 1.f && v < 2.f));
+  REQUIRE(tsimd::all(v >= 1.f & v < 2.f));
 }
 
 template <int BASE>
@@ -593,7 +593,7 @@ inline void precomputed_halton_test()
   tsimd::precomputed_halton_engine<256, BASE, vfloat::static_size> rng;
   auto v = tsimd::generate_canonical(rng);
 
-  REQUIRE(tsimd::all(v >= 0.f && v < 1.f));
+  REQUIRE(tsimd::all(v >= 0.f & v < 1.f));
   REQUIRE(tsimd::any(v != 0.f));
   REQUIRE(tsimd::any(v != 1.f));
 }

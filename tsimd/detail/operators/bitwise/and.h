@@ -32,22 +32,13 @@ namespace tsimd {
 
   // 1-wide //
 
-  template <typename T>
+  template <typename T, typename = traits::is_not_floating_point_t<T>>
   TSIMD_INLINE pack<T, 1> operator&(const pack<T, 1> &p1, const pack<T, 1> &p2)
   {
     return pack<T, 1>(p1[0] & p2[0]);
   }
 
   // 4-wide //
-
-  TSIMD_INLINE vfloat4 operator&(const vfloat4 &p1, const vfloat4 &p2)
-  {
-#if defined(__SSE__)
-    return _mm_and_ps(p1, p2);
-#else
-    NOT_YET_IMPLEMENTED;
-#endif
-  }
 
   TSIMD_INLINE vint4 operator&(const vint4 &p1, const vint4 &p2)
   {
@@ -79,15 +70,6 @@ namespace tsimd {
 
   // 8-wide //
 
-  TSIMD_INLINE vfloat8 operator&(const vfloat8 &p1, const vfloat8 &p2)
-  {
-#if defined(__AVX512F__) || defined(__AVX__)
-    return _mm256_and_ps(p1, p2);
-#else
-    NOT_YET_IMPLEMENTED;
-#endif
-  }
-
   TSIMD_INLINE vint8 operator&(const vint8 &p1, const vint8 &p2)
   {
 #if defined(__AVX512F__) || defined(__AVX2__)
@@ -111,15 +93,6 @@ namespace tsimd {
   }
 
   // 16-wide //
-
-  TSIMD_INLINE vfloat16 operator&(const vfloat16 &p1, const vfloat16 &p2)
-  {
-#if defined(__AVX512DQ__)
-    return _mm512_and_ps(p1, p2);
-#else
-    NOT_YET_IMPLEMENTED;
-#endif
-  }
 
   TSIMD_INLINE vint16 operator&(const vint16 &p1, const vint16 &p2)
   {

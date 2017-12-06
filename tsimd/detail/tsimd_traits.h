@@ -113,6 +113,9 @@ namespace tsimd {
     template <typename T>
     using is_floating_point_t = enable_if_t<is_floating_point<T>::value>;
 
+    template <typename T>
+    using is_not_floating_point_t = enable_if_t<!is_floating_point<T>::value>;
+
     // Provide intrinsic type given a SIMD width //////////////////////////////
 
     template <typename T, int W>
