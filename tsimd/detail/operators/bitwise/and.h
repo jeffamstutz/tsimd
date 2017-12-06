@@ -114,7 +114,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat16 operator&(const vfloat16 &p1, const vfloat16 &p2)
   {
-#if defined(__AVX512F__)
+#if defined(__AVX512DQ__)
     return _mm512_and_ps(p1, p2);
 #else
     NOT_YET_IMPLEMENTED;
