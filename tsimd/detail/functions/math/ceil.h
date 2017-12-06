@@ -33,22 +33,22 @@ namespace tsimd {
   // 1-wide //
 
   template <typename T>
-  TSIMD_INLINE pack<T, 1> floor(const pack<T, 1> &p)
+  TSIMD_INLINE pack<T, 1> ceil(const pack<T, 1> &p)
   {
-    return pack<T, 1>(std::floor(p[0]));
+    return pack<T, 1>(std::ceil(p[0]));
   }
 
   // 4-wide //
 
-  TSIMD_INLINE vfloat4 floor(const vfloat4 &p)
+  TSIMD_INLINE vfloat4 ceil(const vfloat4 &p)
   {
 #if defined(__SSE__)
-    return _mm_round_ps(p, _MM_FROUND_TO_NEG_INF);
+    return _mm_round_ps(p, _MM_FROUND_TO_POS_INF);
 #else
     vfloat4 result;
 
     for (int i = 0; i < 4; ++i)
-      result[i] = std::floor(p[i]);
+      result[i] = std::ceil(p[i]);
 
     return result;
 #endif
@@ -56,23 +56,23 @@ namespace tsimd {
 
   // 8-wide //
 
-  TSIMD_INLINE vfloat8 floor(const vfloat8 &p)
+  TSIMD_INLINE vfloat8 ceil(const vfloat8 &p)
   {
 #if defined(__AVX2__) || defined(__AVX__)
-    return _mm256_round_ps(p, _MM_FROUND_TO_NEG_INF);
+    return _mm256_round_ps(p, _MM_FROUND_TO_POS_INF);
 #else
-    return vfloat8(floor(vfloat4(p.vl)), floor(vfloat4(p.vh)));
+    return vfloat8(ceil(vfloat4(p.vl)), ceil(vfloat4(p.vh)));
 #endif
   }
 
   // 16-wide //
 
-  TSIMD_INLINE vfloat16 floor(const vfloat16 &p)
+  TSIMD_INLINE vfloat16 ceil(const vfloat16 &p)
   {
 #if defined(__AVX512F__)
-    return _mm512_floor_ps(p);
+    return _mm512_ceil_ps(p);
 #else
-    return vfloat16(floor(vfloat8(p.vl)), floor(vfloat8(p.vh)));
+    return vfloat16(ceil(vfloat8(p.vl)), ceil(vfloat8(p.vh)));
 #endif
   }
 

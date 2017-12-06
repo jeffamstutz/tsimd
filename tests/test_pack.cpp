@@ -347,6 +347,18 @@ TEST_CASE("abs()", "[math_functions]")
   REQUIRE(tsimd::all((v1) == vint(4)));
 }
 
+TEST_CASE("ceil()", "[math_functions]")
+{
+  vfloat v(1.5f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::ceil(v), 2.f)));
+}
+
+TEST_CASE("floor()", "[math_functions]")
+{
+  vfloat v(1.5f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::floor(v), 1.f)));
+}
+
 TEST_CASE("sqrt()", "[math_functions]")
 {
   vfloat v1(4.f);
