@@ -33,75 +33,128 @@ namespace tsimd {
 
   // 1-wide //
 
-  TSIMD_INLINE vboolf1 operator==(const vfloat1 &p1, const vfloat1 &p2)
+  template <typename T>
+  TSIMD_INLINE mask<T, 1> operator==(const pack<T, 1> &p1, const pack<T, 1> &p2)
   {
-    return vboolf1(p1[0] == p2[0]);
+    return mask<T, 1>(p1[0] == p2[0]);
   }
 
   // 4-wide //
 
-  // TODO
+  TSIMD_INLINE vboolf4 operator==(const vfloat4 &p1, const vfloat4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_cmpeq_ps(p1, p2);
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] == p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf4 operator==(const vint4 &p1, const vint4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_castsi128_ps(_mm_cmpeq_epi32(p1, p2));
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] == p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf4 operator==(const vboolf4 &p1, const vboolf4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_castsi128_ps(_mm_cmpeq_epi32(p1, p2));
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] == p2[i]);
+
+    return result;
+#endif
+  }
 
   // 8-wide //
 
   TSIMD_INLINE vboolf8 operator==(const vfloat8 &p1, const vfloat8 &p2)
   {
-#if defined(__AVX512__)
-    return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_EQ);
-#elif defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_cmp_ps(p1, p2, _CMP_EQ_OQ);
 #else
-    vboolf8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] == p2[i]);
-
-    return result;
+    return vboolf8(vfloat4(p1.vl) == vfloat4(p2.vl),
+                   vfloat4(p1.vh) == vfloat4(p2.vh));
 #endif
   }
 
   TSIMD_INLINE vboolf8 operator==(const vint8 &p1, const vint8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX2__)
+#if defined(__AVX512F__) || defined(__AVX2__)
     return _mm256_castsi256_ps(_mm256_cmpeq_epi32(p1, p2));
 #elif defined(__AVX__)
     return vboolf8(_mm_castsi128_ps(_mm_cmpeq_epi32(p1.vl, p2.vl)),
                    _mm_castsi128_ps(_mm_cmpeq_epi32(p1.vh, p2.vh)));
 #else
-    vboolf8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] == p2[i]);
-
-    return result;
+    return vboolf8(vint4(p1.vl) == vint4(p2.vl), vint4(p1.vh) == vint4(p2.vh));
 #endif
   }
 
-  TSIMD_INLINE vboolf8 operator==(const vbool8 &p1, const vbool8 &p2)
+  TSIMD_INLINE vboolf8 operator==(const vboolf8 &p1, const vboolf8 &p2)
   {
-#if defined(__AVX512__)
-    return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_EQ);
-#elif defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
     return _mm256_cmp_ps(p1, p2, _CMP_EQ_OQ);
 #else
-    vboolf8 result;
-
-    for (int i = 0; i < 8; ++i)
-      result[i] = (p1[i] == p2[i]);
-
-    return result;
+    return vboolf8(vboolf4(p1.vl) == vboolf4(p2.vl),
+                   vboolf4(p1.vh) == vboolf4(p2.vh));
 #endif
   }
 
   // 16-wide //
 
-  // TODO
+  TSIMD_INLINE vboolf16 operator==(const vfloat16 &p1, const vfloat16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_cmp_ps_mask(p1, p2, _MM_CMPINT_EQ);
+#else
+    return vboolf16(vfloat8(p1.vl) == vfloat8(p2.vl),
+                    vfloat8(p1.vh) == vfloat8(p2.vh));
+#endif
+  }
+
+  TSIMD_INLINE vboolf16 operator==(const vint16 &p1, const vint16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_cmp_epi32_mask(p1, p2, _MM_CMPINT_EQ);
+#else
+    return vboolf16(vint8(p1.vl) == vint8(p2.vl), vint8(p1.vh) == vint8(p2.vh));
+#endif
+  }
+
+  TSIMD_INLINE vboolf16 operator==(const vboolf16 &p1, const vboolf16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_kxnor(p1, p2);
+#else
+    return vboolf16(vboolf8(p1.vl) == vboolf8(p2.vl),
+                    vboolf8(p1.vh) == vboolf8(p2.vh));
+#endif
+  }
+
+  // Inferred pack-scalar operators ///////////////////////////////////////////
 
   template <typename T,
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator==(const pack<T, W> &p1, const OTHER_T &v)
+  TSIMD_INLINE mask<T, W> operator==(const pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 == pack<T, W>(v);
   }
@@ -110,7 +163,7 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator==(const OTHER_T &v, const pack<T, W> &p1)
+  TSIMD_INLINE mask<T, W> operator==(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) == p1;
   }
@@ -118,16 +171,16 @@ namespace tsimd {
   // binary operator!=() //////////////////////////////////////////////////////
 
   template <typename T, int W>
-  TSIMD_INLINE mask<W> operator!=(const pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE mask<T, W> operator!=(const pack<T, W> &p1, const pack<T, W> &p2)
   {
-    return !(p1 == p2);
+    return mask<T, W>(!(p1 == p2));
   }
 
   template <typename T,
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator!=(const pack<T, W> &p1, const OTHER_T &v)
+  TSIMD_INLINE mask<T, W> operator!=(const pack<T, W> &p1, const OTHER_T &v)
   {
     return p1 != pack<T, W>(v);
   }
@@ -136,7 +189,7 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<W> operator!=(const OTHER_T &v, const pack<T, W> &p1)
+  TSIMD_INLINE mask<T, W> operator!=(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) != p1;
   }

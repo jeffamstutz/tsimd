@@ -24,7 +24,5 @@
 
 #pragma once
 
-#include "memory/gather.h"
-#include "memory/load.h"
-#include "memory/scatter.h"
-#include "memory/store.h"
+#include "random/precomputed_halton_engine.h"
+#include "random/uniform_real_distribution.h"

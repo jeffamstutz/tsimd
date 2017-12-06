@@ -24,7 +24,46 @@
 
 #pragma once
 
-#include "memory/gather.h"
-#include "memory/load.h"
-#include "memory/scatter.h"
-#include "memory/store.h"
+#include <cmath>
+
+#include "../../pack.h"
+
+#include "../math/abs.h"
+
+namespace tsimd {
+
+  #define EPSILON_DEFAULT TSIMD_DEFAULT_NEAR_EQUAL_EPSILON
+
+  template <typename T, int W, typename = traits::is_floating_point_t<T>>
+  TSIMD_INLINE mask<T, W> near_equal(const pack<T, W> &p1,
+                                     const pack<T, W> &p2,
+                                     T epsilon = EPSILON_DEFAULT)
+  {
+    return abs(p1 - p2) < epsilon;
+  }
+
+  template <typename T,
+            typename U,
+            int W,
+            typename = traits::is_floating_point_t<T>>
+  TSIMD_INLINE mask<T, W> near_equal(const pack<T, W> &p,
+                                     U value,
+                                     T epsilon = EPSILON_DEFAULT)
+  {
+    return near_equal(p, pack<T, W>(value), epsilon);
+  }
+
+  template <typename T,
+            typename U,
+            int W,
+            typename = traits::is_floating_point_t<T>>
+  TSIMD_INLINE mask<T, W> near_equal(U value,
+                                     const pack<T, W> &p,
+                                     T epsilon = EPSILON_DEFAULT)
+  {
+    return near_equal(pack<T, W>(value), p, epsilon);
+  }
+
+  #undef EPSILON_DEFAULT
+
+}  // namespace tsimd

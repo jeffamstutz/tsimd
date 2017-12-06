@@ -22,24 +22,36 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-add_executable(test_pack
-  doctest/doctest.h
-  test_pack.cpp
-)
+# precompile CATCH2 main() function
+add_library(tsimd_catch_main STATIC catch/catch_main.cpp)
 
-set(TEST_EXE ${EXECUTABLE_OUTPUT_PATH}/test_pack)
+# this macro encapsulates the common code for defining a unique test
+macro(tsimd_add_pack_test TEST_NAME TEST_WIDTH TEST_DOUBLE)
+  add_executable(test_pack${TEST_NAME} test_pack.cpp)
 
-add_test(arithmetic_operators
-         ${TEST_EXE} "--test-suite=\"arithmetic operators\"")
+  target_compile_definitions(test_pack${TEST_NAME} PRIVATE
+                             -DTEST_WIDTH=${TEST_WIDTH})
+  target_compile_definitions(test_pack${TEST_NAME} PRIVATE
+                             -DTEST_DOUBLE_PRECISION=${TEST_DOUBLE})
+  target_link_libraries(test_pack${TEST_NAME} tsimd_catch_main)
 
-add_test(bitwise_operators
-         ${TEST_EXE} "--test-suite=\"bitwise operators\"")
+  set(TEST_EXE ${EXECUTABLE_OUTPUT_PATH}/test_pack${TEST_NAME})
 
-add_test(logic_operators
-         ${TEST_EXE} "--test-suite=\"logic operators\"")
+  add_test(member_functions${TEST_NAME}     ${TEST_EXE} "[member_functions]")
+  add_test(arithmetic_operators${TEST_NAME} ${TEST_EXE} "[arithmetic_operators]")
+  add_test(bitwise_operators${TEST_NAME}    ${TEST_EXE} "[bitwise_operators]")
+  add_test(logic_operators${TEST_NAME}      ${TEST_EXE} "[logic_operators]")
+  add_test(math_functions${TEST_NAME}       ${TEST_EXE} "[math_functions]")
+  add_test(algorithms${TEST_NAME}           ${TEST_EXE} "[algorithms]")
+  add_test(random${TEST_NAME}               ${TEST_EXE} "[random]")
+endmacro()
 
-add_test(math_functions
-         ${TEST_EXE} "--test-suite=\"math functions\"")
-
-add_test(algorithms
-         ${TEST_EXE} "--test-suite=\"algorithms\"")
+# define the tests
+tsimd_add_pack_test(32x1  1  0)
+tsimd_add_pack_test(64x1  1  1)
+tsimd_add_pack_test(32x4  4  0)
+#tsimd_add_pack_test(64x4  4  1)
+tsimd_add_pack_test(32x8  8  0)
+#tsimd_add_pack_test(64x8  8  1)
+tsimd_add_pack_test(32x16 16 0)
+#tsimd_add_pack_test(64x16 16 1)

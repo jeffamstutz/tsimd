@@ -29,6 +29,7 @@
 #include "detail/functions/algorithm.h"
 #include "detail/functions/math.h"
 #include "detail/functions/memory.h"
+#include "detail/functions/random.h"
 
 #include "detail/operators/arithmetic.h"
 #include "detail/operators/bitwise.h"

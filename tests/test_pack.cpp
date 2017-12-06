@@ -22,17 +22,35 @@
 // DEALINGS IN THE SOFTWARE.                                                  //
 // ========================================================================== //
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest/doctest.h"
+#include "catch/catch.hpp"
+
 #include "tsimd/tsimd.h"
 
 #include <algorithm>
+#include <numeric>
+#include <random>
 
-using tsimd::bool32_t;
-using tsimd::vbool;
-using tsimd::vfloat;
-using tsimd::vint;
-using vmask = tsimd::vbool;
+#ifndef TEST_WIDTH
+#define TEST_WIDTH 1
+#endif
+
+#ifndef TEST_DOUBLE_PRECISION
+#define TEST_DOUBLE_PRECISION 0
+#endif
+
+#if TEST_DOUBLE_PRECISION
+using bool_type  = tsimd::bool64_t;
+using float_type = double;
+using int_type   = long long;
+#else
+using bool_type  = tsimd::bool32_t;
+using float_type = float;
+using int_type   = int;
+#endif
+
+using vbool  = tsimd::pack<bool_type, TEST_WIDTH>;
+using vfloat = tsimd::pack<float_type, TEST_WIDTH>;
+using vint   = tsimd::pack<int_type, TEST_WIDTH>;
 
 /* TODO: add tests for -->
  *         - operator<<()
@@ -42,17 +60,24 @@ using vmask = tsimd::vbool;
  *         - store()
  */
 
+// pack<> member functions ////////////////////////////////////////////////////
+
+TEST_CASE("cast construction", "[member_functions]")
+{
+  vfloat v1(3.5f);
+
+  REQUIRE(tsimd::all(vint(v1) == 3));
+}
+
 // pack<> arithmetic operators ////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("arithmetic operators");
-
-TEST_CASE("binary operator+()")
+TEST_CASE("binary operator+()", "[arithmetic_operators]")
 {
   vfloat v1(1.f), v2(2.f);
 
-  REQUIRE(tsimd::all((v1 + v2) == vfloat(3.f)));
-  REQUIRE(tsimd::all((v1 + 2.f) == vfloat(3.f)));
-  REQUIRE(tsimd::all((2.f + v1) == vfloat(3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 + v2, 3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 + 2.f, 3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(2.f + v1, 3.f)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1.f + 1.f), float>::value;
@@ -61,24 +86,24 @@ TEST_CASE("binary operator+()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator+=()")
+TEST_CASE("binary operator+=()", "[arithmetic_operators]")
 {
   vfloat v1(1.f), v2(2.f);
 
   v1 += v2;
   v2 += 1.f;
 
-  REQUIRE(tsimd::all(v1 == vfloat(3.f)));
-  REQUIRE(tsimd::all(v2 == vfloat(3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, 3.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v2, 3.f)));
 }
 
-TEST_CASE("binary operator-()")
+TEST_CASE("binary operator-()", "[arithmetic_operators]")
 {
   vfloat v1(2.f), v2(1.f);
 
-  REQUIRE(tsimd::all((v1 - v2) == vfloat(1.f)));
-  REQUIRE(tsimd::all((v1 - 2.f) == vfloat(0.f)));
-  REQUIRE(tsimd::all((4.f - v1) == vfloat(2.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 - v2, 1.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 - 2.f, 0.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(4.f - v1, 2.f)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1.f - 1.f), float>::value;
@@ -87,7 +112,7 @@ TEST_CASE("binary operator-()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator-=()")
+TEST_CASE("binary operator-=()", "[arithmetic_operators]")
 {
   vint v1(1), v2(2);
 
@@ -98,13 +123,13 @@ TEST_CASE("binary operator-=()")
   REQUIRE(tsimd::all(v2 == vint(1)));
 }
 
-TEST_CASE("binary operator*()")
+TEST_CASE("binary operator*()", "[arithmetic_operators]")
 {
   vfloat v1(2.f), v2(1.f);
 
-  REQUIRE(tsimd::all((v1 * v2) == vfloat(2.f)));
-  REQUIRE(tsimd::all((v1 * 2.f) == vfloat(4.f)));
-  REQUIRE(tsimd::all((2.f * v1) == vfloat(4.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 * v2, 2.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1 * 2.f, 4.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(2.f * v1, 4.f)));
 
   // Add checks to make sure we don't promote regular math!
   bool value = std::is_same<decltype(1.f * 1.f), float>::value;
@@ -113,7 +138,7 @@ TEST_CASE("binary operator*()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator*=()")
+TEST_CASE("binary operator*=()", "[arithmetic_operators]")
 {
   vint v1(1), v2(2);
 
@@ -124,7 +149,7 @@ TEST_CASE("binary operator*=()")
   REQUIRE(tsimd::all(v2 == vint(4)));
 }
 
-TEST_CASE("binary operator/()")
+TEST_CASE("binary operator/()", "[arithmetic_operators]")
 {
   vint v1(4), v2(2);
 
@@ -139,7 +164,7 @@ TEST_CASE("binary operator/()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator/=()")
+TEST_CASE("binary operator/=()", "[arithmetic_operators]")
 {
   vint v1(8), v2(4);
 
@@ -150,7 +175,7 @@ TEST_CASE("binary operator/=()")
   REQUIRE(tsimd::all(v2 == vint(2)));
 }
 
-TEST_CASE("binary operator%()")
+TEST_CASE("binary operator%()", "[arithmetic_operators]")
 {
   vint v1(4), v2(3);
 
@@ -163,7 +188,7 @@ TEST_CASE("binary operator%()")
   REQUIRE(value);
 }
 
-TEST_CASE("binary operator%=()")
+TEST_CASE("binary operator%=()", "[arithmetic_operators]")
 {
   vint v1(5), v2(4);
 
@@ -174,13 +199,9 @@ TEST_CASE("binary operator%=()")
   REQUIRE(tsimd::all(v2 == vint(1)));
 }
 
-TEST_SUITE_END();
-
 // pack<> bitwise operators ///////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("bitwise operators");
-
-TEST_CASE("binary operator<<()")
+TEST_CASE("binary operator<<()", "[bitwise_operators]")
 {
   vint v1(1);
   vint v2(1);
@@ -190,7 +211,7 @@ TEST_CASE("binary operator<<()")
   REQUIRE(tsimd::all((1 << v1) == vint(2)));
 }
 
-TEST_CASE("binary operator>>()")
+TEST_CASE("binary operator>>()", "[bitwise_operators]")
 {
   vint v1(2);
   vint v2(1);
@@ -200,7 +221,7 @@ TEST_CASE("binary operator>>()")
   REQUIRE(tsimd::all((4 >> v1) == vint(1)));
 }
 
-TEST_CASE("binary operator^()")
+TEST_CASE("binary operator^()", "[bitwise_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -210,13 +231,9 @@ TEST_CASE("binary operator^()")
   REQUIRE(tsimd::all((2 ^ v1) == vint(3)));
 }
 
-TEST_SUITE_END();
-
 // pack<> logic operators /////////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("logic operators");
-
-TEST_CASE("binary operator==()")
+TEST_CASE("binary operator==()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(1);
@@ -232,7 +249,7 @@ TEST_CASE("binary operator==()")
   REQUIRE(!tsimd::all(v1 == 1));
 }
 
-TEST_CASE("binary operator==()")
+TEST_CASE("binary operator!=()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -246,7 +263,7 @@ TEST_CASE("binary operator==()")
   REQUIRE(!tsimd::all(v1 != v2));
 }
 
-TEST_CASE("binary operator<()")
+TEST_CASE("binary operator<()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -256,7 +273,7 @@ TEST_CASE("binary operator<()")
   REQUIRE(tsimd::all(v1 < 2));
 }
 
-TEST_CASE("binary operator<=()")
+TEST_CASE("binary operator<=()", "[logic_operators]")
 {
   vint v1(1);
   vint v2(2);
@@ -268,7 +285,7 @@ TEST_CASE("binary operator<=()")
   REQUIRE(tsimd::all(v1 <= 2));
 }
 
-TEST_CASE("binary operator>()")
+TEST_CASE("binary operator>()", "[logic_operators]")
 {
   vint v1(2);
   vint v2(1);
@@ -278,7 +295,7 @@ TEST_CASE("binary operator>()")
   REQUIRE(tsimd::all(v1 > 1));
 }
 
-TEST_CASE("binary operator>=()")
+TEST_CASE("binary operator>=()", "[logic_operators]")
 {
   vint v1(2);
   vint v2(1);
@@ -290,43 +307,39 @@ TEST_CASE("binary operator>=()")
   REQUIRE(tsimd::all(v1 >= 2));
 }
 
-TEST_CASE("binary operator&&()")
+TEST_CASE("binary operator&&()", "[logic_operators]")
 {
-  vmask m1(true);
-  vmask m2(false);
+  vbool m1(true);
+  vbool m2(false);
 
   REQUIRE(tsimd::none(m1 && m2));
 }
 
-TEST_CASE("binary operator||()")
+TEST_CASE("binary operator||()", "[logic_operators]")
 {
-  vmask m1(true);
-  vmask m2(false);
+  vbool m1(true);
+  vbool m2(false);
 
   REQUIRE(tsimd::all(m1 || m2));
 }
 
-TEST_CASE("unary operator!()")
+TEST_CASE("unary operator!()", "[logic_operators]")
 {
-  vmask v(true);
+  vbool v(true);
 
-  REQUIRE(tsimd::all(!v == vmask(false)));
+  REQUIRE(tsimd::all(!v == vbool(false)));
 }
 
-TEST_CASE("unary operator-()")
+TEST_CASE("unary operator-()", "[logic_operators]")
 {
   vint v1(2);
 
   REQUIRE(tsimd::all(-v1 == vint(-2)));
 }
 
-TEST_SUITE_END();
-
 // pack<> math functions //////////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("math functions");
-
-TEST_CASE("abs()")
+TEST_CASE("abs()", "[math_functions]")
 {
   vint v1(-4);
   REQUIRE(tsimd::all((v1) != vint(4)));
@@ -334,136 +347,182 @@ TEST_CASE("abs()")
   REQUIRE(tsimd::all((v1) == vint(4)));
 }
 
-TEST_CASE("sqrt()")
+TEST_CASE("ceil()", "[math_functions]")
+{
+  vfloat v(1.5f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::ceil(v), 2.f)));
+}
+
+TEST_CASE("floor()", "[math_functions]")
+{
+  vfloat v(1.5f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::floor(v), 1.f)));
+}
+
+TEST_CASE("sqrt()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::sqrt(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(2.f)));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, 2.f)));
 }
 
-TEST_CASE("sin()")
+TEST_CASE("sin()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::sin(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(sin(4.f))));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, sin(4.f))));
 }
 
-TEST_CASE("cos()")
+TEST_CASE("cos()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::cos(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(cos(4.f))));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, cos(4.f))));
 }
 
-TEST_CASE("tan()")
+TEST_CASE("tan()", "[math_functions]")
 {
   vfloat v1(4.f);
   v1 = tsimd::tan(v1);
-  REQUIRE(tsimd::all((v1) == vfloat(tan(4.f))));
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, tan(4.f))));
 }
-
-TEST_SUITE_END();
 
 // pack<> algorithms //////////////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("algorithms");
-
-TEST_CASE("foreach()")
+TEST_CASE("foreach()", "[algorithms]")
 {
   vfloat v1(0.f);
   vfloat v2(1.f);
 
-  foreach (v1, [](float &l, int) { l = 1; })
+  foreach (v1, [](float_type &l, int) { l = 1; })
     ;
 
   REQUIRE(tsimd::all(v1 == v2));
 }
 
-TEST_CASE("foreach_active()")
+TEST_CASE("foreach_active()", "[algorithms]")
 {
-  vbool m(false);
+  if (vbool::static_size > 1) {
+    vbool m(false);
 
-  m[0] = true;
-  m[2] = true;
+    m[0] = true;
+    m[2] = true;
 
-  vint v1(0);
+    vint v1(0);
 
-  vint expected(0);
-  expected[0] = 2;
-  expected[2] = 2;
+    vint expected(0);
+    expected[0] = 2;
+    expected[2] = 2;
 
-  tsimd::foreach_active(m, v1, [](int &v) { v = 2; });
+    tsimd::foreach_active(m, v1, [](int_type &v) { v = 2; });
 
-  REQUIRE(tsimd::all(v1 == expected));
+    REQUIRE(tsimd::all(v1 == expected));
+  } else {
+    vbool mf(false);
+    vbool mt(true);
+
+    int checker = 0;
+
+    tsimd::foreach_active(mf, [&](int) { checker++; });
+    REQUIRE(checker == 0);
+    tsimd::foreach_active(mt, [&](int) { checker++; });
+    REQUIRE(checker == 1);
+  }
 }
 
-TEST_CASE("any()")
+TEST_CASE("any()", "[algorithms]")
 {
-  vmask m(false);
+  vbool m(false);
   REQUIRE(!tsimd::any(m));
   m[0] = true;
   REQUIRE(tsimd::any(m));
 }
 
-TEST_CASE("none()")
+TEST_CASE("none()", "[algorithms]")
 {
-  vmask m(false);
+  vbool m(false);
   REQUIRE(tsimd::none(m));
   m[0] = true;
   REQUIRE(!tsimd::none(m));
 }
 
-TEST_CASE("all()")
+TEST_CASE("all()", "[algorithms]")
 {
-  vmask m(false);
+  vbool m(false);
   REQUIRE(!tsimd::all(m));
-  m[0] = true;
-  REQUIRE(!tsimd::all(m));
-  foreach (m, [](bool32_t &l, int) { l = true; })
+
+  if (vbool::static_size > 1) {
+    m[0] = true;
+    REQUIRE(!tsimd::all(m));
+  }
+
+  foreach (m, [](bool_type &l, int) { l = true; })
     ;
   REQUIRE(tsimd::all(m));
 }
 
-TEST_CASE("select()")
+TEST_CASE("select()", "[algorithms]")
 {
-  vbool m(false);
-  m[0] = true;
-  m[2] = true;
+  if (vbool::static_size > 1) {
+    vbool m(false);
+    m[0] = true;
+    m[2] = true;
 
-  vint v1(0);
-  vint v2(2);
+    vint v1(0);
+    vint v2(2);
 
-  REQUIRE(tsimd::all(v1 != v2));
+    REQUIRE(tsimd::all(v1 != v2));
 
-  auto result = tsimd::select(m, v1, v2);
+    auto result = tsimd::select(m, v1, v2);
 
-  vint expected(2);
-  expected[0] = 0;
-  expected[2] = 0;
+    vint expected(2);
+    expected[0] = 0;
+    expected[2] = 0;
 
-  REQUIRE(tsimd::all(result == expected));
-  REQUIRE(tsimd::any(v1 != expected));
-  REQUIRE(tsimd::any(v2 != expected));
+    REQUIRE(tsimd::all(result == expected));
+    REQUIRE(tsimd::any(v1 != expected));
+    REQUIRE(tsimd::any(v2 != expected));
+  } else {
+    vbool mt(true);
+    vbool mf(false);
+
+    vint v1(0);
+    vint v2(2);
+
+    auto result_true  = tsimd::select(mt, v1, v2);
+    auto result_false = tsimd::select(mf, v1, v2);
+
+    REQUIRE(tsimd::all(result_true == v1));
+    REQUIRE(tsimd::all(result_false == v2));
+  }
 }
 
-TEST_SUITE_END();
+TEST_CASE("near_equal()", "[algorithms]")
+{
+  vfloat v1(1.f);
+  vfloat v2(1.01f);
+
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, v2, vfloat::value_t(0.11))));
+
+  v1 = 2.1f;
+
+  REQUIRE(tsimd::none(tsimd::near_equal(v1, v2, vfloat::value_t(0.11))));
+}
 
 // pack<> memory operations ///////////////////////////////////////////////////
 
-TEST_SUITE_BEGIN("memory operations");
-
-TEST_CASE("unmasked load()")
+TEST_CASE("unmasked load()", "[memory_operations]")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
   auto v1 = tsimd::load<vint>(values.data());
   REQUIRE(tsimd::all(v1 == 5));
 }
 
-TEST_CASE("masked load()")
+TEST_CASE("masked load()", "[memory_operations]")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
   vbool m(true);
@@ -477,44 +536,77 @@ TEST_CASE("masked load()")
   REQUIRE(tsimd::all(v1 == expected));
 }
 
-TEST_CASE("unmasked gather()")
+TEST_CASE("unmasked gather()", "[memory_operations]")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 4);
 
   vint offset;
-  for (int i = 0; i < TSIMD_DEFAULT_WIDTH; ++i)
-    offset[i] = i;
+  std::iota(offset.begin(), offset.end(), 0);
 
   auto result = tsimd::gather<vint>(values.data(), offset);
 
   REQUIRE(tsimd::all(result == 4));
 }
 
-TEST_CASE("unmasked store()")
+TEST_CASE("unmasked store()", "[memory_operations]")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
 
   vint v1(7);
 
   tsimd::store(v1, values.data());
 
-  std::for_each(values.begin(), values.end(), [](int v) { REQUIRE(v == 7); });
+  std::for_each(
+      values.begin(), values.end(), [](int_type v) { REQUIRE(v == 7); });
 }
 
-TEST_CASE("unmasked scatter()")
+TEST_CASE("unmasked scatter()", "[memory_operations]")
 {
-  TSIMD_ALIGN(32) std::array<int, vint::static_size> values;
+  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
 
   vint v1(5);
 
   vint offset;
-  for (int i = 0; i < TSIMD_DEFAULT_WIDTH; ++i)
-    offset[i] = i;
+  std::iota(offset.begin(), offset.end(), 0);
 
   tsimd::scatter(v1, values.data(), offset);
 
-  std::for_each(values.begin(), values.end(), [](int v) { REQUIRE(v == 5); });
+  std::for_each(
+      values.begin(), values.end(), [](int_type v) { REQUIRE(v == 5); });
 }
 
-TEST_SUITE_END();
+// random numbers /////////////////////////////////////////////////////////////
+
+TEST_CASE("uniform_random_distribution()", "[random]]")
+{
+  tsimd::default_halton_engine2<vfloat::static_size> rng;
+  tsimd::uniform_real_distribution<vfloat> dist(1.f, 2.f);
+  vfloat v = dist(rng);
+
+  REQUIRE(tsimd::all(v >= 1.f && v < 2.f));
+}
+
+template <int BASE>
+inline void precomputed_halton_test()
+{
+  tsimd::precomputed_halton_engine<256, BASE, vfloat::static_size> rng;
+  auto v = tsimd::generate_canonical(rng);
+
+  REQUIRE(tsimd::all(v >= 0.f && v < 1.f));
+  REQUIRE(tsimd::any(v != 0.f));
+  REQUIRE(tsimd::any(v != 1.f));
+}
+
+TEST_CASE("precomputed_halton_engine<base>()", "[random]]")
+{
+  precomputed_halton_test<2>();
+  precomputed_halton_test<3>();
+  precomputed_halton_test<4>();
+  precomputed_halton_test<5>();
+  precomputed_halton_test<6>();
+  precomputed_halton_test<7>();
+  precomputed_halton_test<8>();
+  precomputed_halton_test<9>();
+  precomputed_halton_test<10>();
+}

@@ -54,10 +54,48 @@ int main()
 
   std::cout << std::endl;
 
+  std::cout << "test sin()/cos()/tan()" << std::endl;
+
+  {
+    float value = M_PI;
+    vfloat v(value);
+
+    std::cout << "value == " << value << std::endl;
+    std::cout << "sin(value) == " << std::sin(value) << std::endl;
+    std::cout << "cos(value) == " << std::cos(value) << std::endl;
+    std::cout << "tan(value) == " << std::tan(value) << std::endl;
+
+    std::cout << "v = vfloat(value)" << std::endl;
+    std::cout << "sin(v) == " << sin(v) << std::endl;
+    std::cout << "cos(v) == " << cos(v) << std::endl;
+    std::cout << "tan(v) == " << tan(v) << std::endl;
+  }
+
+  std::cout << std::endl;
+
+  std::cout << "test operator*=()" << std::endl;
+
+  {
+    vint v1(1), v2(2);
+
+    std::cout << "before..." << std::endl;
+    std::cout << "#1: " << v1 << std::endl;
+    std::cout << "#2: " << v2 << std::endl;
+
+    v1 *= v2;
+    v2 *= 2;
+
+    std::cout << "after..." << std::endl;
+    std::cout << "#1: " << v1 << std::endl;
+    std::cout << "#2: " << v2 << std::endl;
+  }
+
+  std::cout << std::endl;
+
   std::cout << "test any()" << std::endl;
 
   {
-    vbool m(false);
+    vboolf m(false);
 
     print(m);
 
@@ -101,7 +139,7 @@ int main()
   std::cout << "test foreach_active()" << std::endl;
 
   {
-    vbool m(false);
+    vboolf m(false);
 
     m[0] = true;
     m[2] = true;
@@ -127,7 +165,7 @@ int main()
     std::vector<int> values(vint::static_size);
     std::fill(values.begin(), values.end(), 5);
 
-    vbool m(false);
+    vboolf m(false);
     m[2] = true;
 
     vint v1(0);

@@ -49,6 +49,8 @@ install(EXPORT tsimdConfig DESTINATION lib/cmake/tsimd)
 # Build tests and examples
 ##############################################################
 
+include(ispc)
+
 tsimd_setup_build_type()
 tsimd_configure_compiler()
 

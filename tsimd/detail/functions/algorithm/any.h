@@ -30,93 +30,56 @@ namespace tsimd {
 
   // 1-wide //
 
-  template <typename T>
-  TSIMD_INLINE pack<T, 1> operator/(const pack<T, 1> &p1, const pack<T, 1> &p2)
+  template <typename T, typename = traits::is_bool_t<T>>
+  TSIMD_INLINE bool any(const pack<T, 1> &a)
   {
-    return pack<T, 1>(p1[0] / p2[0]);
+    return a[0];
   }
 
   // 4-wide //
 
-  TSIMD_INLINE vfloat4 operator/(const vfloat4 &p1, const vfloat4 &p2)
+  TSIMD_INLINE bool any(const vboolf4 &a)
   {
 #if defined(__SSE__)
-    return _mm_div_ps(p1, p2);
+    return _mm_movemask_ps(a) != 0x0;
 #else
-    vfloat4 result;
+    for (int i = 0; i < 4; ++i) {
+      if (a[i])
+        return true;
+    }
 
-    for (int i = 0; i < 4; ++i)
-      result[i] = (p1[i] / p2[i]);
-
-    return result;
+    return false;
 #endif
-  }
-
-  TSIMD_INLINE vint4 operator/(const vint4 &p1, const vint4 &p2)
-  {
-    vint4 result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < 4; ++i)
-      result[i] = (p1[i] / p2[i]);
-
-    return result;
   }
 
   // 8-wide //
 
-  TSIMD_INLINE vfloat8 operator/(const vfloat8 &p1, const vfloat8 &p2)
+  TSIMD_INLINE bool any(const vboolf8 &a)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
-    return _mm256_div_ps(p1, p2);
+#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
+    return !_mm256_testz_ps(a, a);
 #else
-    return vfloat8(vfloat4(p1.vl) / vfloat4(p2.vl),
-                   vfloat4(p1.vh) / vfloat4(p2.vh));
+    return any(vboolf4(a.vl)) || any(vboolf4(a.vh));
 #endif
-  }
-
-  TSIMD_INLINE vint8 operator/(const vint8 &p1, const vint8 &p2)
-  {
-    return vint8(vint4(p1.vl) / vint4(p2.vl), vint4(p1.vh) / vint4(p2.vh));
   }
 
   // 16-wide //
 
-  TSIMD_INLINE vfloat16 operator/(const vfloat16 &p1, const vfloat16 &p2)
+  TSIMD_INLINE bool any(const vboolf16 &a)
   {
 #if defined(__AVX512F__)
-    return _mm512_div_ps(p1, p2);
+    return _mm512_kortestz(a, a) == 0;
 #else
-    return vfloat16(vfloat8(p1.vl) / vfloat8(p2.vl),
-                    vfloat8(p1.vh) / vfloat8(p2.vh));
+    return any(vboolf8(a.vl)) || any(vboolf8(a.vh));
 #endif
   }
 
-  TSIMD_INLINE vint16 operator/(const vint16 &p1, const vint16 &p2)
-  {
-    return vint16(vint8(p1.vl) / vint8(p2.vl), vint8(p1.vh) / vint8(p2.vh));
-  }
+  // none() ///////////////////////////////////////////////////////////////////
 
-  // Inferred pack-scalar operators ///////////////////////////////////////////
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator/(const pack<T, W> &p1, const OTHER_T &v)
+  template <typename MASK_T, typename = traits::is_mask_t<MASK_T>>
+  TSIMD_INLINE bool none(const MASK_T &m)
   {
-    return p1 / pack<T, W>(v);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator/(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) / p1;
+    return !any(m);
   }
 
 }  // namespace tsimd

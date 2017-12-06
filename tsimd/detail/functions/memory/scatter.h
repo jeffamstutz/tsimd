@@ -24,7 +24,39 @@
 
 #pragma once
 
-#include "memory/gather.h"
-#include "memory/load.h"
-#include "memory/scatter.h"
-#include "memory/store.h"
+#include "../../pack.h"
+
+namespace tsimd {
+
+  template <typename PACK_T, typename OFFSET_T>
+  TSIMD_INLINE void scatter(const PACK_T &p,
+                            void *_dst,
+                            const pack<OFFSET_T, PACK_T::static_size> &o)
+  {
+    auto *dst = (typename PACK_T::value_t *)_dst;
+
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
+    for (int i = 0; i < PACK_T::static_size; ++i)
+      dst[o[i]] = p[i];
+  }
+
+  template <typename PACK_T, typename OFFSET_T>
+  TSIMD_INLINE void scatter(
+      const PACK_T &p,
+      void *_dst,
+      const pack<OFFSET_T, PACK_T::static_size> &o,
+      const mask<typename PACK_T::value_t, PACK_T::static_size> &m)
+  {
+    auto *dst = (typename PACK_T::value_t *)_dst;
+
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
+    for (int i = 0; i < PACK_T::static_size; ++i)
+      if (m[i])
+        dst[o[i]] = p[i];
+  }
+
+}  // namespace tsimd

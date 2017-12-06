@@ -24,7 +24,82 @@
 
 #pragma once
 
-#include "memory/gather.h"
-#include "memory/load.h"
-#include "memory/scatter.h"
-#include "memory/store.h"
+#include "../../pack.h"
+
+namespace tsimd {
+
+  // TODO: verify PACK_T is indeed a pack<>!
+  template <typename PACK_T>
+  struct uniform_real_distribution
+  {
+    uniform_real_distribution(const PACK_T &a, const PACK_T &b);
+
+    uniform_real_distribution(typename PACK_T::value_t a,
+                              typename PACK_T::value_t b);
+
+    template <typename VRNG>
+    PACK_T operator()(VRNG& generator);
+
+    // property functions
+    PACK_T a() const;
+    PACK_T b() const;
+
+    PACK_T min() const;
+    PACK_T max() const;
+
+  private:
+
+    PACK_T _a, _b;
+  };
+
+  // Inlined definitions //////////////////////////////////////////////////////
+
+  template <typename PACK_T>
+  TSIMD_INLINE uniform_real_distribution<PACK_T>::uniform_real_distribution(
+    const PACK_T &a,
+    const PACK_T &b)
+      : _a(a), _b(b)
+  {
+  }
+
+  template <typename PACK_T>
+  TSIMD_INLINE uniform_real_distribution<PACK_T>::uniform_real_distribution(
+    typename PACK_T::value_t a,
+    typename PACK_T::value_t b)
+      : uniform_real_distribution(PACK_T(a), PACK_T(b))
+  {
+  }
+
+  template <typename PACK_T>
+  template <typename VRNG>
+  TSIMD_INLINE PACK_T
+  uniform_real_distribution<PACK_T>::operator()(VRNG& generator)
+  {
+    return (b() - a()) * PACK_T(generate_canonical(generator)) + a();
+  }
+
+  template <typename PACK_T>
+  TSIMD_INLINE PACK_T uniform_real_distribution<PACK_T>::a() const
+  {
+    return _a;
+  }
+
+  template <typename PACK_T>
+  TSIMD_INLINE PACK_T uniform_real_distribution<PACK_T>::b() const
+  {
+    return _b;
+  }
+
+  template <typename PACK_T>
+  TSIMD_INLINE PACK_T uniform_real_distribution<PACK_T>::min() const
+  {
+    return a();
+  }
+
+  template <typename PACK_T>
+  TSIMD_INLINE PACK_T uniform_real_distribution<PACK_T>::max() const
+  {
+    return b();
+  }
+
+} // namespace tsimd

@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <cmath>
+
 #include "../../pack.h"
 
 namespace tsimd {
@@ -31,36 +33,36 @@ namespace tsimd {
   // 1-wide //
 
   template <typename T>
-  TSIMD_INLINE pack<T, 1> operator-(const pack<T, 1> &p1, const pack<T, 1> &p2)
+  TSIMD_INLINE pack<T, 1> abs(const pack<T, 1> &p)
   {
-    return pack<T, 1>(p1[0] - p2[0]);
+    return pack<T, 1>(std::abs(p[0]));
   }
 
   // 4-wide //
 
-  TSIMD_INLINE vfloat4 operator-(const vfloat4 &p1, const vfloat4 &p2)
+  TSIMD_INLINE vfloat4 abs(const vfloat4 &p)
   {
 #if defined(__SSE__)
-    return _mm_sub_ps(p1, p2);
+    return _mm_and_ps(p, _mm_castsi128_ps(_mm_set1_epi32(0x7fffffff)));
 #else
     vfloat4 result;
 
     for (int i = 0; i < 4; ++i)
-      result[i] = (p1[i] - p2[i]);
+      result[i] = std::abs(p[i]);
 
     return result;
 #endif
   }
 
-  TSIMD_INLINE vint4 operator-(const vint4 &p1, const vint4 &p2)
+  TSIMD_INLINE vint4 abs(const vint4 &p)
   {
 #if defined(__SSE__)
-    return _mm_sub_epi32(p1, p2);
+    return _mm_abs_epi32(p);
 #else
     vint4 result;
 
     for (int i = 0; i < 4; ++i)
-      result[i] = (p1[i] - p2[i]);
+      result[i] = std::abs(p[i]);
 
     return result;
 #endif
@@ -68,66 +70,46 @@ namespace tsimd {
 
   // 8-wide //
 
-  TSIMD_INLINE vfloat8 operator-(const vfloat8 &p1, const vfloat8 &p2)
+  TSIMD_INLINE vfloat8 abs(const vfloat8 &p)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
-    return _mm256_sub_ps(p1, p2);
+#if defined(__AVX2__) || defined(__AVX__)
+    return _mm256_and_ps(p, _mm256_castsi256_ps(_mm256_set1_epi32(0x7fffffff)));
 #else
-    return vfloat8(vfloat4(p1.vl) - vfloat4(p2.vl),
-                   vfloat4(p1.vh) - vfloat4(p2.vh));
+    return vfloat8(abs(vfloat4(p.vl)), abs(vfloat4(p.vh)));
 #endif
   }
 
-  TSIMD_INLINE vint8 operator-(const vint8 &p1, const vint8 &p2)
+  TSIMD_INLINE vint8 abs(const vint8 &p)
   {
-#if defined(__AVX512__) || defined(__AVX2__)
-    return _mm256_sub_epi32(p1, p2);
+#if defined(__AVX2__)
+    return _mm256_abs_epi32(p);
 #elif defined(__AVX__)
-    return vint8(_mm_sub_epi32(p1.vl, p2.vl), _mm_sub_epi32(p1.vh, p2.vh));
+    return vint8(_mm_abs_epi32(p.vl), _mm_abs_epi32(p.vh));
 #else
-    return vint8(vint4(p1.vl) - vint4(p2.vl), vint4(p1.vh) - vint4(p2.vh));
+    return vint8(abs(vint4(p.vl)), abs(vint4(p.vh)));
 #endif
   }
 
   // 16-wide //
 
-  TSIMD_INLINE vfloat16 operator-(const vfloat16 &p1, const vfloat16 &p2)
+  TSIMD_INLINE vfloat16 abs(const vfloat16 &p)
   {
 #if defined(__AVX512F__)
-    return _mm512_sub_ps(p1, p2);
+    return _mm512_castsi512_ps(
+      _mm512_and_epi32(
+        _mm512_castps_si512(p),_mm512_set1_epi32(0x7FFFFFFF)));
 #else
-    return vfloat16(vfloat8(p1.vl) - vfloat8(p2.vl),
-                    vfloat8(p1.vh) - vfloat8(p2.vh));
+    return vfloat16(abs(vfloat8(p.vl)), abs(vfloat8(p.vh)));
 #endif
   }
 
-  TSIMD_INLINE vint16 operator-(const vint16 &p1, const vint16 &p2)
+  TSIMD_INLINE vint16 abs(const vint16 &p)
   {
 #if defined(__AVX512F__)
-    return _mm512_sub_epi32(p1, p2);
+    return _mm512_abs_epi32(p);
 #else
-    return vint16(vint8(p1.vl) - vint8(p2.vl), vint8(p1.vh) - vint8(p2.vh));
+    return vint16(abs(vint8(p.vl)), abs(vint8(p.vh)));
 #endif
-  }
-
-  // Inferred pack-scalar operators ///////////////////////////////////////////
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator-(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 - pack<T, W>(v);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator-(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) - p1;
   }
 
 }  // namespace tsimd

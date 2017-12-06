@@ -24,107 +24,13 @@
 
 #pragma once
 
-#include <algorithm>
-#include <cmath>
-
-#include "../pack.h"
-
-namespace tsimd {
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> abs(const pack<T, W> &p)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::abs(p[i]);
-
-    return result;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> sqrt(const pack<T, W> &p)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::sqrt(p[i]);
-
-    return result;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> sin(const pack<T, W> &p)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::sin(p[i]);
-
-    return result;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> cos(const pack<T, W> &p)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::cos(p[i]);
-
-    return result;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> tan(const pack<T, W> &p)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::tan(p[i]);
-
-    return result;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> pow(const pack<T, W> &v, const float b)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::pow(v[i], b);
-
-    return result;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> max(const pack<T, W> &a, const pack<T, W> &b)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::max(a[i], b[i]);
-
-    return result;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> min(const pack<T, W> &a, const pack<T, W> &b)
-  {
-    pack<T, W> result;
-
-#pragma omp simd
-    for (int i = 0; i < W; ++i)
-      result[i] = std::min(a[i], b[i]);
-
-    return result;
-  }
-
-}  // namespace tsimd
+#include "math/abs.h"
+#include "math/ceil.h"
+#include "math/cos.h"
+#include "math/floor.h"
+#include "math/max.h"
+#include "math/min.h"
+#include "math/pow.h"
+#include "math/sin.h"
+#include "math/sqrt.h"
+#include "math/tan.h"

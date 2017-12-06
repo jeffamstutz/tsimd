@@ -22,9 +22,5 @@
 // DEALINGS IN THE SOFTWARE.                                                  //
 // ========================================================================== //
 
-#pragma once
-
-#include "memory/gather.h"
-#include "memory/load.h"
-#include "memory/scatter.h"
-#include "memory/store.h"
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
