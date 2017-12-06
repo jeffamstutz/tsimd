@@ -61,8 +61,8 @@ namespace tsimd {
     const auto x = p - kReal * piOverTwoVec;
 
     const auto kMod4 = k & 3;
-    const auto cosUseCos = (kMod4 == 0 || kMod4 == 2);
-    const auto flipSign = (kMod4 == 1 || kMod4 == 2);
+    const auto cosUseCos = (kMod4 == 0 | kMod4 == 2);
+    const auto flipSign = (kMod4 == 1 | kMod4 == 2);
 
     static const float sinC2 = -0.16666667163372039794921875;
     static const float sinC4 = 8.333347737789154052734375e-3;
