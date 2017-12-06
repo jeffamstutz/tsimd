@@ -84,14 +84,18 @@ namespace tsimd {
     std::array<float, NUM_PRECOMPUTED> values;
   };
 
-  template <int W>
-  using default_halton_engine2 = precomputed_halton_engine<256, 2, W>;
+  #define NUM_DEFAULT 2048
 
   template <int W>
-  using default_halton_engine3 = precomputed_halton_engine<256, 3, W>;
+  using default_halton_engine2 = precomputed_halton_engine<NUM_DEFAULT, 2, W>;
 
   template <int W>
-  using default_halton_engine5 = precomputed_halton_engine<256, 5, W>;
+  using default_halton_engine3 = precomputed_halton_engine<NUM_DEFAULT, 3, W>;
+
+  template <int W>
+  using default_halton_engine5 = precomputed_halton_engine<NUM_DEFAULT, 5, W>;
+
+  #undef NUM_DEFAULT
 
   // Inlined definitions //////////////////////////////////////////////////////
 
