@@ -106,7 +106,7 @@ namespace tsimd {
   TSIMD_INLINE vboolf16 operator|(const vboolf16 &p1, const vboolf16 &p2)
   {
 #if defined(__AVX512F__)
-    return _mm512_kxnor(p1, p2);
+    return _mm512_kor(p1, p2);
 #else
     return vboolf16(vboolf8(p1.vl) | vboolf8(p2.vl),
                     vboolf8(p1.vh) | vboolf8(p2.vh));
