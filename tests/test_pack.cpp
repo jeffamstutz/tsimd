@@ -574,3 +574,27 @@ TEST_CASE("uniform_random_distribution()", "[random]]")
 
   REQUIRE(tsimd::all(v >= 1.f && v < 2.f));
 }
+
+template <int BASE>
+inline void precomputed_halton_test()
+{
+  tsimd::precomputed_halton_engine<256, BASE, vfloat::static_size> rng;
+  auto v = tsimd::generate_canonical(rng);
+
+  REQUIRE(tsimd::all(v >= 0.f && v < 1.f));
+  REQUIRE(tsimd::any(v != 0.f));
+  REQUIRE(tsimd::any(v != 1.f));
+}
+
+TEST_CASE("precomputed_halton_engine<base>()", "[random]]")
+{
+  precomputed_halton_test<2>();
+  precomputed_halton_test<3>();
+  precomputed_halton_test<4>();
+  precomputed_halton_test<5>();
+  precomputed_halton_test<6>();
+  precomputed_halton_test<7>();
+  precomputed_halton_test<8>();
+  precomputed_halton_test<9>();
+  precomputed_halton_test<10>();
+}

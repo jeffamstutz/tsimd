@@ -34,20 +34,22 @@ namespace tsimd {
 
   namespace detail {
 
-    TSIMD_INLINE float radicalInverse(unsigned int idx, unsigned int base)
+    template <unsigned int BASE>
+    TSIMD_INLINE float radicalInverse(unsigned int idx)
     {
-      float f(0.f), g(1.0f), inv(1.0f/base);
+      float f(0.f), g(1.0f), inv(1.0f/BASE);
 
       while (idx > 0) {
         g *= inv;
-        f += (idx % base) * g;
-        idx /= base;
+        f += (idx % BASE) * g;
+        idx /= BASE;
       }
 
       return f;
     }
 
-    TSIMD_INLINE float radicalInverse2(unsigned int idx)
+    template <>
+    TSIMD_INLINE float radicalInverse<2>(unsigned int idx)
     {
       float f = 0.f, g = 1.0f;
 
@@ -62,12 +64,12 @@ namespace tsimd {
 
   } // namespace detail
 
-  template <int NUM_PRECOMPUTED, int SERIES, int W>
+  template <int NUM_PRECOMPUTED, int SERIES_BASE, int W>
   struct precomputed_halton_engine
   {
-    static_assert(SERIES == 2 || SERIES == 3 || SERIES == 5,
-                  "tsimd::precomputed_halton_engine 'SERIES' template parameter"
-                  " (second one) must be 2, 3, or 5.");
+    static_assert(SERIES_BASE >= 2,
+                  "tsimd::precomputed_halton_engine 'SERIES_BASE' template"
+                  " parameter (second one) must be >= 2.");
 
     precomputed_halton_engine();
 
@@ -99,20 +101,17 @@ namespace tsimd {
 
   // Inlined definitions //////////////////////////////////////////////////////
 
-  template <int NUM_PRECOMPUTED, int SERIES, int W>
+  template <int NUM_PRECOMPUTED, int SERIES_BASE, int W>
   TSIMD_INLINE
-  precomputed_halton_engine<NUM_PRECOMPUTED, SERIES, W>::precomputed_halton_engine()
+  precomputed_halton_engine<
+    NUM_PRECOMPUTED,
+    SERIES_BASE,
+    W
+  >
+  ::precomputed_halton_engine()
   {
-    if (SERIES == 2) {
-      for (int i = 0; i < NUM_PRECOMPUTED; i++)
-        values[i] = detail::radicalInverse2(i);
-    } else if (SERIES == 3) {
-      for (int i = 0; i < NUM_PRECOMPUTED; i++)
-        values[i] = detail::radicalInverse(i,3);
-    } else {
-      for (int i = 0; i < NUM_PRECOMPUTED; i++)
-        values[i] = detail::radicalInverse(i,5);
-    }
+    for (int i = 0; i < NUM_PRECOMPUTED; i++)
+      values[i] = detail::radicalInverse<SERIES_BASE>(i);
 
     std::random_device rd;
     std::uniform_int_distribution<int> dist(0, NUM_PRECOMPUTED);
@@ -121,33 +120,33 @@ namespace tsimd {
       index[i] = dist(rd);
   };
 
-  template <int NUM_PRECOMPUTED, int SERIES, int W>
+  template <int NUM_PRECOMPUTED, int SERIES_BASE, int W>
   TSIMD_INLINE vfloatn<W>
-  precomputed_halton_engine<NUM_PRECOMPUTED, SERIES, W>::operator()()
+  precomputed_halton_engine<NUM_PRECOMPUTED, SERIES_BASE, W>::operator()()
   {
     index = (index + 1) & (NUM_PRECOMPUTED - 1);
     return gather<vfloatn<W>>(values.data(), index);
   };
 
-  template <int NUM_PRECOMPUTED, int SERIES, int W>
+  template <int NUM_PRECOMPUTED, int SERIES_BASE, int W>
   TSIMD_INLINE vfloatn<W>
-  precomputed_halton_engine<NUM_PRECOMPUTED, SERIES, W>::min() const
+  precomputed_halton_engine<NUM_PRECOMPUTED, SERIES_BASE, W>::min() const
   {
     return vfloatn<W>(0.f);
   }
 
-  template <int NUM_PRECOMPUTED, int SERIES, int W>
+  template <int NUM_PRECOMPUTED, int SERIES_BASE, int W>
   TSIMD_INLINE vfloatn<W>
-  precomputed_halton_engine<NUM_PRECOMPUTED, SERIES, W>::max() const
+  precomputed_halton_engine<NUM_PRECOMPUTED, SERIES_BASE, W>::max() const
   {
     return vfloatn<W>(1.f);
   }
 
   // Function definitions /////////////////////////////////////////////////////
 
-  template <int NUM_PRECOMPUTED, int SERIES, int W>
+  template <int NUM_PRECOMPUTED, int SERIES_BASE, int W>
   TSIMD_INLINE vfloatn<W> generate_canonical(
-    precomputed_halton_engine<NUM_PRECOMPUTED, SERIES, W> &engine)
+    precomputed_halton_engine<NUM_PRECOMPUTED, SERIES_BASE, W> &engine)
   {
     return engine();
   }
