@@ -359,6 +359,28 @@ TEST_CASE("floor()", "[math_functions]")
   REQUIRE(tsimd::all(tsimd::near_equal(tsimd::floor(v), 1.f)));
 }
 
+TEST_CASE("min()", "[math_functions]")
+{
+  vfloat v1(1.f);
+  vfloat v2(2.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::min(v1, v2), 1.f)));
+
+  vint v3(1);
+  vint v4(2);
+  REQUIRE(tsimd::all(tsimd::min(v3, v4) == 1));
+}
+
+TEST_CASE("max()", "[math_functions]")
+{
+  vfloat v1(1.f);
+  vfloat v2(2.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::max(v1, v2), 2.f)));
+
+  vint v3(1);
+  vint v4(2);
+  REQUIRE(tsimd::all(tsimd::max(v3, v4) == 2));
+}
+
 TEST_CASE("sqrt()", "[math_functions]")
 {
   vfloat v1(4.f);

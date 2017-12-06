@@ -30,18 +30,88 @@
 
 namespace tsimd {
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> min(const pack<T, W> &a, const pack<T, W> &b)
-  {
-    pack<T, W> result;
+  // 1-wide //
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = std::min(a[i], b[i]);
+  template <typename T>
+  TSIMD_INLINE pack<T, 1> min(const pack<T, 1> &p1, const pack<T, 1> &p2)
+  {
+    return pack<T, 1>(std::min(p1[0], p2[0]));
+  }
+
+  // 4-wide //
+
+  TSIMD_INLINE vfloat4 min(const vfloat4 &p1, const vfloat4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_min_ps(p1, p2);
+#else
+    vfloat4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::min(p1[i], p2[i]);
 
     return result;
+#endif
+  }
+
+  TSIMD_INLINE vint4 min(const vint4 &p1, const vint4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_min_epi32(p1, p2);
+#else
+    vint4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::min(p1[i], p2[i]);
+
+    return result;
+#endif
+  }
+
+  // 8-wide //
+
+  TSIMD_INLINE vfloat8 min(const vfloat8 &p1, const vfloat8 &p2)
+  {
+#if defined(__AVX2__) || defined(__AVX__)
+    return _mm256_min_ps(p1, p2);
+#else
+    return vfloat8(min(vfloat4(p1.vl), vfloat4(p2.vl)),
+                   min(vfloat4(p1.vh), vfloat4(p2.vh)));
+#endif
+  }
+
+  TSIMD_INLINE vint8 min(const vint8 &p1, const vint8 &p2)
+  {
+#if defined(__AVX2__)
+    return _mm256_min_epi32(p1, p2);
+#elif defined(__AVX__)
+    return vint8(_mm_min_epi32(p1.vl, p2.vl), _mm_min_epi32(p1.vh, p2.vh));
+#else
+    return vint8(min(vint4(p1.vl), vint4(p2.vl)),
+                 min(vint4(p1.vh), vint4(p2.vh)));
+#endif
+  }
+
+  // 16-wide //
+
+  TSIMD_INLINE vfloat16 min(const vfloat16 &p1, const vfloat16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_min_ps(p1, p2);
+#else
+    return vfloat16(min(vfloat8(p1.vl), vfloat8(p2.vl)),
+                    min(vfloat8(p1.vh), vfloat8(p2.vh)));
+#endif
+  }
+
+  TSIMD_INLINE vint16 min(const vint16 &p1, const vint16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_min_epi32(p1, p2);
+#else
+    return vint16(min(vint8(p1.vl), vint8(p2.vl)),
+                  min(vint8(p1.vh), vint8(p2.vh)));
+#endif
   }
 
 }  // namespace tsimd
