@@ -24,12 +24,11 @@
 
 #pragma once
 
-#include <cmath>
-
 #include "../../pack.h"
 
 namespace tsimd {
 
+#if 1
   template <typename T, int W>
   TSIMD_INLINE pack<T, W> pow(const pack<T, W> &v, const float b)
   {
@@ -43,5 +42,12 @@ namespace tsimd {
 
     return result;
   }
+#else
+  template <typename T, int W, typename = traits::is_floating_point_t<T>>
+  TSIMD_INLINE pack<T, W> pow(const pack<T, W> &v, const float b)
+  {
+      return exp(b * log(v));
+  }
+#endif
 
 }  // namespace tsimd

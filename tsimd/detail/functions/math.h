@@ -28,6 +28,7 @@
 #include "math/ceil.h"
 #include "math/cos.h"
 #include "math/floor.h"
+#include "math/log.h"
 #include "math/max.h"
 #include "math/min.h"
 #include "math/pow.h"

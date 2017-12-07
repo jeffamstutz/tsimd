@@ -36,7 +36,7 @@ namespace tsimd {
   struct pack;
 
   template <typename OTHER_T, typename T, int W>
-  pack<OTHER_T, W> pack_element_cast(const pack<T, W> &from);
+  pack<OTHER_T, W> convert_elements_to(const pack<T, W> &from);
 
   template <typename T, int W>
   struct pack
@@ -60,7 +60,7 @@ namespace tsimd {
     template <typename OT, typename = traits::is_not_same_t<T, OT>>
     explicit pack(const pack<OT, W> &other)
     {
-      *this = pack_element_cast<T>(other);
+      *this = convert_elements_to<T>(other);
     }
 
     // (ugly syntax here) --> contstruct from intrinsic_t by value
@@ -447,7 +447,7 @@ namespace tsimd {
   // pack<> cast definition ///////////////////////////////////////////////////
 
   template <typename OTHER_T, typename T, int W>
-  TSIMD_INLINE pack<OTHER_T, W> pack_element_cast(const pack<T, W> &from)
+  TSIMD_INLINE pack<OTHER_T, W> convert_elements_to(const pack<T, W> &from)
   {
     pack<OTHER_T, W> to;
 
@@ -460,5 +460,55 @@ namespace tsimd {
     return to;
   }
 
+  // pack<> reinterpret_cast //////////////////////////////////////////////////
+
+  //NOTE(jda) - ugly syntax here --> The return type is a
+  //            std::enable_if selecting when we can do an intrisic cast vs.
+  //            having to manually do a reinterpret cast loop...both do the same
+  //            thing.
+
+  //NOTE(jda) - 'FROM_TYPE' and 'W' are implied from function parameter, user
+  //            provides 'TO_TYPE' as a template param
+  template <typename TO_TYPE, typename FROM_TYPE, int W>
+  TSIMD_INLINE
+  typename std::enable_if<
+       traits::simd_type_is_native<TO_TYPE, W>::value, pack<TO_TYPE, W>>::type
+  reinterpret_elements_as(const pack<FROM_TYPE, W> &p)
+  {
+    static_assert(!traits::is_bool<FROM_TYPE>::value,
+                  "reinterpret_elements_as<> can't be done with masks!");
+    static_assert(!traits::is_bool<TO_TYPE>::value,
+                  "reinterpret_elements_as<> can't be done with masks!");
+    static_assert(traits::same_size<FROM_TYPE, TO_TYPE>::value,
+                  "reinterpret_elements_as<> only allows casting to element"
+                  " element types of the same size!");
+    static_assert(traits::valid_type_for_pack<TO_TYPE>::value,
+                  "reinterpret_elements_as<> can only cast to valid pack"
+                  " element types!");
+    return pack<TO_TYPE, W>((const typename pack<TO_TYPE, W>::intrinsic_t)p);
+  }
+
+  //NOTE(jda) - 'FROM_TYPE' and 'W' are implied from function parameter, user
+  //            provides 'TO_TYPE' as a template param
+  template <typename TO_TYPE, typename FROM_TYPE, int W>
+  TSIMD_INLINE
+  typename std::enable_if<
+      !traits::simd_type_is_native<TO_TYPE, W>::value, pack<TO_TYPE, W>>::type
+  reinterpret_elements_as(const pack<FROM_TYPE, W> &p)
+  {
+    static_assert(!traits::is_bool<FROM_TYPE>::value,
+                  "reinterpret_elements_as<> can't be done with masks!");
+    static_assert(!traits::is_bool<TO_TYPE>::value,
+                  "reinterpret_elements_as<> can't be done with masks!");
+    static_assert(traits::same_size<FROM_TYPE, TO_TYPE>::value,
+                  "reinterpret_elements_as<> only allows casting to element"
+                  " element types of the same size!");
+    static_assert(traits::valid_type_for_pack<TO_TYPE>::value,
+                  "reinterpret_elements_as<> can only cast to valid pack"
+                  " element types!");
+
+    using T = const std::array<TO_TYPE, W>;
+    return pack<TO_TYPE, W>(*(reinterpret_cast<T*>(p.begin())));
+  }
 
 }  // namespace tsimd

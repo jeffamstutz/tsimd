@@ -409,6 +409,12 @@ TEST_CASE("tan()", "[math_functions]")
   REQUIRE(tsimd::all(tsimd::near_equal(v1, tan(4.f))));
 }
 
+TEST_CASE("log()", "[math_functions]")
+{
+  vfloat v(1.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::log(v), log(1.f))));
+}
+
 // pack<> algorithms //////////////////////////////////////////////////////////
 
 TEST_CASE("foreach()", "[algorithms]")
