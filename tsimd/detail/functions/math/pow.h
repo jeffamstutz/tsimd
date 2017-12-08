@@ -26,28 +26,15 @@
 
 #include "../../pack.h"
 
+#include "exp.h"
+#include "log.h"
+
 namespace tsimd {
 
-#if 1
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> pow(const pack<T, W> &v, const float b)
-  {
-    pack<T, W> result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = std::pow(v[i], b);
-
-    return result;
-  }
-#else
   template <typename T, int W, typename = traits::is_floating_point_t<T>>
   TSIMD_INLINE pack<T, W> pow(const pack<T, W> &v, const float b)
   {
-      return exp(b * log(v));
+    return exp(b * log(v));
   }
-#endif
 
 }  // namespace tsimd

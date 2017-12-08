@@ -415,6 +415,12 @@ TEST_CASE("log()", "[math_functions]")
   REQUIRE(tsimd::all(tsimd::near_equal(tsimd::log(v), log(1.f))));
 }
 
+TEST_CASE("exp()", "[math_functions]")
+{
+  vfloat v(1.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::exp(v), exp(1.f))));
+}
+
 TEST_CASE("pow()", "[math_functions]")
 {
   vfloat v(2.f);
