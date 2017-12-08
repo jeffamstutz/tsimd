@@ -63,16 +63,14 @@ namespace tsimd {
       *this = convert_elements_to<T>(other);
     }
 
-    // (ugly syntax here) --> contstruct from intrinsic_t by value
+    // (ugly syntax here) --> construct from intrinsic_t by value
     // NOTE(jda) - must define here because of MSVC...
     template <typename IT = intrinsic_t>
-    TSIMD_INLINE
     pack(traits::enable_if_t<W != 1, IT> value) : v(value) {}
 
-    // (ugly syntax here) --> contstruct from 2 x half_intrinsic_t by value
+    // (ugly syntax here) --> construct from 2 x half_intrinsic_t by value
     // NOTE(jda) - must define here because of MSVC...
     template <typename IT = half_intrinsic_t>
-    TSIMD_INLINE
     pack(traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
          half_intrinsic_t b) : vl(a), vh(b) {}
 
