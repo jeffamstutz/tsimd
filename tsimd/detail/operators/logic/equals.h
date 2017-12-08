@@ -25,7 +25,6 @@
 #pragma once
 
 #include "../../pack.h"
-#include "not.h"
 
 namespace tsimd {
 
