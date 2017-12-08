@@ -15,7 +15,7 @@
 ## ======================================================================== ##
 
 # ISPC versions to look for, in decending order (newest first)
-set(ISPC_VERSION_WORKING "1.9.1")
+set(ISPC_VERSION_WORKING "1.9.2" "1.9.1")
 list(GET ISPC_VERSION_WORKING -1 ISPC_VERSION_REQUIRED)
 
 IF (NOT ISPC_EXECUTABLE)
