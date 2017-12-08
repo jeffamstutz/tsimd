@@ -24,69 +24,10 @@
 
 #pragma once
 
-#include "../pack.h"
-
+#include "logic/disallow_and_or.h"
 #include "logic/equals.h"
 #include "logic/greater_than.h"
 #include "logic/greater_than_or_equal.h"
 #include "logic/less_than.h"
 #include "logic/less_than_or_equal.h"
 #include "logic/not.h"
-
-namespace tsimd {
-
-  // Do not allow operator&&() and operator||() ///////////////////////////////
-
-  template <typename T, int W>
-  TSIMD_INLINE mask<T, W> operator&&(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    static_assert(!std::is_same<T, typename pack<T, W>::value_t>::value,
-                 "operator&&() is not defined for pack<> types!");
-    return mask<T, W>();
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator&&(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 && pack<T, W>(v);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator&&(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) && p1;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE mask<T, W> operator||(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    static_assert(!std::is_same<T, typename pack<T, W>::value_t>::value,
-                 "operator||() is not defined for pack<> types!");
-    return mask<T, W>();
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator||(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 || pack<T, W>(v);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator||(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) || p1;
-  }
-
-}  // namespace tsimd

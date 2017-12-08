@@ -24,9 +24,22 @@
 
 #pragma once
 
-#include "arithmetic/divide.h"
-#include "arithmetic/minus.h"
-#include "arithmetic/modulo.h"
-#include "arithmetic/negate.h"
-#include "arithmetic/plus.h"
-#include "arithmetic/times.h"
+#include "../../pack.h"
+
+namespace tsimd {
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> operator-(const pack<T, W> &p)
+  {
+    pack<T, W> result;
+
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
+    for (int i = 0; i < W; ++i)
+      result[i] = -p[i];
+
+    return result;
+  }
+
+}  // namespace tsimd

@@ -24,9 +24,42 @@
 
 #pragma once
 
-#include "arithmetic/divide.h"
-#include "arithmetic/minus.h"
-#include "arithmetic/modulo.h"
-#include "arithmetic/negate.h"
-#include "arithmetic/plus.h"
-#include "arithmetic/times.h"
+#include "../../pack.h"
+
+namespace tsimd {
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> operator^(const pack<T, W> &p1, const pack<T, W> &p2)
+  {
+    pack<T, W> result;
+
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
+    for (int i = 0; i < W; ++i)
+      result[i] = (p1[i] ^ p2[i]);
+
+    return result;
+  }
+
+  // Inferred pack<>/scalar operators /////////////////////////////////////////
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> operator^(const pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 ^ pack<T, W>(v);
+  }
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> operator^(const OTHER_T &v, const pack<T, W> &p1)
+  {
+    return pack<T, W>(v) ^ p1;
+  }
+
+}  // namespace tsimd
