@@ -88,14 +88,16 @@ namespace tsimd {
     template <typename T>
     using is_bool_t = enable_if_t<is_bool<T>::value>;
 
+    template <typename T>
+    using is_not_bool_t = enable_if_t<!is_bool<T>::value>;
+
     // If given pack is a mask (vbool) or not /////////////////////////////////
 
     template <typename MASK_T>
     struct is_mask
     {
       using value_t           = typename MASK_T::value_t;
-      static const bool value = std::is_same<value_t, bool32_t>::value ||
-                                std::is_same<value_t, bool64_t>::value;
+      static const bool value = is_bool<value_t>::value;
     };
 
     template <typename MASK_T>
