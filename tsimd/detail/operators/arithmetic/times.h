@@ -130,4 +130,21 @@ namespace tsimd {
     return pack<T, W>(v) * p1;
   }
 
+  // Inferred binary operator*=() /////////////////////////////////////////////
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const pack<T, W> &p2)
+  {
+    return p1 = (p1 * p2);
+  }
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 = (p1 * pack<T, W>(v));
+  }
+
 }  // namespace tsimd
