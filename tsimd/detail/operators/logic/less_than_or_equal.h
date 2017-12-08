@@ -24,69 +24,106 @@
 
 #pragma once
 
-#include "../pack.h"
+#include "../../pack.h"
 
-#include "logic/equals.h"
-#include "logic/greater_than.h"
-#include "logic/greater_than_or_equal.h"
-#include "logic/less_than.h"
-#include "logic/less_than_or_equal.h"
-#include "logic/not.h"
+#include "greater_than.h"
+#include "not.h"
 
 namespace tsimd {
 
-  // Do not allow operator&&() and operator||() ///////////////////////////////
+  // 1-wide //
 
-  template <typename T, int W>
-  TSIMD_INLINE mask<T, W> operator&&(const pack<T, W> &p1, const pack<T, W> &p2)
+  template <typename T>
+  TSIMD_INLINE mask<T, 1> operator<=(const pack<T, 1> &p1, const pack<T, 1> &p2)
   {
-    static_assert(!std::is_same<T, typename pack<T, W>::value_t>::value,
-                 "operator&&() is not defined for pack<> types!");
-    return mask<T, W>();
+    return mask<T, 1>(p1[0] <= p2[0]);
+  }
+
+  // 4-wide //
+
+  TSIMD_INLINE vboolf4 operator<=(const vfloat4 &p1, const vfloat4 &p2)
+  {
+#if defined(__SSE__)
+    return _mm_cmple_ps(p1, p2);
+#else
+    vboolf4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] <= p2[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vboolf4 operator<=(const vint4 &p1, const vint4 &p2)
+  {
+    return !(p1 > p2);
+  }
+
+  // 8-wide //
+
+  TSIMD_INLINE vboolf8 operator<=(const vfloat8 &p1, const vfloat8 &p2)
+  {
+#if defined(__AVX512VL__)
+    return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_LE);
+#elif defined(__AVX2__) || defined(__AVX__)
+    return _mm256_cmp_ps(p1, p2, _CMP_LE_OQ);
+#else
+    return vboolf8(vfloat4(p1.vl) <= vfloat4(p2.vl),
+                   vfloat4(p1.vh) <= vfloat4(p2.vh));
+#endif
+  }
+
+  TSIMD_INLINE vboolf8 operator<=(const vint8 &p1, const vint8 &p2)
+  {
+#if defined(__AVX512VL__)
+    return _mm256_cmp_epi32_mask(p1, p2, _MM_CMPINT_LE);
+#elif defined(__AVX2__) || defined(__AVX__)
+    return !(p1 > p2);
+#else
+    return vboolf8(vint4(p1.vl) <= vint4(p2.vl), vint4(p1.vh) <= vint4(p2.vh));
+#endif
+  }
+
+  // 16-wide //
+
+  TSIMD_INLINE vboolf16 operator<=(const vfloat16 &p1, const vfloat16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_cmp_ps_mask(p1, p2, _MM_CMPINT_LE);
+#else
+    return vboolf16(vfloat8(p1.vl) <= vfloat8(p2.vl),
+                    vfloat8(p1.vh) <= vfloat8(p2.vh));
+#endif
+  }
+
+  TSIMD_INLINE vboolf16 operator<=(const vint16 &p1, const vint16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_cmp_epi32_mask(p1, p2, _MM_CMPINT_LE);
+#else
+    return vboolf16(vint8(p1.vl) <= vint8(p2.vl), vint8(p1.vh) <= vint8(p2.vh));
+#endif
+  }
+
+  // Inferred pack-scalar operators ///////////////////////////////////////////
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE mask<T, W> operator<=(const pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 <= pack<T, W>(v);
   }
 
   template <typename T,
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator&&(const pack<T, W> &p1, const OTHER_T &v)
+  TSIMD_INLINE mask<T, W> operator<=(const OTHER_T &v, const pack<T, W> &p1)
   {
-    return p1 && pack<T, W>(v);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator&&(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) && p1;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE mask<T, W> operator||(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    static_assert(!std::is_same<T, typename pack<T, W>::value_t>::value,
-                 "operator||() is not defined for pack<> types!");
-    return mask<T, W>();
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator||(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 || pack<T, W>(v);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE mask<T, W> operator||(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) || p1;
+    return pack<T, W>(v) <= p1;
   }
 
 }  // namespace tsimd

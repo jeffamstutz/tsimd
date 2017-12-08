@@ -28,8 +28,6 @@
 
 namespace tsimd {
 
-  // binary operator==() //////////////////////////////////////////////////////
-
   // 1-wide //
 
   template <typename T>

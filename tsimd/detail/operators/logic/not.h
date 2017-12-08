@@ -28,8 +28,6 @@
 
 namespace tsimd {
 
-  // unary operator!() ////////////////////////////////////////////////////////
-
   // 1-wide //
 
   template <typename T, typename = traits::is_bool_t<T>>
