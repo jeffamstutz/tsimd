@@ -173,6 +173,56 @@ namespace tsimd {
 #endif
   }
 
+  template <>
+  TSIMD_INLINE vdouble4 load(const void *_src)
+  {
+    auto *src = (const typename vdouble4::value_t *)_src;
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = src[i];
+
+    return result;
+  }
+
+  template <>
+  TSIMD_INLINE vdouble4 load(const void *_src, const vboold4 &mask)
+  {
+    auto *src = (const typename vdouble4::value_t *)_src;
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      if (mask[i])
+        result[i] = src[i];
+
+    return result;
+  }
+
+  template <>
+  TSIMD_INLINE vllong4 load(const void *_src)
+  {
+    auto *src = (const typename vllong4::value_t *)_src;
+    vllong4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = src[i];
+
+    return result;
+  }
+
+  template <>
+  TSIMD_INLINE vllong4 load(const void *_src, const vboold4 &mask)
+  {
+    auto *src = (const typename vllong4::value_t *)_src;
+    vllong4 result;
+
+    for (int i = 0; i < 4; ++i)
+      if (mask[i])
+        result[i] = src[i];
+
+    return result;
+  }
+
   // 8-wide //
 
   template <>
@@ -226,6 +276,36 @@ namespace tsimd {
 #endif
   }
 
+  template <>
+  TSIMD_INLINE vdouble8 load(const void *_src)
+  {
+    auto *src = (const typename vdouble8::value_t *)_src;
+    return vdouble8(load<vdouble4>(src), load<vdouble4>(src + 4));
+  }
+
+  template <>
+  TSIMD_INLINE vdouble8 load(const void *_src, const vboold8 &mask)
+  {
+    auto *src = (const typename vdouble16::value_t *)_src;
+    return vdouble8(load<vdouble4>(src, vboold4(mask.vl)),
+                    load<vdouble4>(src + 4, vboold4(mask.vh)));
+  }
+
+  template <>
+  TSIMD_INLINE vllong8 load(const void *_src)
+  {
+    auto *src = (const typename vllong16::value_t *)_src;
+    return vllong8(load<vllong4>(src), load<vllong4>(src + 4));
+  }
+
+  template <>
+  TSIMD_INLINE vllong8 load(const void *_src, const vboold8 &mask)
+  {
+    auto *src = (const typename vllong16::value_t *)_src;
+    return vllong8(load<vllong4>(src, vboold4(mask.vl)),
+                  load<vllong4>(src + 4, vboold4(mask.vh)));
+  }
+
   // 16-wide //
 
   template <>
@@ -272,6 +352,36 @@ namespace tsimd {
     return vint16(load<vint8>(src, vboolf8(mask.vl)),
                   load<vint8>(src + 8, vboolf8(mask.vh)));
 #endif
+  }
+
+  template <>
+  TSIMD_INLINE vdouble16 load(const void *_src)
+  {
+    auto *src = (const typename vdouble16::value_t *)_src;
+    return vdouble16(load<vdouble8>(src), load<vdouble8>(src + 8));
+  }
+
+  template <>
+  TSIMD_INLINE vdouble16 load(const void *_src, const vboold16 &mask)
+  {
+    auto *src = (const typename vdouble16::value_t *)_src;
+    return vdouble16(load<vdouble8>(src, vboold8(mask.vl)),
+                     load<vdouble8>(src + 8, vboold8(mask.vh)));
+  }
+
+  template <>
+  TSIMD_INLINE vllong16 load(const void *_src)
+  {
+    auto *src = (const typename vllong16::value_t *)_src;
+    return vllong16(load<vllong8>(src), load<vllong8>(src + 8));
+  }
+
+  template <>
+  TSIMD_INLINE vllong16 load(const void *_src, const vboold16 &mask)
+  {
+    auto *src = (const typename vllong16::value_t *)_src;
+    return vllong16(load<vllong8>(src, vboold8(mask.vl)),
+                    load<vllong8>(src + 8, vboold8(mask.vh)));
   }
 
 }  // namespace tsimd

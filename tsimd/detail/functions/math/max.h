@@ -68,6 +68,26 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble4 max(const vdouble4 &p1, const vdouble4 &p2)
+  {
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::max(p1[i], p2[i]);
+
+    return result;
+  }
+
+  TSIMD_INLINE vllong4 max(const vllong4 &p1, const vllong4 &p2)
+  {
+    vllong4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::max(p1[i], p2[i]);
+
+    return result;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vfloat8 max(const vfloat8 &p1, const vfloat8 &p2)
@@ -91,6 +111,18 @@ namespace tsimd {
                  max(vint4(p1.vh), vint4(p2.vh)));
 #endif
   }
+  
+  TSIMD_INLINE vdouble8 max(const vdouble8 &p1, const vdouble8 &p2)
+  {
+    return vdouble8(max(vdouble4(p1.vl), vdouble4(p2.vl)),
+                    max(vdouble4(p1.vh), vdouble4(p2.vh)));
+  }
+
+  TSIMD_INLINE vllong8 max(const vllong8 &p1, const vllong8 &p2)
+  {
+    return vllong8(max(vllong4(p1.vl), vllong4(p2.vl)),
+                   max(vllong4(p1.vh), vllong4(p2.vh)));
+  }
 
   // 16-wide //
 
@@ -112,6 +144,18 @@ namespace tsimd {
     return vint16(max(vint8(p1.vl), vint8(p2.vl)),
                   max(vint8(p1.vh), vint8(p2.vh)));
 #endif
+  }
+
+  TSIMD_INLINE vdouble16 max(const vdouble16 &p1, const vdouble16 &p2)
+  {
+    return vdouble16(max(vdouble8(p1.vl), vdouble8(p2.vl)),
+                     max(vdouble8(p1.vh), vdouble8(p2.vh)));
+  }
+
+  TSIMD_INLINE vllong16 max(const vllong16 &p1, const vllong16 &p2)
+  {
+    return vllong16(max(vllong8(p1.vl), vllong8(p2.vl)),
+                    max(vllong8(p1.vh), vllong8(p2.vh)));
   }
 
 }  // namespace tsimd

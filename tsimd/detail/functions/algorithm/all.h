@@ -58,6 +58,16 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE bool all(const vboold4 &a)
+  {
+    for (int i = 0; i < 4; ++i) {
+      if (!a[i])
+        return false;
+    }
+
+    return true;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE bool all(const vboolf8 &a)
@@ -67,6 +77,11 @@ namespace tsimd {
 #else
     return all(vboolf4(a.vl)) && all(vboolf4(a.vh));
 #endif
+  }
+  
+  TSIMD_INLINE bool all(const vboold8 &a)
+  {
+    return all(vboold4(a.vl)) && all(vboold4(a.vh));
   }
 
   // 16-wide //
@@ -78,6 +93,11 @@ namespace tsimd {
 #else
     return all(vboolf8(a.vl)) && all(vboolf8(a.vh));
 #endif
+  }
+
+  TSIMD_INLINE bool all(const vboold16 &a)
+  {
+    return all(vboold8(a.vl)) && all(vboold8(a.vh));
   }
 
 }  // namespace tsimd

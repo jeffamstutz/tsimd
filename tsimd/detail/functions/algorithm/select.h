@@ -75,6 +75,30 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble4 select(const vboold4 &m,
+                               const vdouble4 &t,
+                               const vdouble4 &f)
+  {
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = m[i] ? t[i] : f[i];
+
+    return result;
+  }
+
+  TSIMD_INLINE vllong4 select(const vboold4 &m, 
+                              const vllong4 &t,
+                              const vllong4 &f)
+  {
+    vllong4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = m[i] ? t[i] : f[i];
+
+    return result;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vfloat8 select(const vboolf8 &m,
@@ -98,6 +122,22 @@ namespace tsimd {
     return vint8(select(vboolf4(m.vl), vint4(t.vl), vint4(f.vl)),
                  select(vboolf4(m.vh), vint4(t.vh), vint4(f.vh)));
 #endif
+  }
+
+  TSIMD_INLINE vdouble8 select(const vboold8 &m,
+                              const vdouble8 &t,
+                              const vdouble8 &f)
+  {
+    return vdouble8(select(vboold4(m.vl), vdouble4(t.vl), vdouble4(f.vl)),
+                    select(vboold4(m.vh), vdouble4(t.vh), vdouble4(f.vh)));
+  }
+
+  TSIMD_INLINE vllong8 select(const vboold8 &m, 
+                              const vllong8 &t,
+                              const vllong8 &f)
+  {
+    return vllong8(select(vboold4(m.vl), vllong4(t.vl), vllong4(f.vl)),
+                   select(vboold4(m.vh), vllong4(t.vh), vllong4(f.vh)));
   }
 
   // 16-wide //
@@ -124,6 +164,22 @@ namespace tsimd {
     return vint16(select(vboolf8(m.vl), vint8(t.vl), vint8(f.vl)),
                   select(vboolf8(m.vh), vint8(t.vh), vint8(f.vh)));
 #endif
+  }
+
+  TSIMD_INLINE vdouble16 select(const vboold16 &m,
+                                const vdouble16 &t,
+                                const vdouble16 &f)
+  {
+    return vdouble16(select(vboold8(m.vl), vdouble8(t.vl), vdouble8(f.vl)),
+                     select(vboold8(m.vh), vdouble8(t.vh), vdouble8(f.vh)));
+  }
+
+  TSIMD_INLINE vllong16 select(const vboold16 &m,
+                               const vllong16 &t,
+                               const vllong16 &f)
+  {
+    return vllong16(select(vboold8(m.vl), vllong8(t.vl), vllong8(f.vl)),
+                    select(vboold8(m.vh), vllong8(t.vh), vllong8(f.vh)));
   }
 
   // Inferred pack-scalar select //////////////////////////////////////////////

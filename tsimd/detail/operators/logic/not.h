@@ -52,6 +52,16 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vboold4 operator!(const vboold4 &m)
+  {
+    vboold4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = !m[i];
+
+    return result;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vboolf8 operator!(const vboolf8 &m)
@@ -63,6 +73,11 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vboold8 operator!(const vboold8 &m)
+  {
+    return vboold8(!vboold4(m.vl), !vboold4(m.vh));
+  }
+
   // 16-wide //
 
   TSIMD_INLINE vboolf16 operator!(const vboolf16 &m)
@@ -72,6 +87,11 @@ namespace tsimd {
 #else
     return vboolf16(!vboolf8(m.vl), !vboolf8(m.vh));
 #endif
+  }
+
+  TSIMD_INLINE vboold16 operator!(const vboold16 &m)
+  {
+    return vboold16(!vboold8(m.vl), !vboold8(m.vh));
   }
 
 }  // namespace tsimd

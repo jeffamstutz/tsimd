@@ -68,6 +68,26 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble4 min(const vdouble4 &p1, const vdouble4 &p2)
+  {
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::min(p1[i], p2[i]);
+
+    return result;
+  }
+
+  TSIMD_INLINE vllong4 min(const vllong4 &p1, const vllong4 &p2)
+  {
+    vllong4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::min(p1[i], p2[i]);
+
+    return result;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vfloat8 min(const vfloat8 &p1, const vfloat8 &p2)
@@ -92,6 +112,18 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble8 min(const vdouble8 &p1, const vdouble8 &p2)
+  {
+    return vdouble8(min(vdouble4(p1.vl), vdouble4(p2.vl)),
+                    min(vdouble4(p1.vh), vdouble4(p2.vh)));
+  }
+
+  TSIMD_INLINE vllong8 min(const vllong8 &p1, const vllong8 &p2)
+  {
+    return vllong8(min(vllong4(p1.vl), vllong4(p2.vl)),
+                   min(vllong4(p1.vh), vllong4(p2.vh)));
+  }
+
   // 16-wide //
 
   TSIMD_INLINE vfloat16 min(const vfloat16 &p1, const vfloat16 &p2)
@@ -112,6 +144,18 @@ namespace tsimd {
     return vint16(min(vint8(p1.vl), vint8(p2.vl)),
                   min(vint8(p1.vh), vint8(p2.vh)));
 #endif
+  }
+
+  TSIMD_INLINE vdouble16 min(const vdouble16 &p1, const vdouble16 &p2)
+  {
+    return vdouble16(min(vdouble8(p1.vl), vdouble8(p2.vl)),
+                     min(vdouble8(p1.vh), vdouble8(p2.vh)));
+  }
+
+  TSIMD_INLINE vllong16 min(const vllong16 &p1, const vllong16 &p2)
+  {
+    return vllong16(min(vllong8(p1.vl), vllong8(p2.vl)),
+                    min(vllong8(p1.vh), vllong8(p2.vh)));
   }
 
 }  // namespace tsimd

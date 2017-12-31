@@ -68,6 +68,26 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble4 abs(const vdouble4 &p)
+  {
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::abs(p[i]);
+
+    return result;
+  }
+
+  TSIMD_INLINE vllong4 abs(const vllong4 &p)
+  {
+    vllong4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::abs(p[i]);
+
+    return result;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vfloat8 abs(const vfloat8 &p)
@@ -90,6 +110,16 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble8 abs(const vdouble8 &p)
+  {
+    return vdouble8(abs(vdouble4(p.vl)), abs(vdouble4(p.vh)));
+  }
+
+  TSIMD_INLINE vllong8 abs(const vllong8 &p)
+  {
+    return vllong8(abs(vllong4(p.vl)), abs(vllong4(p.vh)));
+  }
+
   // 16-wide //
 
   TSIMD_INLINE vfloat16 abs(const vfloat16 &p)
@@ -110,6 +140,16 @@ namespace tsimd {
 #else
     return vint16(abs(vint8(p.vl)), abs(vint8(p.vh)));
 #endif
+  }
+
+  TSIMD_INLINE vdouble16 abs(const vdouble16 &p)
+  {
+    return vdouble16(abs(vdouble8(p.vl)), abs(vdouble8(p.vh)));
+  }
+
+  TSIMD_INLINE vllong16 abs(const vllong16 &p)
+  {
+    return vllong16(abs(vllong8(p.vl)), abs(vllong8(p.vh)));
   }
 
 }  // namespace tsimd

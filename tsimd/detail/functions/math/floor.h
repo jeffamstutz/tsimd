@@ -54,6 +54,16 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble4 floor(const vdouble4 &p)
+  {
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::floor(p[i]);
+
+    return result;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vfloat8 floor(const vfloat8 &p)
@@ -63,6 +73,11 @@ namespace tsimd {
 #else
     return vfloat8(floor(vfloat4(p.vl)), floor(vfloat4(p.vh)));
 #endif
+  }
+  
+  TSIMD_INLINE vdouble8 floor(const vdouble8 &p)
+  {
+    return vdouble8(floor(vdouble4(p.vl)), floor(vdouble4(p.vh)));
   }
 
   // 16-wide //
@@ -74,6 +89,11 @@ namespace tsimd {
 #else
     return vfloat16(floor(vfloat8(p.vl)), floor(vfloat8(p.vh)));
 #endif
+  }
+
+  TSIMD_INLINE vdouble16 floor(const vdouble16 &p)
+  {
+    return vdouble16(floor(vdouble8(p.vl)), floor(vdouble8(p.vh)));
   }
 
 }  // namespace tsimd

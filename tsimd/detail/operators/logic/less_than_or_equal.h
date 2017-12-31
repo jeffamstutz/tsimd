@@ -60,6 +60,21 @@ namespace tsimd {
     return !(p1 > p2);
   }
 
+  TSIMD_INLINE vboold4 operator<=(const vdouble4 &p1, const vdouble4 &p2)
+  {
+    vboold4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (p1[i] <= p2[i]);
+
+    return result;
+  }
+
+  TSIMD_INLINE vboold4 operator<=(const vllong4 &p1, const vllong4 &p2)
+  {
+    return !(p1 > p2);
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vboolf8 operator<=(const vfloat8 &p1, const vfloat8 &p2)
@@ -85,6 +100,18 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vboold8 operator<=(const vdouble8 &p1, const vdouble8 &p2)
+  {
+    return vboold8(vdouble4(p1.vl) <= vdouble4(p2.vl),
+                   vdouble4(p1.vh) <= vdouble4(p2.vh));
+  }
+
+  TSIMD_INLINE vboold8 operator<=(const vllong8 &p1, const vllong8 &p2)
+  {
+    return vboold8(vllong4(p1.vl) <= vllong4(p2.vl),
+                   vllong4(p1.vh) <= vllong4(p2.vh));
+  }
+
   // 16-wide //
 
   TSIMD_INLINE vboolf16 operator<=(const vfloat16 &p1, const vfloat16 &p2)
@@ -104,6 +131,18 @@ namespace tsimd {
 #else
     return vboolf16(vint8(p1.vl) <= vint8(p2.vl), vint8(p1.vh) <= vint8(p2.vh));
 #endif
+  }
+
+  TSIMD_INLINE vboold16 operator<=(const vdouble16 &p1, const vdouble16 &p2)
+  {
+    return vboold16(vdouble8(p1.vl) <= vdouble8(p2.vl),
+                    vdouble8(p1.vh) <= vdouble8(p2.vh));
+  }
+
+  TSIMD_INLINE vboold16 operator<=(const vllong16 &p1, const vllong16 &p2)
+  {
+    return vboold16(vllong8(p1.vl) <= vllong8(p2.vl),
+                    vllong8(p1.vh) <= vllong8(p2.vh));
   }
 
   // Inferred pack-scalar operators ///////////////////////////////////////////

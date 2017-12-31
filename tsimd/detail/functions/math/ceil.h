@@ -54,6 +54,16 @@ namespace tsimd {
 #endif
   }
 
+  TSIMD_INLINE vdouble4 ceil(const vdouble4 &p)
+  {
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = std::ceil(p[i]);
+
+    return result;
+  }
+
   // 8-wide //
 
   TSIMD_INLINE vfloat8 ceil(const vfloat8 &p)
@@ -63,6 +73,11 @@ namespace tsimd {
 #else
     return vfloat8(ceil(vfloat4(p.vl)), ceil(vfloat4(p.vh)));
 #endif
+  }
+  
+  TSIMD_INLINE vdouble8 ceil(const vdouble8 &p)
+  {
+    return vdouble8(ceil(vdouble4(p.vl)), ceil(vdouble4(p.vh)));
   }
 
   // 16-wide //
@@ -74,6 +89,11 @@ namespace tsimd {
 #else
     return vfloat16(ceil(vfloat8(p.vl)), ceil(vfloat8(p.vh)));
 #endif
+  }
+  
+  TSIMD_INLINE vdouble16 ceil(const vdouble16 &p)
+  {
+    return vdouble16(ceil(vdouble8(p.vl)), ceil(vdouble8(p.vh)));
   }
 
 }  // namespace tsimd
