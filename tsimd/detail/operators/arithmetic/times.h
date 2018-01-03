@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -104,7 +104,7 @@ namespace tsimd {
   TSIMD_INLINE vint16 operator*(const vint16 &p1, const vint16 &p2)
   {
 #if defined(__AVX512F__)
-    return _mm512_mul_epi32(p1, p2);
+    return _mm512_mullo_epi32(p1, p2);
 #else
     return vint16(vint8(p1.vl) * vint8(p2.vl), vint8(p1.vh) * vint8(p2.vh));
 #endif
@@ -128,6 +128,23 @@ namespace tsimd {
   TSIMD_INLINE pack<T, W> operator*(const OTHER_T &v, const pack<T, W> &p1)
   {
     return pack<T, W>(v) * p1;
+  }
+
+  // Inferred binary operator*=() /////////////////////////////////////////////
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const pack<T, W> &p2)
+  {
+    return p1 = (p1 * p2);
+  }
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 = (p1 * pack<T, W>(v));
   }
 
 }  // namespace tsimd

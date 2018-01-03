@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -24,24 +24,17 @@
 
 #pragma once
 
-#include <cmath>
-
 #include "../../pack.h"
+
+#include "exp.h"
+#include "log.h"
 
 namespace tsimd {
 
-  template <typename T, int W>
+  template <typename T, int W, typename = traits::is_floating_point_t<T>>
   TSIMD_INLINE pack<T, W> pow(const pack<T, W> &v, const float b)
   {
-    pack<T, W> result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = std::pow(v[i], b);
-
-    return result;
+    return exp(b * log(v));
   }
 
 }  // namespace tsimd

@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -25,11 +25,8 @@
 #pragma once
 
 #include "../../pack.h"
-#include "not.h"
 
 namespace tsimd {
-
-  // binary operator==() //////////////////////////////////////////////////////
 
   // 1-wide //
 

@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -27,7 +27,9 @@
 #include "math/abs.h"
 #include "math/ceil.h"
 #include "math/cos.h"
+#include "math/exp.h"
 #include "math/floor.h"
+#include "math/log.h"
 #include "math/max.h"
 #include "math/min.h"
 #include "math/pow.h"

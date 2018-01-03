@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -78,7 +78,7 @@ namespace tsimd {
     vintn<W> vi(0);
 
     for (int i = 0; i < maxIters; ++i) {
-      auto active = _active && ((z_re * z_re + z_im * z_im) <= 4.f);
+      auto active = _active & ((z_re * z_re + z_im * z_im) <= 4.f);
       if (tsimd::none(active))
         break;
 

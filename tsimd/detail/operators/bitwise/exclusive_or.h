@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -26,48 +26,40 @@
 
 #include "../../pack.h"
 
-#include "../bitwise/and.h"
-
 namespace tsimd {
 
-  // binary operator&&() //////////////////////////////////////////////////////
-
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator&&(const pack<T, W> &p1, const pack<T, W> &p2)
+  TSIMD_INLINE pack<T, W> operator^(const pack<T, W> &p1, const pack<T, W> &p2)
   {
-    return p1 & p2;
+    pack<T, W> result;
+
+#if TSIMD_USE_OPENMP
+#  pragma omp simd
+#endif
+    for (int i = 0; i < W; ++i)
+      result[i] = (p1[i] ^ p2[i]);
+
+    return result;
   }
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator&&(const pack<T, W> &p1, float v)
+  // Inferred pack<>/scalar operators /////////////////////////////////////////
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> operator^(const pack<T, W> &p1, const OTHER_T &v)
   {
-    return p1 & pack<T, W>(v);
+    return p1 ^ pack<T, W>(v);
   }
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator&&(float v, const pack<T, W> &p1)
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> operator^(const OTHER_T &v, const pack<T, W> &p1)
   {
-    return pack<T, W>(v) & p1;
-  }
-
-  // specialize 1-wide //
-
-  template <typename T>
-  TSIMD_INLINE pack<T, 1> operator&&(const pack<T, 1> &p1, const pack<T, 1> &p2)
-  {
-    return pack<T, 1>(p1[0] && p2[0]);
-  }
-
-  template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&&(const pack<T, 1> &p1, const OTHER_T &v)
-  {
-    return p1[0] && v;
-  }
-
-  template <typename T, typename OTHER_T>
-  TSIMD_INLINE pack<T, 1> operator&&(const OTHER_T &v, const pack<T, 1> &p1)
-  {
-    return v && p1[0];
+    return pack<T, W>(v) ^ p1;
   }
 
 }  // namespace tsimd

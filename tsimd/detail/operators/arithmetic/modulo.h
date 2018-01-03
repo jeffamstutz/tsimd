@@ -28,35 +28,55 @@
 
 namespace tsimd {
 
-  template <typename PACK_T, typename OFFSET_T>
-  TSIMD_INLINE void scatter(const PACK_T &p,
-                            void *_dst,
-                            const pack<OFFSET_T, PACK_T::static_size> &o)
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const pack<T, W> &p2)
   {
-    auto *dst = (typename PACK_T::value_t *)_dst;
+    pack<T, W> result;
 
 #if TSIMD_USE_OPENMP
 #  pragma omp simd
 #endif
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      dst[o[i]] = p[i];
+    for (int i = 0; i < W; ++i)
+      result[i] = (p1[i] % p2[i]);
+
+    return result;
   }
 
-  template <typename PACK_T, typename OFFSET_T>
-  TSIMD_INLINE void scatter(
-      const PACK_T &p,
-      void *_dst,
-      const pack<OFFSET_T, PACK_T::static_size> &o,
-      const mask<typename PACK_T::value_t, PACK_T::static_size> &m)
-  {
-    auto *dst = (typename PACK_T::value_t *)_dst;
+  // Inferred pack<>/scalar operators /////////////////////////////////////////
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < PACK_T::static_size; ++i)
-      if (m[i])
-        dst[o[i]] = p[i];
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 % pack<T, W>(v);
+  }
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> operator%(const OTHER_T &v, const pack<T, W> &p1)
+  {
+    return pack<T, W>(v) % p1;
+  }
+
+  // Inferred binary operator%=() /////////////////////////////////////////////
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const pack<T, W> &p2)
+  {
+    return p1 = (p1 % p2);
+  }
+
+  template <typename T,
+            int W,
+            typename OTHER_T,
+            typename = traits::can_convert<OTHER_T, T>>
+  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const OTHER_T &v)
+  {
+    return p1 = (p1 % pack<T, W>(v));
   }
 
 }  // namespace tsimd

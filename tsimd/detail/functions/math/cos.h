@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -61,8 +61,8 @@ namespace tsimd {
     const auto x = p - kReal * piOverTwoVec;
 
     const auto kMod4 = k & 3;
-    const auto cosUseCos = (kMod4 == 0 || kMod4 == 2);
-    const auto flipSign = (kMod4 == 1 || kMod4 == 2);
+    const auto cosUseCos = (kMod4 == 0 | kMod4 == 2);
+    const auto flipSign = (kMod4 == 1 | kMod4 == 2);
 
     static const float sinC2 = -0.16666667163372039794921875;
     static const float sinC4 = 8.333347737789154052734375e-3;

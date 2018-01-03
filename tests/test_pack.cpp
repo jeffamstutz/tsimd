@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -312,7 +312,7 @@ TEST_CASE("binary operator&&()", "[logic_operators]")
   vbool m1(true);
   vbool m2(false);
 
-  REQUIRE(tsimd::none(m1 && m2));
+  REQUIRE(tsimd::none(m1 & m2));
 }
 
 TEST_CASE("binary operator||()", "[logic_operators]")
@@ -320,7 +320,7 @@ TEST_CASE("binary operator||()", "[logic_operators]")
   vbool m1(true);
   vbool m2(false);
 
-  REQUIRE(tsimd::all(m1 || m2));
+  REQUIRE(tsimd::all(m1 | m2));
 }
 
 TEST_CASE("unary operator!()", "[logic_operators]")
@@ -359,6 +359,28 @@ TEST_CASE("floor()", "[math_functions]")
   REQUIRE(tsimd::all(tsimd::near_equal(tsimd::floor(v), 1.f)));
 }
 
+TEST_CASE("min()", "[math_functions]")
+{
+  vfloat v1(1.f);
+  vfloat v2(2.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::min(v1, v2), 1.f)));
+
+  vint v3(1);
+  vint v4(2);
+  REQUIRE(tsimd::all(tsimd::min(v3, v4) == 1));
+}
+
+TEST_CASE("max()", "[math_functions]")
+{
+  vfloat v1(1.f);
+  vfloat v2(2.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::max(v1, v2), 2.f)));
+
+  vint v3(1);
+  vint v4(2);
+  REQUIRE(tsimd::all(tsimd::max(v3, v4) == 2));
+}
+
 TEST_CASE("sqrt()", "[math_functions]")
 {
   vfloat v1(4.f);
@@ -385,6 +407,24 @@ TEST_CASE("tan()", "[math_functions]")
   vfloat v1(4.f);
   v1 = tsimd::tan(v1);
   REQUIRE(tsimd::all(tsimd::near_equal(v1, tan(4.f))));
+}
+
+TEST_CASE("log()", "[math_functions]")
+{
+  vfloat v(1.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::log(v), log(1.f))));
+}
+
+TEST_CASE("exp()", "[math_functions]")
+{
+  vfloat v(1.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::exp(v), exp(1.f))));
+}
+
+TEST_CASE("pow()", "[math_functions]")
+{
+  vfloat v(2.f);
+  REQUIRE(tsimd::all(tsimd::near_equal(tsimd::pow(v, 2.5f), pow(2.f, 2.5f))));
 }
 
 // pack<> algorithms //////////////////////////////////////////////////////////
@@ -584,7 +624,7 @@ TEST_CASE("uniform_random_distribution()", "[random]]")
   tsimd::uniform_real_distribution<vfloat> dist(1.f, 2.f);
   vfloat v = dist(rng);
 
-  REQUIRE(tsimd::all(v >= 1.f && v < 2.f));
+  REQUIRE(tsimd::all(v >= 1.f & v < 2.f));
 }
 
 template <int BASE>
@@ -593,7 +633,7 @@ inline void precomputed_halton_test()
   tsimd::precomputed_halton_engine<256, BASE, vfloat::static_size> rng;
   auto v = tsimd::generate_canonical(rng);
 
-  REQUIRE(tsimd::all(v >= 0.f && v < 1.f));
+  REQUIRE(tsimd::all(v >= 0.f & v < 1.f));
   REQUIRE(tsimd::any(v != 0.f));
   REQUIRE(tsimd::any(v != 1.f));
 }

@@ -12,7 +12,6 @@ Requirements:
 
 TODO:
 
-- SIMD arithmetic functions (e.g. trig functions)
 - 64-bit element pack of widths > 1
 - replace ```#pragma omp simd``` loop implementations with intrinsics where
   appropriate

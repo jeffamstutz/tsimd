@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -88,14 +88,16 @@ namespace tsimd {
     template <typename T>
     using is_bool_t = enable_if_t<is_bool<T>::value>;
 
+    template <typename T>
+    using is_not_bool_t = enable_if_t<!is_bool<T>::value>;
+
     // If given pack is a mask (vbool) or not /////////////////////////////////
 
     template <typename MASK_T>
     struct is_mask
     {
       using value_t           = typename MASK_T::value_t;
-      static const bool value = std::is_same<value_t, bool32_t>::value ||
-                                std::is_same<value_t, bool64_t>::value;
+      static const bool value = is_bool<value_t>::value;
     };
 
     template <typename MASK_T>
@@ -112,6 +114,20 @@ namespace tsimd {
 
     template <typename T>
     using is_floating_point_t = enable_if_t<is_floating_point<T>::value>;
+
+    template <typename T>
+    using is_not_floating_point_t = enable_if_t<!is_floating_point<T>::value>;
+
+    // If given types are the same size ///////////////////////////////////////
+
+    template <typename T1, typename T2>
+    struct same_size
+    {
+      static const bool value = (sizeof(T1) == sizeof(T2));
+    };
+
+    template <typename T1, typename T2>
+    using same_size_t = enable_if_t<same_size<T1, T2>::value>;
 
     // Provide intrinsic type given a SIMD width //////////////////////////////
 
@@ -235,6 +251,22 @@ namespace tsimd {
       using type = __mmask16;
     };
 #endif
+
+    // Check if a pack<T, W>::intrinsic_t is actually an intrinsic type ///////
+
+    // example: pack<float, 8> on AVX is type __m256, so evaluate to "true"
+
+    template <typename T, int W>
+    using simd_type_is_native =
+        std::is_same<simd_type<T,W>, simd_undefined_type<T,W>>;
+
+    template <typename T, int W>
+    using simd_type_is_native_t =
+        enable_if_t<simd_type_is_native<T,W>::value>;
+
+    template <typename T, int W>
+    using simd_type_is_not_native_t =
+        enable_if_t<!simd_type_is_native<T,W>::value>;
 
     // Provide a cast (float|int) intrinsic type given a SIMD width ///////////
 

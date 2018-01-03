@@ -1,7 +1,7 @@
 // ========================================================================== //
 // The MIT License (MIT)                                                      //
 //                                                                            //
-// Copyright (c) 2017 Jefferson Amstutz                                       //
+// Copyright (c) 2017 Intel Corporation                                       //
 //                                                                            //
 // Permission is hereby granted, free of charge, to any person obtaining a    //
 // copy of this software and associated documentation files (the "Software"), //
@@ -24,156 +24,9 @@
 
 #pragma once
 
-#include "../pack.h"
-
 #include "arithmetic/divide.h"
 #include "arithmetic/minus.h"
+#include "arithmetic/modulo.h"
+#include "arithmetic/negate.h"
 #include "arithmetic/plus.h"
 #include "arithmetic/times.h"
-
-namespace tsimd {
-
-  // binary operator+=() //
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &operator+=(pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    return p1 = (p1 + p2);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator+=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 + pack<T, W>(v));
-  }
-
-  // binary operator-=() //
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &operator-=(pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    return p1 = (p1 - p2);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator-=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 - pack<T, W>(v));
-  }
-
-  // binary operator*=() //
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    return p1 = (p1 * p2);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator*=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 * pack<T, W>(v));
-  }
-
-  // binary operator/=() //
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &operator/=(pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    return p1 = (p1 / p2);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator/=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 / pack<T, W>(v));
-  }
-
-  // binary operator%() //
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    pack<T, W> result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] % p2[i]);
-
-    return result;
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    pack<T, W> result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] % v);
-
-    return result;
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) % p1;
-  }
-
-  // binary operator%=() //
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    return p1 = (p1 % p2);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 % pack<T, W>(v));
-  }
-
-  // unary operator-() //
-
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator-(const pack<T, W> &p)
-  {
-    pack<T, W> result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = -p[i];
-
-    return result;
-  }
-
-}  // namespace tsimd
