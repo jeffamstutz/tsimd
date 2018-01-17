@@ -44,6 +44,7 @@ macro(tsimd_add_pack_test TEST_NAME TEST_WIDTH TEST_DOUBLE)
   add_test(math_functions${TEST_NAME}       ${TEST_EXE} "[math_functions]")
   add_test(algorithms${TEST_NAME}           ${TEST_EXE} "[algorithms]")
   add_test(random${TEST_NAME}               ${TEST_EXE} "[random]")
+  add_test(byteswap${TEST_NAME}             ${TEST_EXE} "[byteswap]")
 endmacro()
 
 # define the tests
