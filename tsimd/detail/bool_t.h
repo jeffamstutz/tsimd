@@ -55,7 +55,7 @@ namespace tsimd {
       return value == 0xFFFFFFFF;
     }
 
-    int value;
+    uint32_t value;
   };
 
   // Inlined operators ////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ namespace tsimd {
       return value == 0xFFFFFFFFFFFFFFFF;
     }
 
-    long long value;
+    uint64_t value;
   };
 
   // Inlined operators ////////////////////////////////////////////////////////
