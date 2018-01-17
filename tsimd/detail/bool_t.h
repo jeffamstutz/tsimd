@@ -41,11 +41,13 @@ namespace tsimd {
 
     TSIMD_INLINE bool32_t(bool b) noexcept
     {
+      // opt: if b is 0/1, the same result can be gotten by 'value = -b'
       value = b ? 0xFFFFFFFF : 0x0;
     }
 
     TSIMD_INLINE bool32_t &operator=(bool b) noexcept
     {
+      // opt: if b is 0/1, the same result can be gotten by 'value = -b'
       value = b ? 0xFFFFFFFF : 0x0;
       return *this;
     }
@@ -89,18 +91,20 @@ namespace tsimd {
 
     TSIMD_INLINE bool64_t(bool b) noexcept
     {
-      value = b ? 0xFFFFFFFFFFFFFFFF : 0x0;
+      // opt: if b is 0/1, the same result can be gotten by 'value = -b'
+      value = b ? 0xFFFFFFFFFFFFFFFFLL : 0x0;
     }
 
     TSIMD_INLINE bool64_t &operator=(bool b) noexcept
     {
-      value = b ? 0xFFFFFFFFFFFFFFFF : 0x0;
+      // opt: if b is 0/1, the same result can be gotten by 'value = -b'
+      value = b ? 0xFFFFFFFFFFFFFFFFLL : 0x0;
       return *this;
     }
 
     TSIMD_INLINE operator bool() const noexcept
     {
-      return value == 0xFFFFFFFFFFFFFFFF;
+      return value == 0xFFFFFFFFFFFFFFFFLL;
     }
 
     uint64_t value;
