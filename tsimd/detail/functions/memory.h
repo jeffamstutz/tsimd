@@ -28,3 +28,4 @@
 #include "memory/load.h"
 #include "memory/scatter.h"
 #include "memory/store.h"
+#include "memory/byteswap.h"
