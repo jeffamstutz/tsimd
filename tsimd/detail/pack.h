@@ -126,7 +126,7 @@ namespace tsimd {
       std::array<T, W> arr;
       intrinsic_t v;
       cast_intrinsic_t cv;
-      struct
+      struct 
       {
         half_intrinsic_t vl, vh;
       };
