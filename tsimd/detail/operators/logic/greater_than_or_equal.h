@@ -64,9 +64,7 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf8 operator>=(const vfloat8 &p1, const vfloat8 &p2)
   {
-#if defined(__AVX512VL__)
-    return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_GE);
-#elif defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX2__) || defined(__AVX__)
     return _mm256_cmp_ps(p1, p2, _CMP_GE_OQ);
 #else
     return vboolf8(vfloat4(p1.vl) >= vfloat4(p2.vl),
@@ -76,9 +74,7 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf8 operator>=(const vint8 &p1, const vint8 &p2)
   {
-#if defined(__AVX512VL__)
-    return _mm256_cmp_epi32_mask(p1, p2, _MM_CMPINT_GE);
-#elif defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX2__) || defined(__AVX__)
     return !(p1 < p2);
 #else
     return vboolf8(vint4(p1.vl) >= vint4(p2.vl), vint4(p1.vh) >= vint4(p2.vh));
