@@ -64,9 +64,24 @@ using vint   = tsimd::pack<int_type, TEST_WIDTH>;
 
 TEST_CASE("cast construction", "[member_functions]")
 {
-  vfloat v1(3.5f);
+  vfloat v(3.5f);
 
-  REQUIRE(tsimd::all(vint(v1) == 3));
+  REQUIRE(tsimd::all(vint(v) == 3));
+
+  tsimd::vint4 v4(0, 1, 2, 3);
+  tsimd::vint4 test4;
+  std::iota(test4.begin(), test4.end(), 0);
+  REQUIRE(tsimd::all(v4 == test4));
+
+  tsimd::vint8 v8(0, 1, 2, 3, 4, 5, 6, 7);
+  tsimd::vint8 test8;
+  std::iota(test8.begin(), test8.end(), 0);
+  REQUIRE(tsimd::all(v8 == test8));
+
+  tsimd::vint16 v16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+  tsimd::vint16 test16;
+  std::iota(test16.begin(), test16.end(), 0);
+  REQUIRE(tsimd::all(v16 == test16));
 }
 
 // pack<> arithmetic operators ////////////////////////////////////////////////

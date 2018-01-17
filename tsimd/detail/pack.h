@@ -36,7 +36,7 @@ namespace tsimd {
   struct pack;
 
   template <typename OTHER_T, typename T, int W>
-  pack<OTHER_T, W> convert_elements_to(const pack<T, W> &from);
+  TSIMD_INLINE pack<OTHER_T, W> convert_elements_to(const pack<T, W> &from);
 
   template <typename T, int W>
   struct pack
@@ -56,6 +56,11 @@ namespace tsimd {
 
     pack() = default;
     explicit pack(T value);
+
+    pack(T v0, T v1, T v2, T v3);
+    pack(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7);
+    pack(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
+         T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15);
 
     template <typename OT, typename = traits::is_not_same_t<T, OT>>
     explicit pack(const pack<OT, W> &other)
@@ -293,6 +298,57 @@ namespace tsimd {
 #endif
 
   // Generic pack<> members //
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(T v0, T v1, T v2, T v3)
+  {
+    static_assert(W == 4,
+                  "Multi-scalar constructors take exactly W arguments");
+    arr[0] = v0;
+    arr[1] = v1;
+    arr[2] = v2;
+    arr[3] = v3;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7)
+  {
+    static_assert(W == 8,
+                  "Multi-scalar constructors take exactly W arguments");
+    arr[0] = v0;
+    arr[1] = v1;
+    arr[2] = v2;
+    arr[3] = v3;
+    arr[4] = v4;
+    arr[5] = v5;
+    arr[6] = v6;
+    arr[7] = v7;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
+                                T v8, T v9, T v10, T v11, T v12, T v13, T v14,
+                                T v15)
+  {
+    static_assert(W == 16,
+                  "Multi-scalar constructors take exactly W arguments");
+    arr[0] = v0;
+    arr[1] = v1;
+    arr[2] = v2;
+    arr[3] = v3;
+    arr[4] = v4;
+    arr[5] = v5;
+    arr[6] = v6;
+    arr[7] = v7;
+    arr[8] = v8;
+    arr[9] = v9;
+    arr[10] = v10;
+    arr[11] = v11;
+    arr[12] = v12;
+    arr[13] = v13;
+    arr[14] = v14;
+    arr[15] = v15;
+  }
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(const std::array<T, W> &_arr) : arr(_arr)
