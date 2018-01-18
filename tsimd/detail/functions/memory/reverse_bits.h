@@ -42,7 +42,7 @@ namespace tsimd {
 #else
 #error "Unrecognized Compiler!"
 #endif
-    return *reinterpret_cast<const T*>(&swapped);
+    return pack<T, 1>(*reinterpret_cast<const T*>(&swapped));
   }
 
   // 4-wide //
@@ -79,7 +79,7 @@ namespace tsimd {
     result.v = _mm256_shuffle_epi8(p.v, mask);
     return result;
 #else
-    return pack<T, 8>(pack<T, 4>(p.vl), pack<T, 4>(p.vh));
+    return pack<T, 8>(reverse_bits(pack<T, 4>(p.vl)), reverse_bits(pack<T, 4>(p.vh)));
 #endif
   }
 
@@ -99,7 +99,7 @@ namespace tsimd {
     result.v = _mm512_shuffle_epi8(p.v, mask);
     return result;
 #else
-    return pack<T, 16>(pack<T, 8>(p.vl), pack<T, 8>(p.vh));
+    return pack<T, 16>(reverse_bits(pack<T, 8>(p.vl)), reverse_bits(pack<T, 8>(p.vh)));
 #endif
   }
 }
