@@ -54,6 +54,10 @@ include(ispc)
 tsimd_setup_build_type()
 tsimd_configure_compiler()
 
+if (TSIMD_BUILD_ISA STREQUAL "NATIVE" AND TSIMD_ENABLE_ISPC_COMPARISONS)
+  message(FATAL_ERROR "You cannot use the 'NATIVE' ISA target with ispc.")
+endif()
+
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 include_directories(${CMAKE_SOURCE_DIR})
