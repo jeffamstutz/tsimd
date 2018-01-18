@@ -126,7 +126,7 @@ namespace tsimd {
       std::array<T, W> arr;
       intrinsic_t v;
       cast_intrinsic_t cv;
-      struct 
+      struct
       {
         half_intrinsic_t vl, vh;
       };
@@ -225,15 +225,9 @@ namespace tsimd {
   using vuint   = vuintn<TSIMD_DEFAULT_WIDTH>;
   using vboolf  = maskf<TSIMD_DEFAULT_WIDTH>;
 
-#if TSIMD_DEFAULT_WIDTH > 1
-  using vdouble = vdoublen<TSIMD_DEFAULT_WIDTH / 2>;
-  using vllong  = vllongn<TSIMD_DEFAULT_WIDTH / 2>;
-  using vboold  = maskd<TSIMD_DEFAULT_WIDTH / 2>;
-#else
-  using vdouble = vdouble1;
-  using vllong  = vllong1;
-  using vboold  = maskd1;
-#endif
+  using vdouble = vdoublen<TSIMD_DEFAULT_WIDTH>;
+  using vllong  = vllongn<TSIMD_DEFAULT_WIDTH>;
+  using vboold  = maskd<TSIMD_DEFAULT_WIDTH>;
 
   // pack<> inlined members ///////////////////////////////////////////////////
 
