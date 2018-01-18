@@ -616,7 +616,7 @@ TEST_CASE("unmasked scatter()", "[memory_operations]")
       values.begin(), values.end(), [](int_type v) { REQUIRE(v == 5); });
 }
 
-#ifndef TEST_DOUBLE_PRECISION
+#if !TEST_DOUBLE_PRECISION
 TEST_CASE("reverse_bits()", "[memory_operations]")
 {
   vint v1(0x01020304);
