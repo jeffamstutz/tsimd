@@ -621,10 +621,10 @@ TEST_CASE("reverse_bits()", "[memory_operations]")
 {
   vint v1(0x01020304);
 
-  v1 = tsimd::byteswap(v1);
+  v1 = tsimd::reverse_bits(v1);
   REQUIRE(tsimd::all(v1 == 0x04030201));
 
-  v1 = tsimd::byteswap(v1);
+  v1 = tsimd::reverse_bits(v1);
   REQUIRE(tsimd::all(v1 == 0x01020304));
 
   std::random_device rd;
@@ -634,8 +634,8 @@ TEST_CASE("reverse_bits()", "[memory_operations]")
     x = distrib(gen);
 
   const vint orig = v1;
-  v1 = byteswap(v1);
-  v1 = byteswap(v1);
+  v1 = reverse_bits(v1);
+  v1 = reverse_bits(v1);
   REQUIRE(tsimd::all(v1 == orig));
 }
 #endif
