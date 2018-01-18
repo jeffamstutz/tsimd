@@ -642,7 +642,7 @@ TEST_CASE("reverse_bits()", "[memory_operations]")
 
 // random numbers /////////////////////////////////////////////////////////////
 
-TEST_CASE("uniform_random_distribution()", "[random]]")
+TEST_CASE("uniform_random_distribution()", "[random]")
 {
   tsimd::default_halton_engine2<vfloat::static_size> rng;
   tsimd::uniform_real_distribution<vfloat> dist(1.f, 2.f);
