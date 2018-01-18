@@ -631,6 +631,30 @@ TEST_CASE("unmasked scatter()", "[memory_operations]")
       values.begin(), values.end(), [](int_type v) { REQUIRE(v == 5); });
 }
 
+#ifndef TEST_DOUBLE_PRECISION
+TEST_CASE("reverse_bits()", "[memory_operations]")
+{
+  vint v1(0x01020304);
+
+  v1 = tsimd::byteswap(v1);
+  REQUIRE(tsimd::all(v1 == 0x04030201));
+
+  v1 = tsimd::byteswap(v1);
+  REQUIRE(tsimd::all(v1 == 0x01020304));
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> distrib;
+  for (auto &x : v1)
+    x = distrib(gen);
+
+  const vint orig = v1;
+  v1 = byteswap(v1);
+  v1 = byteswap(v1);
+  REQUIRE(tsimd::all(v1 == orig));
+}
+#endif
+
 // random numbers /////////////////////////////////////////////////////////////
 
 TEST_CASE("uniform_random_distribution()", "[random]]")
@@ -665,28 +689,4 @@ TEST_CASE("precomputed_halton_engine<base>()", "[random]")
   precomputed_halton_test<9>();
   precomputed_halton_test<10>();
 }
-
-#ifndef TEST_DOUBLE_PRECISION
-TEST_CASE("byteswap", "[byteswap]")
-{
-  vint v1(0x01020304);
-
-  v1 = tsimd::byteswap(v1);
-  REQUIRE(tsimd::all(v1 == 0x04030201));
-
-  v1 = tsimd::byteswap(v1);
-  REQUIRE(tsimd::all(v1 == 0x01020304));
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> distrib;
-  for (auto &x : v1)
-    x = distrib(gen);
-
-  const vint orig = v1;
-  v1 = byteswap(v1);
-  v1 = byteswap(v1);
-  REQUIRE(tsimd::all(v1 == orig));
-}
-#endif
 
