@@ -62,6 +62,17 @@ namespace tsimd {
     template <typename T, int W>
     using is_pack_of_width_t = enable_if_t<is_pack_of_width<T, W>::value>;
 
+    // If a given T is N bytes in size ////////////////////////////////////////
+
+    template<typename T, int N>
+    struct is_n_bytes
+    {
+      static const bool value = (sizeof(T) == N);
+    };
+
+    template<typename T, int N>
+    using is_n_bytes_t = enable_if_t<is_n_bytes<T, N>::value>;
+
     // If a given T is a valid type for use in a pack<> ///////////////////////
 
     template <typename T>
