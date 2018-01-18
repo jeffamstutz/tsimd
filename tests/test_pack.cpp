@@ -584,7 +584,8 @@ TEST_CASE("masked load()", "[memory_operations]")
   m[2] = false;
 
   vint v1(0);
-  v1 = tsimd::load<vint>(values.data(), m);
+  auto v2 = tsimd::load<vint>(values.data(), m);
+  tsimd::set_if(v1, v2, m);
 
   vint expected(5);
   expected[2] = 0;
