@@ -32,29 +32,23 @@ namespace tsimd {
 
   // 1-wide //
 
-  TSIMD_INLINE int byteswap(const int &p)
+  template<typename T, typename = traits::is_n_bytes_t<T, 4>>
+  TSIMD_INLINE pack<T, 1> reverse_bits(const pack<T, 1> &p)
   {
 #if defined(__GNUG__) || defined(__clang__)
-    const uint32_t swapped = __builtin_bswap32(*reinterpret_cast<const uint32_t*>(&p));
+    const uint32_t swapped = __builtin_bswap32(*reinterpret_cast<const uint32_t*>(&p.v));
 #elif defined(_MSC_VER)
-    const unsigned long swapped = _byteswap_ulong(*reinterpret_cast<const unsigned long*>(&p));
+    const unsigned long swapped = _reverse_bits_ulong(*reinterpret_cast<const unsigned long*>(&p.v));
 #else
 #error "Unrecognized Compiler!"
 #endif
-    return *reinterpret_cast<const int*>(&swapped);
-  }
-
-  TSIMD_INLINE float byteswap(const float &p)
-  {
-    const int swapped = byteswap(*reinterpret_cast<const int*>(&p));
-    return *reinterpret_cast<const float*>(&swapped);
+    return *reinterpret_cast<const T*>(&swapped);
   }
 
   // 4-wide //
 
-  template<typename T>
-  TSIMD_INLINE traits::enable_if_t<sizeof(T) == 4, pack<T, 4>>
-  byteswap(const pack<T, 4> &p)
+  template<typename T, typename = traits::is_n_bytes_t<T, 4>>
+  TSIMD_INLINE pack<T, 4> reverse_bits(const pack<T, 4> &p)
   {
 #if defined(__SSSE3__)
     const __m128i mask = _mm_set_epi8(12, 13, 14, 15, 8, 9, 10, 11, 4, 5, 6, 7, 0, 1, 2, 3);
@@ -65,7 +59,7 @@ namespace tsimd {
     pack<T, 4> result;
 
     for (int i = 0; i < 4; ++i)
-      result[i] = byteswap(p[i]);
+      result[i] = reverse_bits(p[i]);
 
     return result;
 #endif
@@ -73,9 +67,8 @@ namespace tsimd {
 
   // 8-wide //
 
-  template<typename T>
-  TSIMD_INLINE traits::enable_if_t<sizeof(T) == 4, pack<T, 8>>
-  byteswap(const pack<T, 8> &p)
+  template<typename T, typename = traits::is_n_bytes_t<T, 4>>
+  TSIMD_INLINE pack<T, 8> reverse_bits(const pack<T, 8> &p)
   {
 #if defined(__AVX512__) || defined(__AVX2__)
     // The AVX shuffle is the same as the SSSE3 but just doubled up by splitting the 256 bit
@@ -92,9 +85,8 @@ namespace tsimd {
 
   // 16-wide //
 
-  template<typename T>
-  TSIMD_INLINE traits::enable_if_t<sizeof(T) == 4, pack<T, 16>>
-  byteswap(const pack<T, 16> &p)
+  template<typename T, typename = traits::is_n_bytes_t<T, 4>>
+  TSIMD_INLINE pack<T, 16> reverse_bits(const pack<T, 16> &p)
   {
 #if defined(__AVX512BW__)
     // The AVX512-BW shuffle is the same as the SSSE3 but just quadrupled up by splitting the 512 bit
