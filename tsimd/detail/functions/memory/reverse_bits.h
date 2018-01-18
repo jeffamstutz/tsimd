@@ -38,7 +38,7 @@ namespace tsimd {
 #if defined(__GNUG__) || defined(__clang__)
     const uint32_t swapped = __builtin_bswap32(*reinterpret_cast<const uint32_t*>(&p.v));
 #elif defined(_MSC_VER)
-    const unsigned long swapped = _reverse_bits_ulong(*reinterpret_cast<const unsigned long*>(&p.v));
+    const unsigned long swapped = _byteswap_ulong(*reinterpret_cast<const unsigned long*>(&p.v));
 #else
 #error "Unrecognized Compiler!"
 #endif
