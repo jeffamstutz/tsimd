@@ -129,7 +129,7 @@ namespace tsimd {
     auto use_nan = p < 0;
     auto use_inf = p == 0;
     auto exceptional = use_nan | use_inf;
-    const vfloatn<W> one(1.0);
+    const vfloatn<W> one(1.0f);
 
     auto patched = select(exceptional, one, p);
 
@@ -137,18 +137,18 @@ namespace tsimd {
     vintn<W> exponent;
     detail::range_reduce_log(patched, reduced, exponent);
 
-    const auto ln2 = 0.693147182464599609375;
+    const auto ln2 = 0.693147182464599609375f;
 
     auto x1 = one - reduced;
-    const auto c1 = 0.50000095367431640625;
-    const auto c2 = 0.33326041698455810546875;
-    const auto c3 = 0.2519190013408660888671875;
-    const auto c4 = 0.17541764676570892333984375;
-    const auto c5 = 0.3424419462680816650390625;
-    const auto c6 = -0.599632322788238525390625;
-    const auto c7 = +1.98442304134368896484375;
-    const auto c8 = -2.4899270534515380859375;
-    const auto c9 = +1.7491014003753662109375;
+    const auto c1 = 0.50000095367431640625f;
+    const auto c2 = 0.33326041698455810546875f;
+    const auto c3 = 0.2519190013408660888671875f;
+    const auto c4 = 0.17541764676570892333984375f;
+    const auto c5 = 0.3424419462680816650390625f;
+    const auto c6 = -0.599632322788238525390625f;
+    const auto c7 = +1.98442304134368896484375f;
+    const auto c8 = -2.4899270534515380859375f;
+    const auto c9 = +1.7491014003753662109375f;
 
     auto result = x1 * c9 + c8;
     result = x1 * result + c7;

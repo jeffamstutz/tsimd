@@ -42,6 +42,19 @@ namespace tsimd {
     return result;
   }
 
+  // Inferred pack-pack promotion operators (e.g. 'vint' to 'vfloat') /////////
+
+  template <typename T1,
+            typename T2,
+            int W,
+            typename = traits::is_not_same_t<T1, T2>>
+  TSIMD_INLINE auto operator%(const pack<T1, W> &p1, const pack<T2, W> &p2)
+      -> pack<decltype(T1() % T2()), W>
+  {
+    using result_pack = pack<decltype(T1() & T2()), W>;
+    return result_pack(p1) % result_pack(p2);
+  }
+
   // Inferred pack<>/scalar operators /////////////////////////////////////////
 
   template <typename T,
@@ -64,8 +77,8 @@ namespace tsimd {
 
   // Inferred binary operator%=() /////////////////////////////////////////////
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const pack<T, W> &p2)
+  template <typename T1, typename T2, int W>
+  TSIMD_INLINE pack<T1, W> &operator%=(pack<T1, W> &p1, const pack<T2, W> &p2)
   {
     return p1 = (p1 % p2);
   }

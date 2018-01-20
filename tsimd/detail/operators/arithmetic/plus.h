@@ -117,7 +117,7 @@ namespace tsimd {
 
   TSIMD_INLINE vllong8 operator+(const vllong8 &p1, const vllong8 &p2)
   {
-    return vllong8(vllong4(p1.vl) + vllong4(p2.vl), 
+    return vllong8(vllong4(p1.vl) + vllong4(p2.vl),
                    vllong4(p1.vh) + vllong4(p2.vh));
   }
 
@@ -150,8 +150,21 @@ namespace tsimd {
 
   TSIMD_INLINE vllong16 operator+(const vllong16 &p1, const vllong16 &p2)
   {
-    return vllong16(vllong8(p1.vl) + vllong8(p2.vl), 
+    return vllong16(vllong8(p1.vl) + vllong8(p2.vl),
                     vllong8(p1.vh) + vllong8(p2.vh));
+  }
+
+  // Inferred pack-pack promotion operators (e.g. 'vint' to 'vfloat') /////////
+
+  template <typename T1,
+            typename T2,
+            int W,
+            typename = traits::is_not_same_t<T1, T2>>
+  TSIMD_INLINE auto operator+(const pack<T1, W> &p1, const pack<T2, W> &p2)
+      -> pack<decltype(T1() + T2()), W>
+  {
+    using result_pack = pack<decltype(T1() + T2()), W>;
+    return result_pack(result_pack(p1) + result_pack(p2));
   }
 
   // Inferred pack-scalar operators ///////////////////////////////////////////
@@ -160,24 +173,26 @@ namespace tsimd {
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator+(const pack<T, W> &p1, const OTHER_T &v)
+  TSIMD_INLINE auto operator+(const pack<T, W> &p1, const OTHER_T &v)
+      -> pack<decltype(T() + OTHER_T()), W>
   {
-    return p1 + pack<T, W>(v);
+    return p1 + pack<OTHER_T, W>(v);
   }
 
   template <typename T,
             int W,
             typename OTHER_T,
             typename = traits::can_convert<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator+(const OTHER_T &v, const pack<T, W> &p1)
+  TSIMD_INLINE auto operator+(const OTHER_T &v, const pack<T, W> &p1)
+      -> pack<decltype(T() + OTHER_T()), W>
   {
-    return pack<T, W>(v) + p1;
+    return pack<OTHER_T, W>(v) + p1;
   }
 
   // Inferred binary operator+=() /////////////////////////////////////////////
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &operator+=(pack<T, W> &p1, const pack<T, W> &p2)
+  template <typename T1, typename T2, int W>
+  TSIMD_INLINE pack<T1, W> &operator+=(pack<T1, W> &p1, const pack<T2, W> &p2)
   {
     return p1 = (p1 + p2);
   }

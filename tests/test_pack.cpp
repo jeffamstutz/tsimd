@@ -60,6 +60,41 @@ using vint   = tsimd::pack<int_type, TEST_WIDTH>;
  *         - store()
  */
 
+// static type checking ///////////////////////////////////////////////////////
+
+// element promotion from float to double
+using float_to_double_plus   = decltype(tsimd::vfloat() + tsimd::vdouble());
+using float_to_double_minus  = decltype(tsimd::vfloat() - tsimd::vdouble());
+using float_to_double_times  = decltype(tsimd::vfloat() * tsimd::vdouble());
+using float_to_double_divide = decltype(tsimd::vfloat() / tsimd::vdouble());
+
+static_assert(std::is_same<float_to_double_plus, tsimd::vdouble>::value, "");
+static_assert(std::is_same<float_to_double_minus, tsimd::vdouble>::value, "");
+static_assert(std::is_same<float_to_double_times, tsimd::vdouble>::value, "");
+static_assert(std::is_same<float_to_double_divide, tsimd::vdouble>::value, "");
+
+// element promotion from int to float
+using int_to_float_plus   = decltype(tsimd::vint() + tsimd::vfloat());
+using int_to_float_minus  = decltype(tsimd::vint() - tsimd::vfloat());
+using int_to_float_times  = decltype(tsimd::vint() * tsimd::vfloat());
+using int_to_float_divide = decltype(tsimd::vint() / tsimd::vfloat());
+
+static_assert(std::is_same<int_to_float_plus, tsimd::vfloat>::value, "");
+static_assert(std::is_same<int_to_float_minus, tsimd::vfloat>::value, "");
+static_assert(std::is_same<int_to_float_times, tsimd::vfloat>::value, "");
+static_assert(std::is_same<int_to_float_divide, tsimd::vfloat>::value, "");
+
+// element promotion from int to llong
+using int_to_llong_plus   = decltype(tsimd::vint() + tsimd::vllong());
+using int_to_llong_minus  = decltype(tsimd::vint() - tsimd::vllong());
+using int_to_llong_times  = decltype(tsimd::vint() * tsimd::vllong());
+using int_to_llong_divide = decltype(tsimd::vint() / tsimd::vllong());
+
+static_assert(std::is_same<int_to_llong_plus, tsimd::vllong>::value, "");
+static_assert(std::is_same<int_to_llong_minus, tsimd::vllong>::value, "");
+static_assert(std::is_same<int_to_llong_times, tsimd::vllong>::value, "");
+static_assert(std::is_same<int_to_llong_divide, tsimd::vllong>::value, "");
+
 // pack<> member functions ////////////////////////////////////////////////////
 
 TEST_CASE("cast construction", "[member_functions]")

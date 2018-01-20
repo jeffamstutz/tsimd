@@ -89,6 +89,12 @@ namespace tsimd {
 
     pack<T, W> &operator=(const value_t &);
 
+    template <typename OT, typename = traits::is_not_same_t<T, OT>>
+    pack<T, W> &operator=(const pack<OT, W> &other)
+    {
+      return (*this = convert_elements_to<T>(other));
+    }
+
     // Array access //
 
     const T &operator[](int i) const;
