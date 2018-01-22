@@ -519,6 +519,12 @@ namespace tsimd {
     return to;
   }
 
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> convert_elements_to(const pack<T, W> &from)
+  {
+    return from;
+  }
+
   // pack<> reinterpret_cast //////////////////////////////////////////////////
 
   //NOTE(jda) - ugly syntax here --> The return type is a
