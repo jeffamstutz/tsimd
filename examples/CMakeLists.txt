@@ -35,4 +35,11 @@ if(TSIMD_ENABLE_EMBREE_COMPARISONS)
   add_definitions(-DTSIMD_ENABLE_EMBREE)
 endif()
 
+option(TSIMD_ENABLE_VC_COMPARISONS "Enable Vc comparisons in examples" OFF)
+if(TSIMD_ENABLE_VC_COMPARISONS)
+  find_package(Vc)
+  include_directories(${Vc_INCLUDE_DIR})
+  add_definitions(-DTSIMD_ENABLE_VC)
+endif()
+
 subdirs(simple_example mandelbrot)

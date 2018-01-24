@@ -35,6 +35,10 @@
 #include "../embc/simd/simd.h"
 #endif
 
+#ifdef TSIMD_ENABLE_VC
+#include "Vc/Vc"
+#endif
+
 // ispc
 #ifdef TSIMD_ENABLE_ISPC
 #include "mandelbrot_ispc.h"
@@ -198,6 +202,88 @@ namespace embc {
         auto result    = mandel(active, x, y, maxIters);
 
         vint::store(active, output + base_index, result);
+      }
+    }
+  }
+
+}  // namespace embc
+#endif
+
+  // Vc version ///////////////////////////////////////////////////////////////
+
+#ifdef TSIMD_ENABLE_VC
+namespace vc {
+
+  // foreach //
+
+#if 0
+  template <typename SIMD_T, typename FCN_T>
+  inline void foreach_v(SIMD_T &v, FCN_T &&fcn)
+  {
+    // NOTE(jda) - need to static_assert() FCN_T's signature
+
+    for (int i = 0; i < SIMD_T::size; ++i)
+      fcn(v[i], i);
+  }
+#endif
+
+  using vfloat = Vc::float_v;
+  using vint   = Vc::int_v;
+  using vmask  = decltype(vfloat() < vfloat());
+
+  inline vint mandel(const vmask &_active,
+                     const vfloat &c_re,
+                     const vfloat &c_im,
+                     int maxIters)
+  {
+    vfloat z_re = c_re;
+    vfloat z_im = c_im;
+    vint vi(0);
+
+    for (int i = 0; i < maxIters; ++i) {
+      auto active = _active && ((z_re * z_re + z_im * z_im) <= 4.f);
+      #if 0
+      if (Vc::none(active))
+        break;
+      #endif
+
+      vfloat new_re = z_re * z_re - z_im * z_im;
+      vfloat new_im = 2.f * z_re * z_im;
+      z_re          = c_re + new_re;
+      z_im          = c_im + new_im;
+
+      //vi = Vc::select(active, vi + 1, vi);
+    }
+
+    return vi;
+  }
+
+  void mandelbrot(float x0,
+                  float y0,
+                  float x1,
+                  float y1,
+                  int width,
+                  int height,
+                  int maxIters,
+                  int output[])
+  {
+    float dx = (x1 - x0) / width;
+    float dy = (y1 - y0) / height;
+
+    vfloat programIndex;
+    //foreach_v(programIndex, [](float &v, int i) { v = i; });
+
+    for (int j = 0; j < height; j++) {
+      for (int i = 0; i < width; i += vfloat::size()) {
+        vfloat x = x0 + (i + programIndex) * dx;
+        vfloat y = y0 + j * dy;
+
+        auto active = x < width;
+
+        int base_index = (j * width + i);
+        auto result    = mandel(active, x, y, maxIters);
+
+        result.store(output + base_index, active);
       }
     }
   }
