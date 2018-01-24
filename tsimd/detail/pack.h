@@ -52,6 +52,12 @@ namespace tsimd {
     using half_intrinsic_t = typename traits::half_simd_type<value_t, W>::type;
     using cast_intrinsic_t = typename traits::cast_simd_type<value_t, W>::type;
 
+    // NOTE(jda) - This alias represents an "ideal" underlying representation,
+    //             which will the underlying intrinsic type (if available) or
+    //             fallback to a plain std::array<T, W>. Used for copy/move
+    //             constructor optimizations done by the compiler.
+    using simd_or_array_t = typename traits::simd_or_array_type<T, W>::type;
+
     // Construction //
 
     pack() = default;
@@ -66,6 +72,12 @@ namespace tsimd {
     // NOTE: only valid for W == 16! (otherwise it's a compile error)
     pack(T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
          T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15);
+
+    pack(const pack<T, W> &other);
+    pack(pack<T, W> &&other);
+
+    pack& operator=(const pack<T, W> &other);
+    pack& operator=(pack<T, W> &&other) = default;
 
     template <typename OT, typename = traits::is_not_same_t<T, OT>>
     explicit pack(const pack<OT, W> &other)
@@ -353,6 +365,24 @@ namespace tsimd {
     arr[13] = v13;
     arr[14] = v14;
     arr[15] = v15;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(const pack<T, W> &other)
+      : pack(static_cast<pack<T, W>::simd_or_array_t>(other))
+  {
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W>::pack(pack<T, W> &&other)
+      : pack(static_cast<pack<T, W>::simd_or_array_t>(other))
+  {
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE pack<T, W> &pack<T, W>::operator=(const pack<T, W> &other)
+  {
+    return *this = pack<T, W>(static_cast<pack<T, W>::simd_or_array_t>(other));
   }
 
   template <typename T, int W>

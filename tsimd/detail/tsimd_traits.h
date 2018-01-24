@@ -505,5 +505,93 @@ namespace tsimd {
       using type = bool64_t;
     };
 
+    // Return the native SIMD type (e.g. _m256) if availab, otherwise arr /////
+
+    // NOTE(jda) - These are for copy/move constructors and assignment operators
+    //             so the optimal copy type is inferred based on the target ISA
+    //             and pack<> type/size combination.
+
+    template <typename T, int W>
+    struct simd_or_array_type
+    {
+      using type = std::array<T, W>;
+    };
+
+    // 4-wide //
+
+#if defined(__SSE__)
+    template <>
+    struct simd_or_array_type<float, 4>
+    {
+      using type = typename simd_type<float, 4>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<int, 4>
+    {
+      using type = typename simd_type<int, 4>::type;
+    };
+#endif
+
+#if defined(__AVX2__) || defined(__AVX__)
+    template <>
+    struct simd_or_array_type<double, 4>
+    {
+      using type = typename simd_type<double, 4>::type;
+    };
+#endif
+
+#if defined(__AVX2__)
+    template <>
+    struct simd_or_array_type<long long, 4>
+    {
+      using type = typename simd_type<long long, 4>::type;
+    };
+#endif
+
+    // 8-wide //
+
+#if defined(__AVX2__) || defined(__AVX__)
+    template <>
+    struct simd_or_array_type<float, 8>
+    {
+      using type = typename simd_type<float, 8>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<int, 8>
+    {
+      using type = typename simd_type<int, 8>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<bool32_t, 8>
+    {
+      using type = typename simd_type<bool32_t, 8>::type;
+    };
+#endif
+
+    // 16-wide //
+
+#if defined(__AVX512F__)
+    template <>
+    struct simd_or_array_type<float, 16>
+    {
+      using type = typename simd_type<float, 16>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<int, 16>
+    {
+      using type = typename simd_type<int, 16>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<bool32_t, 16>
+    {
+      using type = typename simd_type<bool32_t, 16>::type;
+    };
+#endif
+
   }  // namespace traits
 }  // namespace tsimd
