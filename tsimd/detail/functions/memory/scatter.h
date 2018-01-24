@@ -33,7 +33,7 @@ namespace tsimd {
                             void *_dst,
                             const pack<OFFSET_T, PACK_T::static_size> &o)
   {
-    auto *dst = (typename PACK_T::value_t *)_dst;
+    auto *dst = (typename PACK_T::element_t *)_dst;
 
 #if TSIMD_USE_OPENMP
 #  pragma omp simd
@@ -47,9 +47,9 @@ namespace tsimd {
       const PACK_T &p,
       void *_dst,
       const pack<OFFSET_T, PACK_T::static_size> &o,
-      const mask<typename PACK_T::value_t, PACK_T::static_size> &m)
+      const mask<typename PACK_T::element_t, PACK_T::static_size> &m)
   {
-    auto *dst = (typename PACK_T::value_t *)_dst;
+    auto *dst = (typename PACK_T::element_t *)_dst;
 
 #if TSIMD_USE_OPENMP
 #  pragma omp simd

@@ -107,8 +107,8 @@ namespace tsimd {
     template <typename MASK_T>
     struct is_mask
     {
-      using value_t           = typename MASK_T::value_t;
-      static const bool value = is_bool<value_t>::value;
+      using element_t           = typename MASK_T::element_t;
+      static const bool value = is_bool<element_t>::value;
     };
 
     template <typename MASK_T>

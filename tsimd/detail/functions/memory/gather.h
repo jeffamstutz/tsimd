@@ -32,7 +32,7 @@ namespace tsimd {
   TSIMD_INLINE PACK_T gather(void *_src,
                              const pack<OFFSET_T, PACK_T::static_size> &o)
   {
-    auto *src = (const typename PACK_T::value_t *)_src;
+    auto *src = (const typename PACK_T::element_t *)_src;
     PACK_T result;
 
 #if TSIMD_USE_OPENMP
@@ -48,9 +48,9 @@ namespace tsimd {
   TSIMD_INLINE PACK_T
   gather(void *_src,
          const pack<OFFSET_T, PACK_T::static_size> &o,
-         const mask<typename PACK_T::value_t, PACK_T::static_size> &m)
+         const mask<typename PACK_T::element_t, PACK_T::static_size> &m)
   {
-    auto *src = (const typename PACK_T::value_t *)_src;
+    auto *src = (const typename PACK_T::element_t *)_src;
     PACK_T result;
 
 #if TSIMD_USE_OPENMP

@@ -47,10 +47,10 @@ namespace tsimd {
     {
       static_size = W
     };
-    using value_t          = typename std::decay<T>::type;
-    using intrinsic_t      = typename traits::simd_type<value_t, W>::type;
-    using half_intrinsic_t = typename traits::half_simd_type<value_t, W>::type;
-    using cast_intrinsic_t = typename traits::cast_simd_type<value_t, W>::type;
+    using element_t          = typename std::decay<T>::type;
+    using intrinsic_t      = typename traits::simd_type<element_t, W>::type;
+    using half_intrinsic_t = typename traits::half_simd_type<element_t, W>::type;
+    using cast_intrinsic_t = typename traits::cast_simd_type<element_t, W>::type;
 
     // NOTE(jda) - This alias represents an "ideal" underlying representation,
     //             which will the underlying intrinsic type (if available) or
@@ -99,7 +99,7 @@ namespace tsimd {
     explicit pack(const std::array<T, W / 2> &a, const std::array<T, W / 2> &b);
     explicit pack(const std::array<T, W> &arr);
 
-    pack<T, W> &operator=(const value_t &);
+    pack<T, W> &operator=(const element_t &);
 
     template <typename OT, typename = traits::is_not_same_t<T, OT>>
     pack<T, W> &operator=(const pack<OT, W> &other)
@@ -184,7 +184,7 @@ namespace tsimd {
   template <typename MASK_T>
   struct mask_for_pack
   {
-    using type = pack<bool_t<typename MASK_T::value_t>, MASK_T::static_size>;
+    using type = pack<bool_t<typename MASK_T::element_t>, MASK_T::static_size>;
   };
 
   template <typename MASK_T>
@@ -402,7 +402,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W> &pack<T, W>::operator=(const value_t &v)
+  TSIMD_INLINE pack<T, W> &pack<T, W>::operator=(const element_t &v)
   {
     *this = pack<T, W>(v);
     return *this;

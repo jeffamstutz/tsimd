@@ -38,7 +38,7 @@ namespace tsimd {
   TSIMD_INLINE void store(
       const PACK_T &p,
       void *_dst,
-      const mask<typename PACK_T::value_t, PACK_T::static_size> &m);
+      const mask<typename PACK_T::element_t, PACK_T::static_size> &m);
 
   // 1-wide //
 
@@ -63,7 +63,7 @@ namespace tsimd {
 #if defined(__SSE__)
     _mm_store_ps((float *)_dst, v);
 #else
-    auto *dst = (typename vfloat4::value_t *)_dst;
+    auto *dst = (typename vfloat4::element_t *)_dst;
 
     for (int i = 0; i < 4; ++i)
       dst[i] = v[i];
@@ -76,7 +76,7 @@ namespace tsimd {
 #if defined(__SSE__)
     store(select(mask, v, load<vfloat4>(_dst)), _dst);
 #else
-    auto *dst = (typename vfloat4::value_t *)_dst;
+    auto *dst = (typename vfloat4::element_t *)_dst;
 
     for (int i = 0; i < 4; ++i)
       if (mask[i])
@@ -90,7 +90,7 @@ namespace tsimd {
 #if defined(__SSE__)
     _mm_store_si128((__m128i *)_dst, v);
 #else
-    auto *dst = (typename vint4::value_t *)_dst;
+    auto *dst = (typename vint4::element_t *)_dst;
 
     for (int i = 0; i < 4; ++i)
       dst[i] = v[i];
@@ -103,7 +103,7 @@ namespace tsimd {
 #if defined(__SSE__)
     store(select(mask, v, load<vint4>(_dst)), _dst);
 #else
-    auto *dst = (typename vint4::value_t *)_dst;
+    auto *dst = (typename vint4::element_t *)_dst;
 
     for (int i = 0; i < 4; ++i)
       if (mask[i])
@@ -114,7 +114,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vdouble4 &v, void *_dst)
   {
-    auto *dst = (typename vdouble4::value_t *)_dst;
+    auto *dst = (typename vdouble4::element_t *)_dst;
 
     for (int i = 0; i < 4; ++i)
       dst[i] = v[i];
@@ -129,7 +129,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vllong4 &v, void *_dst)
   {
-    auto *dst = (typename vllong4::value_t *)_dst;
+    auto *dst = (typename vllong4::element_t *)_dst;
 
     for (int i = 0; i < 4; ++i)
       dst[i] = v[i];
@@ -149,7 +149,7 @@ namespace tsimd {
 #if defined(__AVX2__) || defined(__AVX__)
     return _mm256_store_ps((float *)_dst, v);
 #else
-    auto *dst = (typename vfloat8::value_t *)_dst;
+    auto *dst = (typename vfloat8::element_t *)_dst;
     store(vfloat4(v.vl), dst);
     store(vfloat4(v.vh), dst + 4);
 #endif
@@ -161,7 +161,7 @@ namespace tsimd {
 #if defined(__AVX2__) || defined(__AVX__)
     _mm256_maskstore_ps((float *)_dst, mask, v);
 #else
-    auto *dst = (typename vfloat8::value_t *)_dst;
+    auto *dst = (typename vfloat8::element_t *)_dst;
     store(vfloat4(v.vl), dst, vboolf4(mask.vl));
     store(vfloat4(v.vh), dst + 4, vboolf4(mask.vh));
 #endif
@@ -175,7 +175,7 @@ namespace tsimd {
 #elif defined(__AVX__)
     _mm256_store_ps((float *)_dst, v);
 #else
-    auto *dst = (typename vint8::value_t *)_dst;
+    auto *dst = (typename vint8::element_t *)_dst;
     store(vint4(v.vl), dst);
     store(vint4(v.vh), dst + 4);
 #endif
@@ -189,7 +189,7 @@ namespace tsimd {
 #elif defined(__AVX__)
     _mm256_maskstore_ps((float *)_dst, mask, v);
 #else
-    auto *dst = (typename vint8::value_t *)_dst;
+    auto *dst = (typename vint8::element_t *)_dst;
     store(vint4(v.vl), dst, vboolf4(mask.vl));
     store(vint4(v.vh), dst + 4, vboolf4(mask.vh));
 #endif
@@ -198,7 +198,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vdouble8 &v, void *_dst)
   {
-    auto *dst = (typename vdouble8::value_t *)_dst;
+    auto *dst = (typename vdouble8::element_t *)_dst;
     store(vdouble4(v.vl), dst);
     store(vdouble4(v.vh), dst + 4);
   }
@@ -206,7 +206,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vdouble8 &v, void *_dst, const vboold8 &mask)
   {
-    auto *dst = (typename vdouble8::value_t *)_dst;
+    auto *dst = (typename vdouble8::element_t *)_dst;
     store(vdouble4(v.vl), dst, vboold4(mask.vl));
     store(vdouble4(v.vh), dst + 4, vboold4(mask.vh));
   }
@@ -214,7 +214,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vllong8 &v, void *_dst)
   {
-    auto *dst = (typename vllong8::value_t *)_dst;
+    auto *dst = (typename vllong8::element_t *)_dst;
     store(vllong4(v.vl), dst);
     store(vllong4(v.vh), dst + 4);
   }
@@ -222,7 +222,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vllong8 &v, void *_dst, const vboold8 &mask)
   {
-    auto *dst = (typename vllong8::value_t *)_dst;
+    auto *dst = (typename vllong8::element_t *)_dst;
     store(vllong4(v.vl), dst, vboold4(mask.vl));
     store(vllong4(v.vh), dst + 4, vboold4(mask.vh));
   }
@@ -235,7 +235,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     _mm512_store_ps((float *)_dst, v);
 #else
-    auto *dst = (typename vfloat16::value_t *)_dst;
+    auto *dst = (typename vfloat16::element_t *)_dst;
     store(vfloat8(v.vl), dst);
     store(vfloat8(v.vh), dst + 8);
 #endif
@@ -247,7 +247,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     _mm512_mask_store_ps((float *)_dst, mask, v);
 #else
-    auto *dst = (typename vfloat16::value_t *)_dst;
+    auto *dst = (typename vfloat16::element_t *)_dst;
     store(vfloat8(v.vl), dst, vboolf8(mask.vl));
     store(vfloat8(v.vh), dst + 8, vboolf8(mask.vh));
 #endif
@@ -259,7 +259,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     _mm512_store_si512(_dst, v);
 #else
-    auto *dst = (typename vint16::value_t *)_dst;
+    auto *dst = (typename vint16::element_t *)_dst;
     store(vint8(v.vl), dst);
     store(vint8(v.vh), dst + 8);
 #endif
@@ -271,7 +271,7 @@ namespace tsimd {
 #if defined(__AVX512F__)
     _mm512_mask_store_epi32(_dst, mask, v);
 #else
-    auto *dst = (typename vint16::value_t *)_dst;
+    auto *dst = (typename vint16::element_t *)_dst;
     store(vint8(v.vl), dst, vboolf8(mask.vl));
     store(vint8(v.vh), dst + 8, vboolf8(mask.vh));
 #endif
@@ -280,7 +280,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vdouble16 &v, void *_dst)
   {
-    auto *dst = (typename vdouble16::value_t *)_dst;
+    auto *dst = (typename vdouble16::element_t *)_dst;
     store(vdouble8(v.vl), dst);
     store(vdouble8(v.vh), dst + 8);
   }
@@ -288,7 +288,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vdouble16 &v, void *_dst, const vboold16 &mask)
   {
-    auto *dst = (typename vdouble16::value_t *)_dst;
+    auto *dst = (typename vdouble16::element_t *)_dst;
     store(vdouble8(v.vl), dst, vboold8(mask.vl));
     store(vdouble8(v.vh), dst + 8, vboold8(mask.vh));
   }
@@ -296,7 +296,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vllong16 &v, void *_dst)
   {
-    auto *dst = (typename vllong16::value_t *)_dst;
+    auto *dst = (typename vllong16::element_t *)_dst;
     store(vllong8(v.vl), dst);
     store(vllong8(v.vh), dst + 8);
   }
@@ -304,7 +304,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vllong16 &v, void *_dst, const vboold16 &mask)
   {
-    auto *dst = (typename vllong16::value_t *)_dst;
+    auto *dst = (typename vllong16::element_t *)_dst;
     store(vllong8(v.vl), dst, vboold8(mask.vl));
     store(vllong8(v.vh), dst + 8, vboold8(mask.vh));
   }

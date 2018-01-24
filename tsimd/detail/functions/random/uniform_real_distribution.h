@@ -34,8 +34,8 @@ namespace tsimd {
   {
     uniform_real_distribution(const PACK_T &a, const PACK_T &b);
 
-    uniform_real_distribution(typename PACK_T::value_t a,
-                              typename PACK_T::value_t b);
+    uniform_real_distribution(typename PACK_T::element_t a,
+                              typename PACK_T::element_t b);
 
     template <typename VRNG>
     PACK_T operator()(VRNG& generator);
@@ -64,8 +64,8 @@ namespace tsimd {
 
   template <typename PACK_T>
   TSIMD_INLINE uniform_real_distribution<PACK_T>::uniform_real_distribution(
-    typename PACK_T::value_t a,
-    typename PACK_T::value_t b)
+    typename PACK_T::element_t a,
+    typename PACK_T::element_t b)
       : uniform_real_distribution(PACK_T(a), PACK_T(b))
   {
   }

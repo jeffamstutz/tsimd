@@ -33,7 +33,7 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE mask<T, W> operator&&(const pack<T, W> &/*p1*/, const pack<T, W> &/*p2*/)
   {
-    static_assert(!std::is_same<T, typename pack<T, W>::value_t>::value,
+    static_assert(!std::is_same<T, typename pack<T, W>::element_t>::value,
                  "operator&&() is not defined for pack<> types!");
     return mask<T, W>();
   }
@@ -59,7 +59,7 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE mask<T, W> operator||(const pack<T, W> &/*p1*/, const pack<T, W> &/*p2*/)
   {
-    static_assert(!std::is_same<T, typename pack<T, W>::value_t>::value,
+    static_assert(!std::is_same<T, typename pack<T, W>::element_t>::value,
                  "operator||() is not defined for pack<> types!");
     return mask<T, W>();
   }
