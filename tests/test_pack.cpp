@@ -612,19 +612,21 @@ TEST_CASE("unmasked load()", "[memory_operations]")
 
 TEST_CASE("masked load()", "[memory_operations]")
 {
-  TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
-  std::fill(values.begin(), values.end(), 5);
+  if (vbool::static_size > 1) {
+    TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
+    std::fill(values.begin(), values.end(), 5);
 
-  vbool m(true);
-  m[2] = false;
+    vbool m(true);
+    m[2] = false;
 
-  vint v1(0);
-  auto v2 = tsimd::load<vint>(values.data(), m);
-  tsimd::set_if(v1, v2, m);
+    vint v1(0);
+    auto v2 = tsimd::load<vint>(values.data(), m);
+    tsimd::set_if(v1, v2, m);
 
-  vint expected(5);
-  expected[2] = 0;
-  REQUIRE(tsimd::all(v1 == expected));
+    vint expected(5);
+    expected[2] = 0;
+    REQUIRE(tsimd::all(v1 == expected));
+  }
 }
 
 TEST_CASE("unmasked gather()", "[memory_operations]")
