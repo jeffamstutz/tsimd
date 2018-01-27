@@ -40,7 +40,7 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf4 operator!(const vboolf4 &m)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_xor_ps(m, vboolf4(true));
 #else
     vboolf4 result;

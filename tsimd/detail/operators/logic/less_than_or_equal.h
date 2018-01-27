@@ -43,7 +43,7 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf4 operator<=(const vfloat4 &p1, const vfloat4 &p2)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_cmple_ps(p1, p2);
 #else
     vboolf4 result;

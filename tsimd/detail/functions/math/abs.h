@@ -42,7 +42,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat4 abs(const vfloat4 &p)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_and_ps(p, _mm_castsi128_ps(_mm_set1_epi32(0x7fffffff)));
 #else
     vfloat4 result;
@@ -56,7 +56,7 @@ namespace tsimd {
 
   TSIMD_INLINE vint4 abs(const vint4 &p)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_abs_epi32(p);
 #else
     vint4 result;

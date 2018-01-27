@@ -36,9 +36,11 @@ namespace tsimd {
   TSIMD_INLINE pack<T, 1> reverse_bits(const pack<T, 1> &p)
   {
 #if defined(__GNUG__) || defined(__clang__)
-    const uint32_t swapped = __builtin_bswap32(*reinterpret_cast<const uint32_t*>(&p.v));
+    const uint32_t swapped =
+        __builtin_bswap32(*reinterpret_cast<const uint32_t*>(&p.v));
 #elif defined(_MSC_VER)
-    const unsigned long swapped = _byteswap_ulong(*reinterpret_cast<const unsigned long*>(&p.v));
+    const unsigned long swapped =
+        _byteswap_ulong(*reinterpret_cast<const unsigned long*>(&p.v));
 #else
 #error "Unrecognized Compiler!"
 #endif
@@ -51,15 +53,16 @@ namespace tsimd {
   TSIMD_INLINE pack<T, 4> reverse_bits(const pack<T, 4> &p)
   {
 #if defined(__SSSE3__)
-    const __m128i mask = _mm_set_epi8(12, 13, 14, 15, 8, 9, 10, 11, 4, 5, 6, 7, 0, 1, 2, 3);
+    const __m128i mask =
+        _mm_set_epi8(12, 13, 14, 15, 8, 9, 10, 11, 4, 5, 6, 7, 0, 1, 2, 3);
     pack<T, 4> result(0);
-    result.v = _mm_shuffle_epi8(p.v, mask);
+    result.v = _mm_shuffle_epi8(p, mask);
     return result;
 #else
     pack<T, 4> result;
 
     for (int i = 0; i < 4; ++i)
-      result[i] = reverse_bits(p[i]);
+      result[i] = reverse_bits(pack<T, 1>(p[i]));
 
     return result;
 #endif
@@ -71,15 +74,18 @@ namespace tsimd {
   TSIMD_INLINE pack<T, 8> reverse_bits(const pack<T, 8> &p)
   {
 #if defined(__AVX512__) || defined(__AVX2__)
-    // The AVX shuffle is the same as the SSSE3 but just doubled up by splitting the 256 bit
-    // vector in half, so the mask for each half is the same as in the SSSE3 case
-    const __m256i mask = _mm256_set_epi32(0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
-                                          0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203);
+    // The AVX shuffle is the same as the SSSE3 but just doubled up by splitting
+    // the 256 bit vector in half, so the mask for each half is the same as in
+    // the SSSE3 case
+    const __m256i mask =
+        _mm256_set_epi32(0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
+                         0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203);
     pack<T, 8> result(0);
-    result.v = _mm256_shuffle_epi8(p.v, mask);
+    result.v = _mm256_shuffle_epi8(p, mask);
     return result;
 #else
-    return pack<T, 8>(reverse_bits(pack<T, 4>(p.vl)), reverse_bits(pack<T, 4>(p.vh)));
+    return pack<T, 8>(reverse_bits(pack<T, 4>(p.vl)),
+                      reverse_bits(pack<T, 4>(p.vh)));
 #endif
   }
 
@@ -89,17 +95,20 @@ namespace tsimd {
   TSIMD_INLINE pack<T, 16> reverse_bits(const pack<T, 16> &p)
   {
 #if defined(__AVX512BW__)
-    // The AVX512-BW shuffle is the same as the SSSE3 but just quadrupled up by splitting the 512 bit
-    // vector in four, so the mask for each piece is the same as in the SSSE3 case
-    const __m512i mask = _mm512_set_epi32(0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
-                                          0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
-                                          0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
-                                          0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203);
+    // The AVX512-BW shuffle is the same as the SSSE3 but just quadrupled up
+    // by splitting the 512 bit vector in four, so the mask for each piece is
+    // the same as in the SSSE3 case
+    const __m512i mask =
+        _mm512_set_epi32(0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
+                         0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
+                         0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203,
+                         0x0c0d0e0f, 0x08090a0b, 0x04050607, 0x00010203);
     pack<T, 16> result(0);
-    result.v = _mm512_shuffle_epi8(p.v, mask);
+    result.v = _mm512_shuffle_epi8(p, mask);
     return result;
 #else
-    return pack<T, 16>(reverse_bits(pack<T, 8>(p.vl)), reverse_bits(pack<T, 8>(p.vh)));
+    return pack<T, 16>(reverse_bits(pack<T, 8>(p.vl)),
+                       reverse_bits(pack<T, 8>(p.vh)));
 #endif
   }
 }

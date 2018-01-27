@@ -30,7 +30,11 @@
 #define TSIMD_WIN 0
 #endif
 
+// NOTE(jda) - don't include intrinsics header if no vector ISA specified
+#if defined(__AVX512F__) || defined(__AVX2__) || \
+    defined(__AVX__) || defined(__SSE4_2__)
 #include <immintrin.h>
+#endif
 
 #if defined(__AVX512F__)
 #define TSIMD_DEFAULT_WIDTH 16
@@ -42,7 +46,7 @@
 #endif
 #endif
 
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
 #if !defined(TSIMD_DEFAULT_WIDTH)
 #define TSIMD_DEFAULT_WIDTH 4
 #endif

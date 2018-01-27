@@ -46,7 +46,7 @@ namespace tsimd {
 
   TSIMD_INLINE bool all(const vboolf4 &a)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_movemask_ps(a) == 0xf;
 #else
     for (int i = 0; i < 4; ++i) {
@@ -78,7 +78,7 @@ namespace tsimd {
     return all(vboolf4(a.vl)) && all(vboolf4(a.vh));
 #endif
   }
-  
+
   TSIMD_INLINE bool all(const vboold8 &a)
   {
     return all(vboold4(a.vl)) && all(vboold4(a.vh));

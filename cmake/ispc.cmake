@@ -177,10 +177,10 @@ endmacro()
 ## Macro configure ISA targets for ispc ##
 macro(TSIMD_CONFIGURE_ISA)
   set(TSIMD_BUILD_ISA "NATIVE" CACHE STRING
-      "Target ISA for examples (NATIVE, SSE4, AVX, AVX2, AVX512KNL, AVX512SKX)")
+      "Target ISA for examples (NATIVE, SCALAR, SSE4, AVX, AVX2, AVX512KNL, AVX512SKX)")
   string(TOUPPER ${TSIMD_BUILD_ISA} TSIMD_BUILD_ISA)
   set_property(CACHE TSIMD_BUILD_ISA PROPERTY STRINGS
-               NATIVE SSE4 AVX AVX2 AVX512KNL AVX512SKX)
+               NATIVE SCALAR SSE4 AVX AVX2 AVX512KNL AVX512SKX)
 
   unset(TSIMD_ISPC_TARGET_LIST)
 
@@ -196,6 +196,8 @@ macro(TSIMD_CONFIGURE_ISA)
     set(TSIMD_ISPC_TARGET_LIST avx)
   elseif (TSIMD_BUILD_ISA STREQUAL "SSE4")
     set(TSIMD_ISPC_TARGET_LIST sse4)
+  elseif (TSIMD_BUILD_ISA STREQUAL "SCALAR")
+    set(TSIMD_ISPC_TARGET_LIST sse2)
   else ()
     message(ERROR "Invalid TSIMD_BUILD_ISA value. "
                   "Please select one of ${TSIMD_SUPPORTED_ISAS}")

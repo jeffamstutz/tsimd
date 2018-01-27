@@ -42,7 +42,7 @@ namespace tsimd {
 
   TSIMD_INLINE vint4 operator&(const vint4 &p1, const vint4 &p2)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_and_si128(p1, p2);
 #else
     vint4 result;
@@ -56,7 +56,7 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf4 operator&(const vboolf4 &p1, const vboolf4 &p2)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_and_ps(p1, p2);
 #else
     vboolf4 result;
@@ -67,7 +67,7 @@ namespace tsimd {
     return result;
 #endif
   }
-  
+
   TSIMD_INLINE vllong4 operator&(const vllong4 &p1, const vllong4 &p2)
   {
     vllong4 result;
@@ -147,7 +147,7 @@ namespace tsimd {
 
   TSIMD_INLINE vllong16 operator&(const vllong16 &p1, const vllong16 &p2)
   {
-    return vllong16(vllong8(p1.vl) & vllong8(p2.vl), 
+    return vllong16(vllong8(p1.vl) & vllong8(p2.vl),
                     vllong8(p1.vh) & vllong8(p2.vh));
   }
 

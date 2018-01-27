@@ -42,7 +42,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat4 ceil(const vfloat4 &p)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_round_ps(p, _MM_FROUND_TO_POS_INF);
 #else
     vfloat4 result;
@@ -74,7 +74,7 @@ namespace tsimd {
     return vfloat8(ceil(vfloat4(p.vl)), ceil(vfloat4(p.vh)));
 #endif
   }
-  
+
   TSIMD_INLINE vdouble8 ceil(const vdouble8 &p)
   {
     return vdouble8(ceil(vdouble4(p.vl)), ceil(vdouble4(p.vh)));
@@ -90,7 +90,7 @@ namespace tsimd {
     return vfloat16(ceil(vfloat8(p.vl)), ceil(vfloat8(p.vh)));
 #endif
   }
-  
+
   TSIMD_INLINE vdouble16 ceil(const vdouble16 &p)
   {
     return vdouble16(ceil(vdouble8(p.vl)), ceil(vdouble8(p.vh)));

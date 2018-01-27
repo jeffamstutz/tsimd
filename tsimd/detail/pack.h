@@ -128,8 +128,8 @@ namespace tsimd {
     operator const std::array<T, W> &() const;
     operator std::array<T, W> &();
 
-    operator const T *() const;
-    operator T *();
+    explicit operator const T *() const;
+    explicit operator T *();
 
     // Iterators //
 
@@ -268,7 +268,7 @@ namespace tsimd {
 
   // 4-wide //
 
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
   template <>
   TSIMD_INLINE vfloat4::pack(float value)
       : v(_mm_set1_ps(value))

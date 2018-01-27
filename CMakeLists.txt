@@ -54,8 +54,10 @@ include(ispc)
 tsimd_setup_build_type()
 tsimd_configure_compiler()
 
-if (TSIMD_BUILD_ISA STREQUAL "NATIVE" AND TSIMD_ENABLE_ISPC_COMPARISONS)
-  message(FATAL_ERROR "You cannot use the 'NATIVE' ISA target with ispc.")
+if ((TSIMD_BUILD_ISA STREQUAL "NATIVE" OR TSIMD_BUILD_ISA STREQUAL "SCALAR")
+     AND TSIMD_ENABLE_ISPC_COMPARISONS)
+  message(FATAL_ERROR
+          "You cannot use the 'NATIVE' or 'SCALAR' ISA target with ispc.")
 endif()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)

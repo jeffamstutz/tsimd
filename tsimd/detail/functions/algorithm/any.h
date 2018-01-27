@@ -40,7 +40,7 @@ namespace tsimd {
 
   TSIMD_INLINE bool any(const vboolf4 &a)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_movemask_ps(a) != 0x0;
 #else
     for (int i = 0; i < 4; ++i) {

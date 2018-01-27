@@ -42,7 +42,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat4 floor(const vfloat4 &p)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_round_ps(p, _MM_FROUND_TO_NEG_INF);
 #else
     vfloat4 result;
@@ -74,7 +74,7 @@ namespace tsimd {
     return vfloat8(floor(vfloat4(p.vl)), floor(vfloat4(p.vh)));
 #endif
   }
-  
+
   TSIMD_INLINE vdouble8 floor(const vdouble8 &p)
   {
     return vdouble8(floor(vdouble4(p.vl)), floor(vdouble4(p.vh)));

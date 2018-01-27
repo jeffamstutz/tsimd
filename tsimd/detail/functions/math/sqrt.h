@@ -42,7 +42,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat4 sqrt(const vfloat4 &p)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_sqrt_ps(p);
 #else
     vfloat4 result;

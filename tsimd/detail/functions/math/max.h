@@ -42,7 +42,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat4 max(const vfloat4 &p1, const vfloat4 &p2)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_max_ps(p1, p2);
 #else
     vfloat4 result;
@@ -56,7 +56,7 @@ namespace tsimd {
 
   TSIMD_INLINE vint4 max(const vint4 &p1, const vint4 &p2)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_max_epi32(p1, p2);
 #else
     vint4 result;
@@ -111,7 +111,7 @@ namespace tsimd {
                  max(vint4(p1.vh), vint4(p2.vh)));
 #endif
   }
-  
+
   TSIMD_INLINE vdouble8 max(const vdouble8 &p1, const vdouble8 &p2)
   {
     return vdouble8(max(vdouble4(p1.vl), vdouble4(p2.vl)),

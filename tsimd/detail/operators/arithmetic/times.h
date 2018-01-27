@@ -40,7 +40,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat4 operator*(const vfloat4 &p1, const vfloat4 &p2)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_mul_ps(p1, p2);
 #else
     vfloat4 result;

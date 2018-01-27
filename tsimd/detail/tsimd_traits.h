@@ -24,8 +24,8 @@
 
 #pragma once
 
-#include "bool_t.h"
 #include "config.h"
+#include "bool_t.h"
 
 namespace tsimd {
   namespace traits {
@@ -195,7 +195,7 @@ namespace tsimd {
 
     // 4-wide //
 
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     template <>
     struct simd_type<float, 4>
     {
@@ -390,7 +390,7 @@ namespace tsimd {
 
     // 8-wide //
 
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     template <>
     struct half_simd_type<float, 8>
     {
@@ -519,7 +519,7 @@ namespace tsimd {
 
     // 4-wide //
 
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     template <>
     struct simd_or_array_type<float, 4>
     {

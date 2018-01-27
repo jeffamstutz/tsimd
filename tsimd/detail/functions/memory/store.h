@@ -60,7 +60,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vfloat4 &v, void *_dst)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     _mm_store_ps((float *)_dst, v);
 #else
     auto *dst = (typename vfloat4::element_t *)_dst;
@@ -73,7 +73,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vfloat4 &v, void *_dst, const vboolf4 &mask)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     store(select(mask, v, load<vfloat4>(_dst)), _dst);
 #else
     auto *dst = (typename vfloat4::element_t *)_dst;
@@ -87,7 +87,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vint4 &v, void *_dst)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     _mm_store_si128((__m128i *)_dst, v);
 #else
     auto *dst = (typename vint4::element_t *)_dst;
@@ -100,7 +100,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vint4 &v, void *_dst, const vboolf4 &mask)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     store(select(mask, v, load<vint4>(_dst)), _dst);
 #else
     auto *dst = (typename vint4::element_t *)_dst;

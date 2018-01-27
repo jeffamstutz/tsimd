@@ -110,7 +110,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE vfloat4 load(const void *_src)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_load_ps((const float *)_src);
 #else
     auto *src = (const typename vfloat4::element_t *)_src;
@@ -126,7 +126,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE vfloat4 load(const void *_src, const vboolf4 &mask)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_and_ps(_mm_load_ps((const float *)_src), mask);
 #else
     auto *src = (const typename vfloat4::element_t *)_src;
@@ -143,7 +143,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE vint4 load(const void *_src)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_load_si128((const __m128i *)_src);
 #else
     auto *src = (const typename vint4::element_t *)_src;
@@ -159,7 +159,7 @@ namespace tsimd {
   template <>
   TSIMD_INLINE vint4 load(const void *_src, const vboolf4 &mask)
   {
-#if defined(__SSE__)
+#if defined(__SSE4_2__)
     return _mm_and_si128(_mm_load_si128((const __m128i *)_src), mask);
 #else
     auto *src = (const typename vint4::element_t *)_src;
