@@ -30,6 +30,8 @@
 #include "config.h"
 #include "tsimd_traits.h"
 
+#include "bit_iterator.h"
+
 namespace tsimd {
 
   template <typename T, int W = TSIMD_DEFAULT_WIDTH>
@@ -48,9 +50,18 @@ namespace tsimd {
       static_size = W
     };
     using element_t        = typename std::decay<T>::type;
-    using intrinsic_t      = typename traits::simd_type<element_t, W>::type;
-    using half_intrinsic_t = typename traits::half_simd_type<element_t, W>::type;
-    using cast_intrinsic_t = typename traits::cast_simd_type<element_t, W>::type;
+    using intrinsic_t      = typename traits::simd_type<T, W>::type;
+    using half_intrinsic_t = typename traits::half_simd_type<T, W>::type;
+    using cast_intrinsic_t = typename traits::cast_simd_type<T, W>::type;
+
+    // NOTE(jda) - This alias normally just represents a std::array<T, W> in
+    //             the union below to allow for easy per-element access of the
+    //             pack<>. However, masks (i.e. bool32_t and bool64_t) on AVX512
+    //             are bit masks, meaning there isn't a good array
+    //             representation...in that case, default to
+    //             std::array<size_t, 0>.
+    using array_t      = typename traits::array_for_pack<T, W>::type;
+    using half_array_t = typename traits::half_array_for_pack<T, W>::type;
 
     // NOTE(jda) - This alias represents an "ideal" underlying representation,
     //             which will the underlying intrinsic type (if available) or
@@ -62,6 +73,10 @@ namespace tsimd {
 
     pack() = default;
     explicit pack(T value);
+
+    // NOTE: let pack(bool) ctor work for vbool types (requires conversion)
+    template <typename U, typename = traits::is_same_t<U, bool>>
+    pack(U value) : pack(static_cast<T>(value)) {}
 
     // NOTE: only valid for W == 4! (otherwise it's a compile error)
     pack(T v0, T v1, T v2, T v3);
@@ -96,8 +111,8 @@ namespace tsimd {
     pack(traits::enable_if_t<!traits::half_simd_is_array<T, W>::value, IT> a,
          half_intrinsic_t b) : vl(a), vh(b) {}
 
-    explicit pack(const std::array<T, W / 2> &a, const std::array<T, W / 2> &b);
-    explicit pack(const std::array<T, W> &arr);
+    explicit pack(const half_array_t &a, const half_array_t &b);
+    explicit pack(const array_t &arr);
 
     pack<T, W> &operator=(const element_t &);
 
@@ -106,15 +121,6 @@ namespace tsimd {
     {
       return (*this = convert_elements_to<T>(other));
     }
-
-    // Element access //
-
-    T extract(int i) const;
-
-    void insert(T value, int i);
-
-    const T &operator[](int i) const;
-    T &operator[](int i);
 
     // Cast //
 
@@ -129,28 +135,46 @@ namespace tsimd {
     operator const cast_intrinsic_t &() const;
     operator cast_intrinsic_t &();
 
-    operator const std::array<T, W> &() const;
-    operator std::array<T, W> &();
+    operator const array_t &() const;
+    operator       array_t &();
 
     explicit operator const T *() const;
     explicit operator T *();
 
     // Iterators //
 
-    T *begin();
-    T *end();
+    using iterator_t       = typename traits::pack_iterator<T, W>::type;
+    using const_iterator_t = typename traits::const_pack_iterator<T, W>::type;
 
-    const T *begin() const;
-    const T *end() const;
+    iterator_t begin();
+    iterator_t end();
 
-    const T *cbegin() const;
-    const T *cend() const;
+    const_iterator_t begin() const;
+    const_iterator_t end() const;
+
+    const_iterator_t cbegin() const;
+    const_iterator_t cend() const;
+
+    // NOTE(jda) - operator[]() returns different types based on whether
+    //             'iterator_t' is just a pointer, or a bit_iterator (e.g.
+    //             AVX512 masks)
+    using iterator_deref_t       = decltype(*iterator_t());
+    using const_iterator_deref_t = decltype(*const_iterator_t());
+
+    // Element access //
+
+    T extract(int i) const;
+
+    void insert(T value, int i);
+
+    const_iterator_deref_t operator[](int i) const;
+    iterator_deref_t       operator[](int i);
 
     // Data //
 
     union
     {
-      std::array<T, W> arr;
+      array_t arr;
       intrinsic_t v;
       cast_intrinsic_t cv;
       struct
@@ -267,7 +291,7 @@ namespace tsimd {
 #  pragma omp simd
 #endif
     for (int i = 0; i < W; ++i)
-      arr[i] = value;
+      insert(value, i);
   }
 
   // 4-wide //
@@ -315,6 +339,18 @@ namespace tsimd {
   TSIMD_INLINE vint16::pack(int value)
       : v(_mm512_set1_epi32(value))
   {
+  }
+
+  template <>
+  TSIMD_INLINE vboolf16::pack(bool32_t value)
+  {
+    v = value ? 0xFFFF : 0x0000;
+  }
+
+  template <>
+  TSIMD_INLINE vboold16::pack(bool64_t value)
+  {
+    v = value ? 0xFFFF : 0x0000;
   }
 #endif
 
@@ -390,13 +426,14 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W> &_arr) : arr(_arr)
+  TSIMD_INLINE pack<T, W>::pack(const typename pack<T, W>::array_t &_arr)
+      : arr(_arr)
   {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::pack(const std::array<T, W / 2> &a,
-                                const std::array<T, W / 2> &b)
+  TSIMD_INLINE pack<T, W>::pack(const typename pack<T, W>::half_array_t &a,
+                                const typename pack<T, W>::half_array_t &b)
   {
     int i = 0;
     for (int j = 0; j < W / 2; j++, i++)
@@ -410,30 +447,6 @@ namespace tsimd {
   {
     *this = pack<T, W>(v);
     return *this;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE T pack<T, W>::extract(int i) const
-  {
-    return arr[i];
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE void pack<T, W>::insert(T v, int i)
-  {
-    return arr[i] = v;
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE const T &pack<T, W>::operator[](int i) const
-  {
-    return arr[i];
-  }
-
-  template <typename T, int W>
-  TSIMD_INLINE T &pack<T, W>::operator[](int i)
-  {
-    return arr[i];
   }
 
   template <typename T, int W>
@@ -461,13 +474,13 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::operator const std::array<T, W> &() const
+  TSIMD_INLINE pack<T, W>::operator const typename pack<T, W>::array_t &() const
   {
     return arr;
   }
 
   template <typename T, int W>
-  TSIMD_INLINE pack<T, W>::operator std::array<T, W> &()
+  TSIMD_INLINE pack<T, W>::operator typename pack<T, W>::array_t &()
   {
     return arr;
   }
@@ -485,7 +498,7 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE T *pack<T, W>::begin()
+  TSIMD_INLINE typename pack<T, W>::iterator_t pack<T, W>::begin()
   {
 #if TSIMD_WIN
     return &arr[0];
@@ -495,13 +508,13 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE T *pack<T, W>::end()
+  TSIMD_INLINE typename pack<T, W>::iterator_t pack<T, W>::end()
   {
     return begin() + W;
   }
 
   template <typename T, int W>
-  TSIMD_INLINE const T *pack<T, W>::begin() const
+  TSIMD_INLINE typename pack<T, W>::const_iterator_t pack<T, W>::begin() const
   {
 #if TSIMD_WIN
     return &arr[0];
@@ -511,22 +524,136 @@ namespace tsimd {
   }
 
   template <typename T, int W>
-  TSIMD_INLINE const T *pack<T, W>::end() const
+  TSIMD_INLINE typename pack<T, W>::const_iterator_t pack<T, W>::end() const
   {
     return begin() + W;
   }
 
   template <typename T, int W>
-  TSIMD_INLINE const T *pack<T, W>::cbegin() const
+  TSIMD_INLINE typename pack<T, W>::const_iterator_t pack<T, W>::cbegin() const
   {
-    return arr.begin();
+    return begin();
   }
 
   template <typename T, int W>
-  TSIMD_INLINE const T *pack<T, W>::cend() const
+  TSIMD_INLINE typename pack<T, W>::const_iterator_t pack<T, W>::cend() const
   {
-    return arr.end();
+    return end();
   }
+
+#if defined(__AVX512F__)
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 16>::iterator_t
+  pack<bool32_t, 16>::begin()
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 16>::iterator_t
+  pack<bool32_t, 16>::end()
+  {
+    return bit_iterator((void*)&v, 16);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 16>::const_iterator_t
+  pack<bool32_t, 16>::begin() const
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 16>::const_iterator_t
+  pack<bool32_t, 16>::end() const
+  {
+    return bit_iterator((void*)&v, 16);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 16>::iterator_t
+  pack<bool64_t, 16>::begin()
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 16>::iterator_t
+  pack<bool64_t, 16>::end()
+  {
+    return bit_iterator((void*)&v, 16);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 16>::const_iterator_t
+  pack<bool64_t, 16>::begin() const
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 16>::const_iterator_t
+  pack<bool64_t, 16>::end() const
+  {
+    return bit_iterator((void*)&v, 16);
+  }
+#endif
+
+  template <typename T, int W>
+  TSIMD_INLINE T pack<T, W>::extract(int i) const
+  {
+    return (*this)[i];
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE void pack<T, W>::insert(T v, int i)
+  {
+    (*this)[i] = v;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE typename pack<T, W>::const_iterator_deref_t
+  pack<T, W>::operator[](int i) const
+  {
+    return arr[i];
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE typename pack<T, W>::iterator_deref_t
+  pack<T, W>::operator[](int i)
+  {
+    return arr[i];
+  }
+
+#if defined(__AVX512F__)
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 16>::const_iterator_deref_t
+  pack<bool32_t, 16>::operator[](int i) const
+  {
+    return *(begin() + i);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 16>::iterator_deref_t
+  pack<bool32_t, 16>::operator[](int i)
+  {
+    return *(begin() + i);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 16>::const_iterator_deref_t
+  pack<bool64_t, 16>::operator[](int i) const
+  {
+    return *(begin() + i);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 16>::iterator_deref_t
+  pack<bool64_t, 16>::operator[](int i)
+  {
+    return *(begin() + i);
+  }
+#endif
 
   // pack<> debugging functions ///////////////////////////////////////////////
 
@@ -535,7 +662,7 @@ namespace tsimd {
   {
     o << "{";
 
-    for (const auto &v : p)
+    for (const auto v : p)
       o << " " << v;
 
     o << " }";

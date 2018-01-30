@@ -26,6 +26,7 @@
 
 #include "config.h"
 
+#include "traits/array_for_pack.h"
 #include "traits/bool_type_for.h"
 #include "traits/can_convert.h"
 #include "traits/cast_simd_type.h"
@@ -37,6 +38,7 @@
 #include "traits/is_n_bytes.h"
 #include "traits/is_pack_of_width.h"
 #include "traits/is_same_t.h"
+#include "traits/pack_iterator.h"
 #include "traits/same_size.h"
 #include "traits/simd_type.h"
 #include "traits/valid_type_for_pack.h"

@@ -25,6 +25,7 @@
 #pragma once
 
 #include "../bool_t.h"
+#include "array_for_pack.h"
 #include "enable_if_t.h"
 
 namespace tsimd {
@@ -131,6 +132,34 @@ namespace tsimd {
     };
 #endif
 
+#if defined(__AVX512F__)
+    template <>
+    struct simd_type<double, 8>
+    {
+      using type = __m512d;
+    };
+
+    template <>
+    struct simd_type<long long, 8>
+    {
+      using type = __m512i;
+    };
+
+    template <>
+    struct simd_type<bool64_t, 8>
+    {
+      using type = __mmask8;
+    };
+#endif
+
+#if defined(__AVX512VL__)
+    template <>
+    struct simd_type<bool32_t, 8>
+    {
+      using type = __mmask8;
+    };
+#endif
+
     // 16-wide //
 
 #if defined(__AVX512F__)
@@ -148,6 +177,12 @@ namespace tsimd {
 
     template <>
     struct simd_type<bool32_t, 16>
+    {
+      using type = __mmask16;
+    };
+
+    template <>
+    struct simd_type<bool64_t, 16>
     {
       using type = __mmask16;
     };
@@ -178,7 +213,7 @@ namespace tsimd {
     template <typename T, int W>
     struct simd_or_array_type
     {
-      using type = std::array<T, W>;
+      using type = typename array_for_pack<T, W>::type;
     };
 
     // 4-wide //
@@ -254,6 +289,12 @@ namespace tsimd {
     struct simd_or_array_type<bool32_t, 16>
     {
       using type = typename simd_type<bool32_t, 16>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<bool64_t, 16>
+    {
+      using type = typename simd_type<bool64_t, 16>::type;
     };
 #endif
 

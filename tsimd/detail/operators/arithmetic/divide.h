@@ -92,7 +92,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat8 operator/(const vfloat8 &p1, const vfloat8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX2__) || defined(__AVX__)
     return _mm256_div_ps(p1, p2);
 #else
     return vfloat8(vfloat4(p1.vl) / vfloat4(p2.vl),

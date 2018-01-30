@@ -52,13 +52,29 @@ using vbool  = tsimd::pack<bool_type, TEST_WIDTH>;
 using vfloat = tsimd::pack<float_type, TEST_WIDTH>;
 using vint   = tsimd::pack<int_type, TEST_WIDTH>;
 
-/* TODO: add tests for -->
- *         - operator<<()
- *         - operator>>()
- *         - operator^()
- *         - load()
- *         - store()
- */
+// pack<> member functions ////////////////////////////////////////////////////
+
+TEST_CASE("bit_iterator interface", "[bit_iterator]")
+{
+  size_t bits = 0;
+
+  tsimd::bit_iterator itr(bits, 0);
+
+  REQUIRE(*itr == false);
+
+  *itr = true;
+  REQUIRE(*itr == true);
+
+  bits = 3;
+
+  REQUIRE(*itr == true);
+  itr++;
+  REQUIRE(*itr == true);
+  itr++;
+  REQUIRE(*itr == false);
+  itr--;
+  REQUIRE(*itr == true);
+}
 
 // static type checking ///////////////////////////////////////////////////////
 
@@ -251,6 +267,22 @@ TEST_CASE("binary operator%=()", "[arithmetic_operators]")
 
 // pack<> bitwise operators ///////////////////////////////////////////////////
 
+TEST_CASE("binary operator&()", "[bitwise_operators]")
+{
+  vbool m1(true);
+  vbool m2(false);
+
+  REQUIRE(tsimd::none(m1 & m2));
+}
+
+TEST_CASE("binary operator|()", "[bitwise_operators]")
+{
+  vbool m1(true);
+  vbool m2(false);
+
+  REQUIRE(tsimd::all(m1 | m2));
+}
+
 TEST_CASE("binary operator<<()", "[bitwise_operators]")
 {
   vint v1(1);
@@ -355,22 +387,6 @@ TEST_CASE("binary operator>=()", "[logic_operators]")
   REQUIRE(tsimd::all(v1 >= v2));
   REQUIRE(tsimd::all(1 >= v2));
   REQUIRE(tsimd::all(v1 >= 2));
-}
-
-TEST_CASE("binary operator&&()", "[logic_operators]")
-{
-  vbool m1(true);
-  vbool m2(false);
-
-  REQUIRE(tsimd::none(m1 & m2));
-}
-
-TEST_CASE("binary operator||()", "[logic_operators]")
-{
-  vbool m1(true);
-  vbool m2(false);
-
-  REQUIRE(tsimd::all(m1 | m2));
 }
 
 TEST_CASE("unary operator!()", "[logic_operators]")
@@ -484,8 +500,7 @@ TEST_CASE("foreach()", "[algorithms]")
   vfloat v1(0.f);
   vfloat v2(1.f);
 
-  foreach (v1, [](float_type &l, int) { l = 1; })
-    ;
+  foreach (v1, [](float_type &l, int) { l = 1; });
 
   REQUIRE(tsimd::all(v1 == v2));
 }
@@ -546,8 +561,7 @@ TEST_CASE("all()", "[algorithms]")
     REQUIRE(!tsimd::all(m));
   }
 
-  foreach (m, [](bool_type &l, int) { l = true; })
-    ;
+  std::fill(m.begin(), m.end(), true);
   REQUIRE(tsimd::all(m));
 }
 

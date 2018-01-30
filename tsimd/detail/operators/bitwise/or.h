@@ -104,7 +104,9 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf8 operator|(const vboolf8 &p1, const vboolf8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512VL__)
+    return _mm512_kor(p1, p2);
+#elif defined(__AVX2__) || defined(__AVX__)
     return _mm256_or_ps(p1, p2);
 #else
     return vboolf8(vboolf4(p1.vl) | vboolf4(p2.vl),
@@ -153,8 +155,12 @@ namespace tsimd {
 
   TSIMD_INLINE vboold16 operator|(const vboold16 &p1, const vboold16 &p2)
   {
+#if defined(__AVX512F__)
+    return _mm512_kor(p1, p2);
+#else
     return vboold16(vboold8(p1.vl) | vboold8(p2.vl),
                     vboold8(p1.vh) | vboold8(p2.vh));
+#endif
   }
 
   // Inferred pack-scalar operators ///////////////////////////////////////////

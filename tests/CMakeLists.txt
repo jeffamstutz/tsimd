@@ -37,6 +37,7 @@ macro(tsimd_add_pack_test TEST_NAME TEST_WIDTH TEST_DOUBLE)
 
   set(TEST_EXE ${EXECUTABLE_OUTPUT_PATH}/test_pack${TEST_NAME})
 
+  add_test(bit_iterator${TEST_NAME}         ${TEST_EXE} "[bit_iterator]")
   add_test(member_functions${TEST_NAME}     ${TEST_EXE} "[member_functions]")
   add_test(arithmetic_operators${TEST_NAME} ${TEST_EXE} "[arithmetic_operators]")
   add_test(bitwise_operators${TEST_NAME}    ${TEST_EXE} "[bitwise_operators]")

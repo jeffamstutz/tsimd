@@ -158,7 +158,9 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vfloat8 &v, void *_dst, const vboolf8 &mask)
   {
-#if defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512VL__)
+    _mm256_mask_store_ps((float*)_dst, mask, v);
+#elif defined(__AVX2__) || defined(__AVX__)
     _mm256_maskstore_ps((float *)_dst, mask, v);
 #else
     auto *dst = (typename vfloat8::element_t *)_dst;
@@ -184,7 +186,9 @@ namespace tsimd {
   template <>
   TSIMD_INLINE void store(const vint8 &v, void *_dst, const vboolf8 &mask)
   {
-#if 0  // defined(__AVX2__)
+#if defined(__AVX512VL__)
+    _mm256_mask_store_epi32(_dst, mask, v);
+#elif defined(__AVX2__)
     _mm256_maskstore_epi32((int*)_dst, mask, v);
 #elif defined(__AVX__)
     _mm256_maskstore_ps((float *)_dst, mask, v);

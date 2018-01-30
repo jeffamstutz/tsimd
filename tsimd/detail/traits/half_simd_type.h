@@ -78,12 +78,6 @@ namespace tsimd {
     {
       using type = simd_type<float, 8>::type;
     };
-
-    template <>
-    struct half_simd_type<bool32_t, 16>
-    {
-      using type = half_simd_type<float, 16>::type;
-    };
 #endif
 
 #if defined(__AVX2__)
@@ -91,6 +85,20 @@ namespace tsimd {
     struct half_simd_type<int, 16>
     {
       using type = simd_type<int, 8>::type;
+    };
+#endif
+
+#if defined(__AVX512F__)
+    template <>
+    struct half_simd_type<bool32_t, 16>
+    {
+      using type = typename simd_type<bool32_t, 8>::type;
+    };
+
+    template <>
+    struct half_simd_type<bool64_t, 16>
+    {
+      using type = typename simd_type<bool64_t, 8>::type;
     };
 #endif
 

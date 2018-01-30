@@ -66,7 +66,9 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf8 operator!(const vboolf8 &m)
   {
-#if defined(__AVX512F__) || defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512VL__)
+    return _mm512_knot(m);
+#elif defined(__AVX2__) || defined(__AVX__)
     return _mm256_xor_ps(m, vboolf8(true));
 #else
     return vboolf8(!vboolf4(m.vl), !vboolf4(m.vh));
@@ -75,7 +77,11 @@ namespace tsimd {
 
   TSIMD_INLINE vboold8 operator!(const vboold8 &m)
   {
+#if defined(__AVX512VL__)
+    return _mm512_knot(m);
+#else
     return vboold8(!vboold4(m.vl), !vboold4(m.vh));
+#endif
   }
 
   // 16-wide //

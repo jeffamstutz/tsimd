@@ -24,88 +24,87 @@
 
 #pragma once
 
-#include "../../pack.h"
+#include "bool_t.h"
 
 namespace tsimd {
 
-  // 1-wide //
-
-  template <typename T, typename = traits::is_bool_t<T>>
-  TSIMD_INLINE bool any(const pack<T, 1> &a)
+  struct bit_reference
   {
-    return a[0];
+    bit_reference() = default;
+    bit_reference(size_t &src, int which) : bit_reference(&src, which) {}
+    bit_reference(size_t *src, int which) : lane(which), storage(src) {}
+
+    bit_reference(const bit_reference &) = default;
+
+    int current_offset() const;
+
+    operator bool() const;
+    explicit operator bool32_t() const;
+    explicit operator bool64_t() const;
+
+    explicit operator size_t() const;
+
+    bit_reference &operator=(bool bit_value);
+
+    bool operator==(const bit_reference &other) const;
+    bool operator!=(const bit_reference &other) const;
+
+  private:
+
+    friend struct bit_iterator;
+
+    // Data //
+
+    int lane {0};
+    size_t *storage {nullptr};
+  };
+
+  // Inlined members //////////////////////////////////////////////////////////
+
+  TSIMD_INLINE int bit_reference::current_offset() const
+  {
+    return lane;
   }
 
-  // 4-wide //
-
-  TSIMD_INLINE bool any(const vboolf4 &a)
+  TSIMD_INLINE bit_reference::operator bool() const
   {
-#if defined(__SSE4_2__)
-    return _mm_movemask_ps(a) != 0x0;
-#else
-    for (int i = 0; i < 4; ++i) {
-      if (a[i])
-        return true;
-    }
-
-    return false;
-#endif
+    auto &val = *storage;
+    return (val >> lane) & 0x1;
   }
 
-  TSIMD_INLINE bool any(const vboold4 &a)
+  TSIMD_INLINE bit_reference::operator bool32_t() const
   {
-    for (int i = 0; i < 4; ++i) {
-      if (a[i])
-        return true;
-    }
-
-    return false;
+    return bool32_t(static_cast<bool>(*this));
   }
 
-  // 8-wide //
-
-  TSIMD_INLINE bool any(const vboolf8 &a)
+  TSIMD_INLINE bit_reference::operator bool64_t() const
   {
-#if defined(__AVX512VL__)
-    return _mm512_kortestz(a, a) == 0;
-#elif defined(__AVX2__) || defined(__AVX__)
-    return !_mm256_testz_ps(a, a);
-#else
-    return any(vboolf4(a.vl)) || any(vboolf4(a.vh));
-#endif
+    return bool64_t(static_cast<bool>(*this));
   }
 
-  TSIMD_INLINE bool any(const vboold8 &a)
+  TSIMD_INLINE bit_reference::operator size_t() const
   {
-    return any(vboold4(a.vl)) || any(vboold4(a.vh));
+    return *storage;
   }
 
-  // 16-wide //
-
-  TSIMD_INLINE bool any(const vboolf16 &a)
+  TSIMD_INLINE bit_reference &bit_reference::operator=(bool bit_value)
   {
-#if defined(__AVX512F__)
-    return _mm512_kortestz(a, a) == 0;
-#else
-    return any(vboolf8(a.vl)) || any(vboolf8(a.vh));
-#endif
+    auto &val = *storage;
+    if (bit_value)
+      val |= (1u << lane) & 0xFFFFFFFFFFFFFFFFLL;
+    else
+      val &= (1u << lane) ^ 0xFFFFFFFFFFFFFFFFLL;
+    return *this;
   }
 
-  TSIMD_INLINE bool any(const vboold16 &a)
+  TSIMD_INLINE bool bit_reference::operator==(const bit_reference &other) const
   {
-#if defined(__AVX512F__)
-    return any(vboolf16(a.v));
-#else
-    return any(vboold8(a.vl)) || any(vboold8(a.vh));
-#endif
+    return (lane == other.lane) && (storage == other.storage);
   }
 
-  // none() ///////////////////////////////////////////////////////////////////
-
-  template <typename MASK_T, typename = traits::is_mask_t<MASK_T>>
-  TSIMD_INLINE bool none(const MASK_T &m)
+  TSIMD_INLINE bool bit_reference::operator!=(const bit_reference &other) const
   {
-    return !any(m);
+    return !(*this == other);
   }
 
-}  // namespace tsimd
+} // namespace tsimd

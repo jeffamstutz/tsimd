@@ -79,7 +79,9 @@ namespace tsimd {
 
   TSIMD_INLINE vboolf8 operator<=(const vfloat8 &p1, const vfloat8 &p2)
   {
-#if defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX512VL__)
+    return _mm256_cmp_ps_mask(p1, p2, _MM_CMPINT_LE);
+#elif defined(__AVX2__) || defined(__AVX__)
     return _mm256_cmp_ps(p1, p2, _CMP_LE_OQ);
 #else
     return vboolf8(vfloat4(p1.vl) <= vfloat4(p2.vl),
