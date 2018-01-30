@@ -47,7 +47,7 @@ namespace tsimd {
     {
       static_size = W
     };
-    using element_t          = typename std::decay<T>::type;
+    using element_t        = typename std::decay<T>::type;
     using intrinsic_t      = typename traits::simd_type<element_t, W>::type;
     using half_intrinsic_t = typename traits::half_simd_type<element_t, W>::type;
     using cast_intrinsic_t = typename traits::cast_simd_type<element_t, W>::type;
@@ -107,7 +107,11 @@ namespace tsimd {
       return (*this = convert_elements_to<T>(other));
     }
 
-    // Array access //
+    // Element access //
+
+    T extract(int i) const;
+
+    void insert(T value, int i);
 
     const T &operator[](int i) const;
     T &operator[](int i);
@@ -406,6 +410,18 @@ namespace tsimd {
   {
     *this = pack<T, W>(v);
     return *this;
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE T pack<T, W>::extract(int i) const
+  {
+    return arr[i];
+  }
+
+  template <typename T, int W>
+  TSIMD_INLINE void pack<T, W>::insert(T v, int i)
+  {
+    return arr[i] = v;
   }
 
   template <typename T, int W>
