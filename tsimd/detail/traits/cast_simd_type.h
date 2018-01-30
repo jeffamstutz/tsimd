@@ -24,72 +24,104 @@
 
 #pragma once
 
-#include "../../pack.h"
+#include "enable_if_t.h"
+#include "simd_type.h"
 
 namespace tsimd {
+  namespace traits {
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    pack<T, W> result;
+    // Provide a cast (float|int) intrinsic type given a SIMD width ///////////
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] % p2[i]);
+    template <typename T>
+    struct cast_simd_undefined_type
+    {
+    };
 
-    return result;
-  }
+    template <typename T, int W>
+    struct cast_simd_type
+    {
+      using type = cast_simd_undefined_type<T>;
+    };
 
-  // Inferred pack-pack promotion operators (e.g. 'vint' to 'vfloat') /////////
+    // 1-wide //
 
-  template <typename T1,
-            typename T2,
-            int W,
-            typename = traits::is_not_same_t<T1, T2>>
-  TSIMD_INLINE auto operator%(const pack<T1, W> &p1, const pack<T2, W> &p2)
-      -> pack<decltype(T1() % T2()), W>
-  {
-    using result_pack = pack<decltype(T1() & T2()), W>;
-    return result_pack(p1) % result_pack(p2);
-  }
+    template <>
+    struct cast_simd_type<float, 1>
+    {
+      using type = simd_type<int, 1>::type;
+    };
 
-  // Inferred pack<>/scalar operators /////////////////////////////////////////
+    template <>
+    struct cast_simd_type<int, 1>
+    {
+      using type = simd_type<float, 1>::type;
+    };
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 % pack<T, W>(v);
-  }
+    template <>
+    struct cast_simd_type<double, 1>
+    {
+      using type = simd_type<long long, 1>::type;
+    };
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) % p1;
-  }
+    template <>
+    struct cast_simd_type<long long, 1>
+    {
+      using type = simd_type<double, 1>::type;
+    };
 
-  // Inferred binary operator%=() /////////////////////////////////////////////
+    // 4-wide //
 
-  template <typename T1, typename T2, int W>
-  TSIMD_INLINE pack<T1, W> &operator%=(pack<T1, W> &p1, const pack<T2, W> &p2)
-  {
-    return p1 = (p1 % p2);
-  }
+    template <>
+    struct cast_simd_type<float, 4>
+    {
+      using type = simd_type<int, 4>::type;
+    };
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 % pack<T, W>(v));
-  }
+    template <>
+    struct cast_simd_type<int, 4>
+    {
+      using type = simd_type<float, 4>::type;
+    };
 
+    template <>
+    struct cast_simd_type<bool32_t, 4>
+    {
+      using type = simd_type<int, 4>::type;
+    };
+
+    // 8-wide //
+
+    template <>
+    struct cast_simd_type<float, 8>
+    {
+      using type = simd_type<int, 8>::type;
+    };
+
+    template <>
+    struct cast_simd_type<int, 8>
+    {
+      using type = simd_type<float, 8>::type;
+    };
+
+    template <>
+    struct cast_simd_type<bool32_t, 8>
+    {
+      using type = simd_type<int, 8>::type;
+    };
+
+    // 16-wide //
+
+    template <>
+    struct cast_simd_type<float, 16>
+    {
+      using type = simd_type<int, 16>::type;
+    };
+
+    template <>
+    struct cast_simd_type<int, 16>
+    {
+      using type = simd_type<float, 16>::type;
+    };
+
+  }  // namespace traits
 }  // namespace tsimd

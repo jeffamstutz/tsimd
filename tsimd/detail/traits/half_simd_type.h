@@ -24,72 +24,93 @@
 
 #pragma once
 
-#include "../../pack.h"
+#include <array>
+
+#include "enable_if_t.h"
+#include "simd_type.h"
 
 namespace tsimd {
+  namespace traits {
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    pack<T, W> result;
+    // Provide intrinsic type half the size of given width ////////////////////
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
+    template <typename T, int W>
+    struct half_simd_type
+    {
+      using type = std::array<T, W / 2>;
+    };
+
+    // 1-wide //
+
+    template <typename T>
+    struct half_simd_type<T, 1>
+    {
+      using type = std::array<T, 1>;
+    };
+
+    // 8-wide //
+
+#if defined(__SSE4_2__)
+    template <>
+    struct half_simd_type<float, 8>
+    {
+      using type = simd_type<float, 4>::type;
+    };
+
+    template <>
+    struct half_simd_type<int, 8>
+    {
+      using type = simd_type<int, 4>::type;
+    };
+
+    template <>
+    struct half_simd_type<bool32_t, 8>
+    {
+      using type = half_simd_type<float, 8>::type;
+    };
 #endif
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] % p2[i]);
 
-    return result;
-  }
+    // 16-wide //
 
-  // Inferred pack-pack promotion operators (e.g. 'vint' to 'vfloat') /////////
+#if defined(__AVX2__) || defined(__AVX__)
+    template <>
+    struct half_simd_type<float, 16>
+    {
+      using type = simd_type<float, 8>::type;
+    };
 
-  template <typename T1,
-            typename T2,
-            int W,
-            typename = traits::is_not_same_t<T1, T2>>
-  TSIMD_INLINE auto operator%(const pack<T1, W> &p1, const pack<T2, W> &p2)
-      -> pack<decltype(T1() % T2()), W>
-  {
-    using result_pack = pack<decltype(T1() & T2()), W>;
-    return result_pack(p1) % result_pack(p2);
-  }
+    template <>
+    struct half_simd_type<bool32_t, 16>
+    {
+      using type = half_simd_type<float, 16>::type;
+    };
+#endif
 
-  // Inferred pack<>/scalar operators /////////////////////////////////////////
+#if defined(__AVX__)
+    template <>
+    struct half_simd_type<int, 16>
+    {
+      using type = simd_type<int, 8>::type;
+    };
+#endif
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 % pack<T, W>(v);
-  }
+    // Provide half_simd_type is a std::array<T, W/2> /////////////////////////
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) % p1;
-  }
+    template <typename T, int W>
+    struct half_simd_is_array
+    {
+      static const bool value =
+          std::is_same<typename half_simd_type<T, W>::type,
+                       std::array<T, W / 2>>::value;
+    };
 
-  // Inferred binary operator%=() /////////////////////////////////////////////
+    template <typename T>
+    struct half_simd_is_array<T, 1>
+    {
+      static const bool value =
+          std::is_same<typename half_simd_type<T, 1>::type,
+                       std::array<T, 1>>::value;
+    };
 
-  template <typename T1, typename T2, int W>
-  TSIMD_INLINE pack<T1, W> &operator%=(pack<T1, W> &p1, const pack<T2, W> &p2)
-  {
-    return p1 = (p1 % p2);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 % pack<T, W>(v));
-  }
-
+  }  // namespace traits
 }  // namespace tsimd

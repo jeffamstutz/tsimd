@@ -187,7 +187,7 @@ namespace tsimd {
   template <typename T,
             int W,
             typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
+            typename = traits::can_convert_t<OTHER_T, T>>
   TSIMD_INLINE pack<T, W> select(const mask<T, W> &m,
                                  const pack<T, W> &t,
                                  const OTHER_T &f)
@@ -198,7 +198,7 @@ namespace tsimd {
   template <typename T,
             int W,
             typename OTHER_T,
-            typename = traits::can_convert<OTHER_T, T>>
+            typename = traits::can_convert_t<OTHER_T, T>>
   TSIMD_INLINE pack<T, W> select(const mask<T, W> &m,
                                  const OTHER_T &t,
                                  const pack<T, W> &f)

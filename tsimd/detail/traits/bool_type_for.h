@@ -24,72 +24,65 @@
 
 #pragma once
 
-#include "../../pack.h"
+#include "../bool_t.h"
+#include "enable_if_t.h"
+#include "simd_type.h"
 
 namespace tsimd {
+  namespace traits {
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    pack<T, W> result;
+    // Bool type for given primitive type /////////////////////////////////////
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] % p2[i]);
+    template <typename T>
+    struct bool_undefined_type
+    {
+    };
 
-    return result;
-  }
+    template <typename T>
+    struct bool_type_for
+    {
+      using type = bool_undefined_type<T>;
+    };
 
-  // Inferred pack-pack promotion operators (e.g. 'vint' to 'vfloat') /////////
+    // 32-bit //
 
-  template <typename T1,
-            typename T2,
-            int W,
-            typename = traits::is_not_same_t<T1, T2>>
-  TSIMD_INLINE auto operator%(const pack<T1, W> &p1, const pack<T2, W> &p2)
-      -> pack<decltype(T1() % T2()), W>
-  {
-    using result_pack = pack<decltype(T1() & T2()), W>;
-    return result_pack(p1) % result_pack(p2);
-  }
+    template <>
+    struct bool_type_for<float>
+    {
+      using type = bool32_t;
+    };
 
-  // Inferred pack<>/scalar operators /////////////////////////////////////////
+    template <>
+    struct bool_type_for<int>
+    {
+      using type = bool32_t;
+    };
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 % pack<T, W>(v);
-  }
+    template <>
+    struct bool_type_for<bool32_t>
+    {
+      using type = bool32_t;
+    };
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) % p1;
-  }
+    // 64-bit //
 
-  // Inferred binary operator%=() /////////////////////////////////////////////
+    template <>
+    struct bool_type_for<double>
+    {
+      using type = bool64_t;
+    };
 
-  template <typename T1, typename T2, int W>
-  TSIMD_INLINE pack<T1, W> &operator%=(pack<T1, W> &p1, const pack<T2, W> &p2)
-  {
-    return p1 = (p1 % p2);
-  }
+    template <>
+    struct bool_type_for<long long>
+    {
+      using type = bool64_t;
+    };
 
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 % pack<T, W>(v));
-  }
+    template <>
+    struct bool_type_for<bool64_t>
+    {
+      using type = bool64_t;
+    };
 
+  }  // namespace traits
 }  // namespace tsimd

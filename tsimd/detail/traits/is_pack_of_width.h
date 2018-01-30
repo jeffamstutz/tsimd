@@ -24,72 +24,25 @@
 
 #pragma once
 
-#include "../../pack.h"
+#include "enable_if_t.h"
 
 namespace tsimd {
+  namespace traits {
 
-  template <typename T, int W>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const pack<T, W> &p2)
-  {
-    pack<T, W> result;
+    // Is a pack<> with given width ///////////////////////////////////////////
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] % p2[i]);
+    // TODO: verify if it is indeed a pack! this trait fails if given anything
+    //       other than T = pack<something, something>!
 
-    return result;
-  }
+    template <typename T, int W>
+    struct is_pack_of_width
+    {
+      static const bool value = (T::static_size == W);
+    };
 
-  // Inferred pack-pack promotion operators (e.g. 'vint' to 'vfloat') /////////
+    template <typename T, int W>
+    using is_pack_of_width_t = enable_if_t<is_pack_of_width<T, W>::value>;
 
-  template <typename T1,
-            typename T2,
-            int W,
-            typename = traits::is_not_same_t<T1, T2>>
-  TSIMD_INLINE auto operator%(const pack<T1, W> &p1, const pack<T2, W> &p2)
-      -> pack<decltype(T1() % T2()), W>
-  {
-    using result_pack = pack<decltype(T1() & T2()), W>;
-    return result_pack(p1) % result_pack(p2);
-  }
 
-  // Inferred pack<>/scalar operators /////////////////////////////////////////
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 % pack<T, W>(v);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> operator%(const OTHER_T &v, const pack<T, W> &p1)
-  {
-    return pack<T, W>(v) % p1;
-  }
-
-  // Inferred binary operator%=() /////////////////////////////////////////////
-
-  template <typename T1, typename T2, int W>
-  TSIMD_INLINE pack<T1, W> &operator%=(pack<T1, W> &p1, const pack<T2, W> &p2)
-  {
-    return p1 = (p1 % p2);
-  }
-
-  template <typename T,
-            int W,
-            typename OTHER_T,
-            typename = traits::can_convert_t<OTHER_T, T>>
-  TSIMD_INLINE pack<T, W> &operator%=(pack<T, W> &p1, const OTHER_T &v)
-  {
-    return p1 = (p1 % pack<T, W>(v));
-  }
-
+  }  // namespace traits
 }  // namespace tsimd
