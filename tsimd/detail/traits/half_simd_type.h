@@ -86,7 +86,7 @@ namespace tsimd {
     };
 #endif
 
-#if defined(__AVX__)
+#if defined(__AVX2__)
     template <>
     struct half_simd_type<int, 16>
     {
