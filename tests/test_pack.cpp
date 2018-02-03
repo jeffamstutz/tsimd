@@ -306,11 +306,11 @@ TEST_CASE("binary operator>>()", "[bitwise_operators]")
 TEST_CASE("binary operator^()", "[bitwise_operators]")
 {
   vint v1(1);
-  vint v2(2);
+  vint v2(3);
 
-  REQUIRE(tsimd::all((v1 ^ v2) == vint(3)));
-  REQUIRE(tsimd::all((v1 ^ 2) == vint(3)));
-  REQUIRE(tsimd::all((2 ^ v1) == vint(3)));
+  REQUIRE(tsimd::all((v1 ^ v2) == vint(2)));
+  REQUIRE(tsimd::all((v1 ^ 3) == vint(2)));
+  REQUIRE(tsimd::all((3 ^ v1) == vint(2)));
 }
 
 // pack<> logic operators /////////////////////////////////////////////////////

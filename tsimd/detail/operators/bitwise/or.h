@@ -28,7 +28,7 @@
 
 namespace tsimd {
 
-  // binary operator&() ///////////////////////////////////////////////////////
+  // binary operator|() ///////////////////////////////////////////////////////
 
   // 1-wide //
 
@@ -92,7 +92,7 @@ namespace tsimd {
 
   TSIMD_INLINE vint8 operator|(const vint8 &p1, const vint8 &p2)
   {
-#if defined(__AVX512__) || defined(__AVX2__)
+#if defined(__AVX2__)
     return _mm256_or_si256(p1, p2);
 #elif defined(__AVX__)
     return _mm256_castps_si256(
