@@ -25,7 +25,6 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "pico_bench.h"
 
@@ -314,9 +313,9 @@ int main()
   const float x1            = 1;
   const float y0            = -1;
   const float y1            = 1;
+  const int maxIters        = 256;
 
-  const int maxIters = 256;
-  std::vector<int> buf(width * height);
+  TSIMD_ALIGN(64) std::array<int, width*height> buf;
 
   auto bencher = pico_bench::Benchmarker<milliseconds>{64, seconds{10}};
 
