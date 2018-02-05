@@ -163,7 +163,7 @@ namespace tsimd {
                              const vint16 &f)
   {
 #if defined(__AVX512F__)
-    return _mm512_mask_or_epi32(f, m, t, t);
+    return _mm512_mask_blend_epi32(m, f, t);
 #else
     return vint16(select(vboolf8(m.vl), vint8(t.vl), vint8(f.vl)),
                   select(vboolf8(m.vh), vint8(t.vh), vint8(f.vh)));
