@@ -627,7 +627,7 @@ TEST_CASE("unmasked load()", "[memory_operations]")
 TEST_CASE("masked load()", "[memory_operations]")
 {
   if (vbool::static_size > 1) {
-    TSIMD_ALIGN(32) std::array<int_type, vint::static_size> values;
+    TSIMD_ALIGN(64) std::array<int_type, vint::static_size> values;
     std::fill(values.begin(), values.end(), 5);
 
     vbool m(true);
