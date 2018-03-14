@@ -24,16 +24,78 @@
 
 #pragma once
 
-#include "math/abs.h"
-#include "math/ceil.h"
-#include "math/cos.h"
-#include "math/exp.h"
-#include "math/floor.h"
-#include "math/log.h"
-#include "math/max.h"
-#include "math/min.h"
-#include "math/pow.h"
-#include "math/rsqrt.h"
-#include "math/sin.h"
-#include "math/sqrt.h"
-#include "math/tan.h"
+#include <cmath>
+
+#include "../../pack.h"
+
+#include "sqrt.h"
+
+namespace tsimd {
+
+  // 1-wide //
+
+  template <typename T>
+  TSIMD_INLINE pack<T, 1> rsqrt(const pack<T, 1> &p)
+  {
+    return pack<T, 1>(T(1) / std::sqrt(p[0]));
+  }
+
+  // 4-wide //
+
+  TSIMD_INLINE vfloat4 rsqrt(const vfloat4 &p)
+  {
+#if defined(__SSE4_2__)
+    return _mm_rsqrt_ps(p);
+#else
+    vfloat4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = 1.f / std::sqrt(p[i]);
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vdouble4 rsqrt(const vdouble4 &p)
+  {
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = 1. / std::sqrt(p[i]);
+
+    return result;
+  }
+
+  // 8-wide //
+
+  TSIMD_INLINE vfloat8 rsqrt(const vfloat8 &p)
+  {
+#if defined(__AVX2__) || defined(__AVX__)
+    return _mm256_rsqrt_ps(p);
+#else
+    return vfloat8(rsqrt(vfloat4(p.vl)), rsqrt(vfloat4(p.vh)));
+#endif
+  }
+
+  TSIMD_INLINE vdouble8 rsqrt(const vdouble8 &p)
+  {
+    return vdouble8(rsqrt(vdouble4(p.vl)), rsqrt(vdouble4(p.vh)));
+  }
+
+  // 16-wide //
+
+  TSIMD_INLINE vfloat16 rsqrt(const vfloat16 &p)
+  {
+#if defined(__AVX512F__)
+    return _mm512_rsqrt_ps(p);
+#else
+    return vfloat16(rsqrt(vfloat8(p.vl)), rsqrt(vfloat8(p.vh)));
+#endif
+  }
+
+  TSIMD_INLINE vdouble16 rsqrt(const vdouble16 &p)
+  {
+    return vdouble16(rsqrt(vdouble8(p.vl)), rsqrt(vdouble8(p.vh)));
+  }
+
+}  // namespace tsimd
