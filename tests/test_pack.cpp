@@ -447,6 +447,13 @@ TEST_CASE("max()", "[math_functions]")
   REQUIRE(tsimd::all(tsimd::max(v3, v4) == 2));
 }
 
+TEST_CASE("rcp()", "[math_functions]")
+{
+  vfloat v1(4.f);
+  v1 = tsimd::rcp(v1);
+  REQUIRE(tsimd::all(tsimd::near_equal(v1, vfloat(0.25f), float_type(1e-3f))));
+}
+
 TEST_CASE("rsqrt()", "[math_functions]")
 {
   vfloat v1(4.f);
