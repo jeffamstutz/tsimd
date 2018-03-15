@@ -32,7 +32,7 @@ namespace tsimd {
     // If a single type is convertable to another /////////////////////////////
 
     template <typename FROM, typename TO>
-    using can_convert = std::is_convertible<TO, FROM>;
+    using can_convert = std::is_constructible<TO, FROM>;
 
     template <typename FROM, typename TO>
     using can_convert_t = enable_if_t<can_convert<FROM, TO>::value>;
