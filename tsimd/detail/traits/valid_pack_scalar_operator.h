@@ -24,84 +24,27 @@
 
 #pragma once
 
-#ifdef _MSVC_LANG
-#define TSIMD_WIN 1
-#else
-#define TSIMD_WIN 0
-#endif
-
-// NOTE(jda) - don't include intrinsics header if no vector ISA specified
-#if defined(__AVX512F__) || defined(__AVX2__) || \
-    defined(__AVX__) || defined(__SSE4_2__)
-#include <immintrin.h>
-#endif
-
-#if defined(__AVX512F__)
-#define TSIMD_DEFAULT_WIDTH 16
-#endif
-
-#if defined(__AVX2__) || defined(__AVX__)
-#if !defined(TSIMD_DEFAULT_WIDTH)
-#define TSIMD_DEFAULT_WIDTH 8
-#endif
-#endif
-
-#if defined(__SSE4_2__)
-#if !defined(TSIMD_DEFAULT_WIDTH)
-#define TSIMD_DEFAULT_WIDTH 4
-#endif
-#endif
-
-#if !defined(TSIMD_DEFAULT_WIDTH)
-#define TSIMD_DEFAULT_WIDTH 1
-#endif
-
-#if defined(__AVX512F__)
-#define AVX_ZERO_UPPER()
-#elif defined(__AVX2__) || defined(__AVX__)
-#define AVX_ZERO_UPPER() _mm256_zeroupper()
-#else
-#define AVX_ZERO_UPPER()
-#endif
-
-#if TSIMD_WIN
-#define TSIMD_ALIGN(...) __declspec(align(__VA_ARGS__))
-#define TSIMD_INLINE inline
-#else
-#define TSIMD_ALIGN(...) __attribute__((aligned(__VA_ARGS__)))
-#define TSIMD_INLINE inline __attribute__((always_inline))
-#endif
-
-#if 0
-#define NOT_YET_IMPLEMENTED \
-  static_assert(false, "This function is not yet implemented!");
-#elif 0
-#define NOT_YET_IMPLEMENTED \
-  throw std::runtime_error("This function is not yet implemented!");
-#else
-#define NOT_YET_IMPLEMENTED               \
-  throw std::runtime_error(__FUNCTION__ + \
-                           std::string(" is not yet implemented!"));
-#endif
-
-#define DO_NOT_USE \
-  static_assert(false, "This function should not be used in this context!");
-
-#if TSIMD_WIN
-#define TSIMD_USE_OPENMP 0
-#else
-#define TSIMD_USE_OPENMP 1
-#endif
-
-#if !defined(TSIMD_DEFAULT_NEAR_EQUAL_EPSILON)
-#define TSIMD_DEFAULT_NEAR_EQUAL_EPSILON 1e-6f
-#endif
+#include "enable_if_t.h"
+#include "is_pack.h"
 
 namespace tsimd {
-  namespace detail {
+  namespace traits {
 
-    // NOTE: only for identifying pack<> types at compile-time
-    struct pack_base {};
+    // If a given T is a valid type for use in a pack<> ///////////////////////
 
-  } // namespace detail
-} // namespace tsimd
+    template <typename PACK_ELEMENT_T, typename SCALAR_TYPE>
+    struct valid_pack_scalar_operator
+    {
+      static const bool value =
+          !is_pack<SCALAR_TYPE>::value &&
+          can_convert<SCALAR_TYPE, PACK_ELEMENT_T>::value;
+    };
+
+    template <typename PACK_ELEMENT_T, typename SCALAR_TYPE>
+    using valid_pack_scalar_operator_t =
+        enable_if_t<
+          valid_pack_scalar_operator<PACK_ELEMENT_T, SCALAR_TYPE>::value
+        >;
+
+  }  // namespace traits
+}  // namespace tsimd

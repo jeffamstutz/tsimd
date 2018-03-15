@@ -41,7 +41,7 @@ namespace tsimd {
   TSIMD_INLINE pack<OTHER_T, W> convert_elements_to(const pack<T, W> &from);
 
   template <typename T, int W>
-  struct pack
+  struct pack : public detail::pack_base
   {
     // Compile-time info //
 
@@ -74,9 +74,11 @@ namespace tsimd {
     pack() = default;
     explicit pack(T value);
 
+    template <typename U, typename = traits::valid_type_for_pack_ctor_t<T, U>>
+    explicit pack(U value) : pack(static_cast<T>(value)) {}
+
     // NOTE: let pack(bool) ctor work for vbool types (requires conversion)
-    template <typename U, typename = traits::is_same_t<U, bool>>
-    pack(U value) : pack(static_cast<T>(value)) {}
+    explicit pack(bool value) : pack(static_cast<T>(value)) {}
 
     // NOTE: only valid for W == 4! (otherwise it's a compile error)
     pack(T v0, T v1, T v2, T v3);
