@@ -62,6 +62,11 @@ namespace tsimd {
 
   // Inlined operators ////////////////////////////////////////////////////////
 
+  TSIMD_INLINE bool32_t operator!(const bool32_t &p1)
+  {
+    return !p1.value;
+  }
+
   TSIMD_INLINE bool32_t operator|(const bool32_t &p1, const bool32_t &p2)
   {
     return p1.value | p2.value;
@@ -70,6 +75,16 @@ namespace tsimd {
   TSIMD_INLINE bool32_t operator&(const bool32_t &p1, const bool32_t &p2)
   {
     return p1.value & p2.value;
+  }
+
+  TSIMD_INLINE bool32_t operator^(const bool32_t &p1, const bool32_t &p2)
+  {
+    return p1.value ^ p2.value;
+  }
+
+  TSIMD_INLINE bool32_t operator==(const bool32_t &p1, const bool32_t &p2)
+  {
+    return p1.value == p2.value;
   }
 
   TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const bool32_t &v)
@@ -112,6 +127,11 @@ namespace tsimd {
 
   // Inlined operators ////////////////////////////////////////////////////////
 
+  TSIMD_INLINE bool64_t operator!(const bool64_t &p1)
+  {
+    return !p1.value;
+  }
+
   TSIMD_INLINE bool64_t operator|(const bool64_t &p1, const bool64_t &p2)
   {
     return p1.value | p2.value;
@@ -120,6 +140,16 @@ namespace tsimd {
   TSIMD_INLINE bool64_t operator&(const bool64_t &p1, const bool64_t &p2)
   {
     return p1.value & p2.value;
+  }
+
+  TSIMD_INLINE bool64_t operator^(const bool64_t &p1, const bool64_t &p2)
+  {
+    return p1.value ^ p2.value;
+  }
+
+  TSIMD_INLINE bool64_t operator==(const bool64_t &p1, const bool64_t &p2)
+  {
+    return p1.value == p2.value;
   }
 
   TSIMD_INLINE std::ostream &operator<<(std::ostream &o, const bool64_t &v)

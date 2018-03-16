@@ -72,7 +72,7 @@ namespace tsimd {
     // Construction //
 
     pack() = default;
-    explicit pack(T value);
+    pack(T value);
 
     template <typename U, typename = traits::valid_type_for_pack_ctor_t<T, U>>
     explicit pack(U value) : pack(static_cast<T>(value)) {}
