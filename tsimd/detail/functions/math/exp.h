@@ -80,7 +80,7 @@ namespace tsimd {
     return p;
   }
 
-#if 0
+#if 1
   template <int W>
   TSIMD_INLINE vfloatn<W> exp(const vfloatn<W> &p)
   {
@@ -123,7 +123,7 @@ namespace tsimd {
     // negative float input that doesn't result in zero is like -88.
     auto underflow = (biased_n <= 0);
     const vintn<W> InfBits(0x7f800000);
-    biased_n <<= 23;
+    biased_n = biased_n << 23;
     // Reinterpret this thing as float
     vfloatn<W> two_to_the_n = reinterpret_elements_as<float>(biased_n);
     // Handle both doubles and floats (hopefully eliding the copy for float)
