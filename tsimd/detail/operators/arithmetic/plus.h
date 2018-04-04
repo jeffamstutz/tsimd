@@ -176,7 +176,8 @@ namespace tsimd {
   TSIMD_INLINE auto operator+(const pack<T, W> &p1, const OTHER_T &v)
       -> pack<decltype(T() + OTHER_T()), W>
   {
-    return p1 + pack<OTHER_T, W>(v);
+    using result_pack = pack<decltype(T() + OTHER_T()), W>;
+    return result_pack(p1) + result_pack(v);
   }
 
   template <typename T,
@@ -184,9 +185,10 @@ namespace tsimd {
             typename OTHER_T,
             typename = traits::valid_pack_scalar_operator_t<T, OTHER_T>>
   TSIMD_INLINE auto operator+(const OTHER_T &v, const pack<T, W> &p1)
-      -> pack<decltype(T() + OTHER_T()), W>
+      -> pack<decltype(OTHER_T() + T()), W>
   {
-    return pack<OTHER_T, W>(v) + p1;
+    using result_pack = pack<decltype(OTHER_T() + T()), W>;
+    return result_pack(v) + result_pack(p1);
   }
 
   // Inferred binary operator+=() /////////////////////////////////////////////

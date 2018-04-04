@@ -168,7 +168,8 @@ namespace tsimd {
   TSIMD_INLINE auto operator/(const pack<T, W> &p1, const OTHER_T &v)
       -> pack<decltype(T() / OTHER_T()), W>
   {
-    return p1 / pack<T, W>(v);
+    using result_pack = pack<decltype(T() / OTHER_T()), W>;
+    return result_pack(p1) / result_pack(v);
   }
 
   template <typename T,
@@ -178,7 +179,8 @@ namespace tsimd {
   TSIMD_INLINE auto operator/(const OTHER_T &v, const pack<T, W> &p1)
       -> pack<decltype(OTHER_T() / T()), W>
   {
-    return pack<T, W>(v) / p1;
+    using result_pack = pack<decltype(OTHER_T() / T()), W>;
+    return result_pack(v) / result_pack(p1);
   }
 
   // Inferred binary operator/=() /////////////////////////////////////////////
