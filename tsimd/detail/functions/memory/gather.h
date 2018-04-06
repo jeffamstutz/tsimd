@@ -29,7 +29,7 @@
 namespace tsimd {
 
   template <typename PACK_T, typename OFFSET_T>
-  TSIMD_INLINE PACK_T gather(void *_src,
+  TSIMD_INLINE PACK_T gather(const void *_src,
                              const pack<OFFSET_T, PACK_T::static_size> &o)
   {
     auto *src = (const typename PACK_T::element_t *)_src;
@@ -46,7 +46,7 @@ namespace tsimd {
 
   template <typename PACK_T, typename OFFSET_T>
   TSIMD_INLINE PACK_T
-  gather(void *_src,
+  gather(const void *_src,
          const pack<OFFSET_T, PACK_T::static_size> &o,
          const mask<typename PACK_T::element_t, PACK_T::static_size> &m)
   {
