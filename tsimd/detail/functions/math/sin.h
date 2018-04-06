@@ -64,7 +64,7 @@ namespace tsimd {
     // Reduced range version of x
     const auto x = p - kReal * piOverTwoVec;
     const auto kMod4 = k & 3;
-    const auto sinUseCos = (kMod4 == 1 | kMod4 == 3);
+    const auto sinUseCos = ((kMod4 == 1) | (kMod4 == 3));
     const auto flipSign = (kMod4 > 1);
 
     // These coefficients are from sollya with fpminimax(sin(x)/x, [|0, 2,

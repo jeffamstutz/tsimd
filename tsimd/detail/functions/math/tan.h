@@ -71,7 +71,7 @@ namespace tsimd {
 
     // If k & 3 == (0 or 3) let z = tan_In...(y) otherwise z = -cot_In0To...
     const auto kMod4 = k & 3;
-    const auto useCotan = (kMod4 == 1) | (kMod4 == 2);
+    const auto useCotan = ((kMod4 == 1) | (kMod4 == 2));
 
     static const float oneVec = 1.0;
 

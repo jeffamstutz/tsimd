@@ -38,6 +38,7 @@ namespace tsimd {
     struct half_simd_type
     {
       using type = std::array<T, W / 2>;
+      static const bool is_array = true;
     };
 
     // 1-wide //
@@ -46,6 +47,7 @@ namespace tsimd {
     struct half_simd_type<T, 1>
     {
       using type = std::array<T, 1>;
+      static const bool is_array = true;
     };
 
     // 8-wide //
@@ -55,18 +57,21 @@ namespace tsimd {
     struct half_simd_type<float, 8>
     {
       using type = simd_type<float, 4>::type;
+      static const bool is_array = false;
     };
 
     template <>
     struct half_simd_type<int, 8>
     {
       using type = simd_type<int, 4>::type;
+      static const bool is_array = false;
     };
 
     template <>
     struct half_simd_type<bool32_t, 8>
     {
       using type = half_simd_type<float, 8>::type;
+      static const bool is_array = false;
     };
 #endif
 
@@ -77,6 +82,7 @@ namespace tsimd {
     struct half_simd_type<float, 16>
     {
       using type = simd_type<float, 8>::type;
+      static const bool is_array = false;
     };
 #endif
 
@@ -85,6 +91,7 @@ namespace tsimd {
     struct half_simd_type<int, 16>
     {
       using type = simd_type<int, 8>::type;
+      static const bool is_array = false;
     };
 #endif
 
@@ -93,12 +100,14 @@ namespace tsimd {
     struct half_simd_type<bool32_t, 16>
     {
       using type = typename simd_type<bool32_t, 8>::type;
+      static const bool is_array = false;
     };
 
     template <>
     struct half_simd_type<bool64_t, 16>
     {
       using type = typename simd_type<bool64_t, 8>::type;
+      static const bool is_array = false;
     };
 #endif
 
@@ -107,17 +116,7 @@ namespace tsimd {
     template <typename T, int W>
     struct half_simd_is_array
     {
-      static const bool value =
-          std::is_same<typename half_simd_type<T, W>::type,
-                       std::array<T, W / 2>>::value;
-    };
-
-    template <typename T>
-    struct half_simd_is_array<T, 1>
-    {
-      static const bool value =
-          std::is_same<typename half_simd_type<T, 1>::type,
-                       std::array<T, 1>>::value;
+      static const bool value = half_simd_type<T, W>::is_array;
     };
 
   }  // namespace traits
