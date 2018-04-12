@@ -77,7 +77,11 @@ namespace tsimd {
 
   TSIMD_INLINE bool any(const vboold8 &a)
   {
+#if defined(__AVX512VL__)
+    return any(vboolf8(a.v));
+#else
     return any(vboold4(a.vl)) || any(vboold4(a.vh));
+#endif
   }
 
   // 16-wide //

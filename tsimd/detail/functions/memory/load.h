@@ -279,31 +279,47 @@ namespace tsimd {
   template <>
   TSIMD_INLINE vdouble8 load(const void *_src)
   {
+#if defined(__AVX512F__)
+    return _mm512_load_pd(_src);
+#else
     auto *src = (const typename vdouble8::element_t *)_src;
     return vdouble8(load<vdouble4>(src), load<vdouble4>(src + 4));
+#endif
   }
 
   template <>
   TSIMD_INLINE vdouble8 load(const void *_src, const vboold8 &mask)
   {
+#if defined(__AVX512F__)
+    return _mm512_mask_load_pd(_mm512_setzero_pd(), mask, _src);
+#else
     auto *src = (const typename vdouble16::element_t *)_src;
     return vdouble8(load<vdouble4>(src, vboold4(mask.vl)),
                     load<vdouble4>(src + 4, vboold4(mask.vh)));
+#endif
   }
 
   template <>
   TSIMD_INLINE vllong8 load(const void *_src)
   {
+#if defined(__AVX512F__)
+    return _mm512_load_epi64(_src);
+#else
     auto *src = (const typename vllong16::element_t *)_src;
     return vllong8(load<vllong4>(src), load<vllong4>(src + 4));
+#endif
   }
 
   template <>
   TSIMD_INLINE vllong8 load(const void *_src, const vboold8 &mask)
   {
+#if defined(__AVX512F__)
+    return _mm512_mask_load_epi64(_mm512_setzero_si512(), mask, _src);
+#else
     auto *src = (const typename vllong16::element_t *)_src;
     return vllong8(load<vllong4>(src, vboold4(mask.vl)),
                   load<vllong4>(src + 4, vboold4(mask.vh)));
+#endif
   }
 
   // 16-wide //

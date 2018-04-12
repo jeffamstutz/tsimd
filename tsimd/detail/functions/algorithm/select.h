@@ -132,16 +132,24 @@ namespace tsimd {
                                const vdouble8 &t,
                                const vdouble8 &f)
   {
+#if defined(__AVX512F__)
+    return _mm512_mask_blend_pd(m, f, t);
+#else
     return vdouble8(select(vboold4(m.vl), vdouble4(t.vl), vdouble4(f.vl)),
                     select(vboold4(m.vh), vdouble4(t.vh), vdouble4(f.vh)));
+#endif
   }
 
   TSIMD_INLINE vllong8 select(const vboold8 &m,
                               const vllong8 &t,
                               const vllong8 &f)
   {
+#if defined(__AVX512F__)
+    return _mm512_mask_blend_epi64(m, f, t);
+#else
     return vllong8(select(vboold4(m.vl), vllong4(t.vl), vllong4(f.vl)),
                    select(vboold4(m.vh), vllong4(t.vh), vllong4(f.vh)));
+#endif
   }
 
   // 16-wide //

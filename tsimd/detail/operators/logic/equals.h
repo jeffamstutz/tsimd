@@ -152,20 +152,32 @@ namespace tsimd {
 
   TSIMD_INLINE vboold8 operator==(const vdouble8 &p1, const vdouble8 &p2)
   {
+#if defined(__AVX512F__)
+    return _mm512_cmp_pd_mask(p1, p2, _CMP_EQ_OQ);
+#else
     return vboold8(vdouble4(p1.vl) == vdouble4(p2.vl),
                    vdouble4(p1.vh) == vdouble4(p2.vh));
+#endif
   }
 
   TSIMD_INLINE vboold8 operator==(const vllong8 &p1, const vllong8 &p2)
   {
+#if defined(__AVX512F__)
+    return _mm512_cmp_epi64_mask(p1, p2, _MM_CMPINT_EQ);
+#else
     return vboold8(vllong4(p1.vl) == vllong4(p2.vl),
                    vllong4(p1.vh) == vllong4(p2.vh));
+#endif
   }
 
   TSIMD_INLINE vboold8 operator==(const vboold8 &p1, const vboold8 &p2)
   {
+#if defined(__AVX512VL__)
+    return _mm512_kxnor(p1, p2);
+#else
     return vboold8(vboold4(p1.vl) == vboold4(p2.vl),
                    vboold4(p1.vh) == vboold4(p2.vh));
+#endif
   }
 
   // 16-wide //
