@@ -631,7 +631,7 @@ TEST_CASE("near_equal()", "[algorithms]")
 
 TEST_CASE("unmasked load()", "[memory_operations]")
 {
-  TSIMD_ALIGN(64) std::array<int_type, vint::static_size> values;
+  alignas(64) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 5);
 
   auto v1 = tsimd::load<vint>(values.data());
@@ -641,7 +641,7 @@ TEST_CASE("unmasked load()", "[memory_operations]")
 TEST_CASE("masked load()", "[memory_operations]")
 {
   if (vbool::static_size > 1) {
-    TSIMD_ALIGN(64) std::array<int_type, vint::static_size> values;
+    alignas(64) std::array<int_type, vint::static_size> values;
     std::fill(values.begin(), values.end(), 5);
 
     vbool m(true);
@@ -659,7 +659,7 @@ TEST_CASE("masked load()", "[memory_operations]")
 
 TEST_CASE("unmasked gather()", "[memory_operations]")
 {
-  TSIMD_ALIGN(64) std::array<int_type, vint::static_size> values;
+  alignas(64) std::array<int_type, vint::static_size> values;
   std::fill(values.begin(), values.end(), 4);
 
   vint offset;
@@ -672,7 +672,7 @@ TEST_CASE("unmasked gather()", "[memory_operations]")
 
 TEST_CASE("unmasked store()", "[memory_operations]")
 {
-  TSIMD_ALIGN(64) std::array<int_type, vint::static_size> values;
+  alignas(64) std::array<int_type, vint::static_size> values;
 
   vint v1(7);
 
@@ -684,7 +684,7 @@ TEST_CASE("unmasked store()", "[memory_operations]")
 
 TEST_CASE("unmasked scatter()", "[memory_operations]")
 {
-  TSIMD_ALIGN(64) std::array<int_type, vint::static_size> values;
+  alignas(64) std::array<int_type, vint::static_size> values;
 
   vint v1(5);
 

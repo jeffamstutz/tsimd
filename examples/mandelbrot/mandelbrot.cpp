@@ -315,7 +315,7 @@ int main()
   const float y1            = 1;
   const int maxIters        = 256;
 
-  TSIMD_ALIGN(64) std::array<int, width*height> buf;
+  alignas(64) std::array<int, width*height> buf;
 
   auto bencher = pico_bench::Benchmarker<milliseconds>{64, seconds{10}};
 
