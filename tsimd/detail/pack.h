@@ -543,6 +543,64 @@ namespace tsimd {
     return end();
   }
 
+#if defined(__AVX512VL__)
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 8>::iterator_t
+  pack<bool32_t, 8>::begin()
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 8>::iterator_t
+  pack<bool32_t, 8>::end()
+  {
+    return bit_iterator((void*)&v, 8);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 8>::const_iterator_t
+  pack<bool32_t, 8>::begin() const
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool32_t, 8>::const_iterator_t
+  pack<bool32_t, 8>::end() const
+  {
+    return bit_iterator((void*)&v, 8);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 8>::iterator_t
+  pack<bool64_t, 8>::begin()
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 8>::iterator_t
+  pack<bool64_t, 8>::end()
+  {
+    return bit_iterator((void*)&v, 8);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 8>::const_iterator_t
+  pack<bool64_t, 8>::begin() const
+  {
+    return bit_iterator((void*)&v, 0);
+  }
+
+  template <>
+  TSIMD_INLINE typename pack<bool64_t, 8>::const_iterator_t
+  pack<bool64_t, 8>::end() const
+  {
+    return bit_iterator((void*)&v, 8);
+  }
+#endif
+
 #if defined(__AVX512F__)
   template <>
   TSIMD_INLINE typename pack<bool32_t, 16>::iterator_t
@@ -617,45 +675,15 @@ namespace tsimd {
   TSIMD_INLINE typename pack<T, W>::const_iterator_deref_t
   pack<T, W>::operator[](int i) const
   {
-    return arr[i];
+    return *(begin() + i);
   }
 
   template <typename T, int W>
   TSIMD_INLINE typename pack<T, W>::iterator_deref_t
   pack<T, W>::operator[](int i)
   {
-    return arr[i];
-  }
-
-#if defined(__AVX512F__)
-  template <>
-  TSIMD_INLINE typename pack<bool32_t, 16>::const_iterator_deref_t
-  pack<bool32_t, 16>::operator[](int i) const
-  {
     return *(begin() + i);
   }
-
-  template <>
-  TSIMD_INLINE typename pack<bool32_t, 16>::iterator_deref_t
-  pack<bool32_t, 16>::operator[](int i)
-  {
-    return *(begin() + i);
-  }
-
-  template <>
-  TSIMD_INLINE typename pack<bool64_t, 16>::const_iterator_deref_t
-  pack<bool64_t, 16>::operator[](int i) const
-  {
-    return *(begin() + i);
-  }
-
-  template <>
-  TSIMD_INLINE typename pack<bool64_t, 16>::iterator_deref_t
-  pack<bool64_t, 16>::operator[](int i)
-  {
-    return *(begin() + i);
-  }
-#endif
 
   // pack<> debugging functions ///////////////////////////////////////////////
 
