@@ -87,7 +87,7 @@ namespace tsimd {
   TSIMD_INLINE vfloat16 rsqrt(const vfloat16 &p)
   {
 #if defined(__AVX512F__)
-    return _mm512_rsqrt_ps(p);
+    return _mm512_rsqrt14_ps(p);
 #else
     return vfloat16(rsqrt(vfloat8(p.vl)), rsqrt(vfloat8(p.vh)));
 #endif

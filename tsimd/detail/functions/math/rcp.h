@@ -93,7 +93,7 @@ namespace tsimd {
   TSIMD_INLINE vfloat16 rcp(const vfloat16 &p)
   {
 #if defined(__AVX512F__)
-    return _mm512_rcp_ps(p);
+    return _mm512_rcp14_ps(p);
 #else
     return vfloat16(rcp(vfloat8(p.vl)), rcp(vfloat8(p.vh)));
 #endif
