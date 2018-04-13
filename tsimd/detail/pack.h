@@ -176,7 +176,6 @@ namespace tsimd {
 
     union
     {
-      array_t arr;
       intrinsic_t v;
       cast_intrinsic_t cv;
       struct
@@ -363,10 +362,11 @@ namespace tsimd {
   {
     static_assert(W == 4,
                   "Multi-scalar constructors take exactly W arguments");
-    arr[0] = v0;
-    arr[1] = v1;
-    arr[2] = v2;
-    arr[3] = v3;
+
+    (*this)[0] = v0;
+    (*this)[1] = v1;
+    (*this)[2] = v2;
+    (*this)[3] = v3;
   }
 
   template <typename T, int W>
@@ -374,14 +374,14 @@ namespace tsimd {
   {
     static_assert(W == 8,
                   "Multi-scalar constructors take exactly W arguments");
-    arr[0] = v0;
-    arr[1] = v1;
-    arr[2] = v2;
-    arr[3] = v3;
-    arr[4] = v4;
-    arr[5] = v5;
-    arr[6] = v6;
-    arr[7] = v7;
+    (*this)[0] = v0;
+    (*this)[1] = v1;
+    (*this)[2] = v2;
+    (*this)[3] = v3;
+    (*this)[4] = v4;
+    (*this)[5] = v5;
+    (*this)[6] = v6;
+    (*this)[7] = v7;
   }
 
   template <typename T, int W>
@@ -391,22 +391,22 @@ namespace tsimd {
   {
     static_assert(W == 16,
                   "Multi-scalar constructors take exactly W arguments");
-    arr[0] = v0;
-    arr[1] = v1;
-    arr[2] = v2;
-    arr[3] = v3;
-    arr[4] = v4;
-    arr[5] = v5;
-    arr[6] = v6;
-    arr[7] = v7;
-    arr[8] = v8;
-    arr[9] = v9;
-    arr[10] = v10;
-    arr[11] = v11;
-    arr[12] = v12;
-    arr[13] = v13;
-    arr[14] = v14;
-    arr[15] = v15;
+    (*this)[0] = v0;
+    (*this)[1] = v1;
+    (*this)[2] = v2;
+    (*this)[3] = v3;
+    (*this)[4] = v4;
+    (*this)[5] = v5;
+    (*this)[6] = v6;
+    (*this)[7] = v7;
+    (*this)[8] = v8;
+    (*this)[9] = v9;
+    (*this)[10] = v10;
+    (*this)[11] = v11;
+    (*this)[12] = v12;
+    (*this)[13] = v13;
+    (*this)[14] = v14;
+    (*this)[15] = v15;
   }
 
   template <typename T, int W>
@@ -429,8 +429,9 @@ namespace tsimd {
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(const typename pack<T, W>::array_t &_arr)
-      : arr(_arr)
   {
+    for (int i = 0; i < W; i++)
+      (*this)[i] = _arr[i];
   }
 
   template <typename T, int W>
@@ -439,9 +440,9 @@ namespace tsimd {
   {
     int i = 0;
     for (int j = 0; j < W / 2; j++, i++)
-      arr[i] = a[j];
+      (*this)[i] = a[j];
     for (int j = 0; j < W / 2; j++, i++)
-      arr[i] = b[j];
+      (*this)[i] = b[j];
   }
 
   template <typename T, int W>
@@ -478,35 +479,31 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator const typename pack<T, W>::array_t &() const
   {
-    return arr;
+    return reinterpret_cast<const std::array<T,W>&>(v);
   }
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator typename pack<T, W>::array_t &()
   {
-    return arr;
+    return reinterpret_cast<std::array<T,W>&>(v);
   }
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator const T *() const
   {
-    return arr.data();
+    return reinterpret_cast<const T*>(&v);
   }
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator T *()
   {
-    return arr.data();
+    return reinterpret_cast<T*>(&v);
   }
 
   template <typename T, int W>
   TSIMD_INLINE typename pack<T, W>::iterator_t pack<T, W>::begin()
   {
-#if TSIMD_WIN
-    return &arr[0];
-#else
-    return arr.begin();
-#endif
+    return reinterpret_cast<T*>(&v);
   }
 
   template <typename T, int W>
@@ -518,11 +515,7 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE typename pack<T, W>::const_iterator_t pack<T, W>::begin() const
   {
-#if TSIMD_WIN
-    return &arr[0];
-#else
-    return arr.begin();
-#endif
+    return reinterpret_cast<const T*>(&v);
   }
 
   template <typename T, int W>
