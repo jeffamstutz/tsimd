@@ -64,11 +64,13 @@ int main()
     std::cout << "sin(value) == " << std::sin(value) << std::endl;
     std::cout << "cos(value) == " << std::cos(value) << std::endl;
     std::cout << "tan(value) == " << std::tan(value) << std::endl;
+    std::cout << "exp(value) == " << std::exp(value) << std::endl;
 
     std::cout << "v = vfloat(value)" << std::endl;
     std::cout << "sin(v) == " << sin(v) << std::endl;
     std::cout << "cos(v) == " << cos(v) << std::endl;
     std::cout << "tan(v) == " << tan(v) << std::endl;
+    std::cout << "exp(v) == " << exp(v) << std::endl;
   }
 
   std::cout << std::endl;
