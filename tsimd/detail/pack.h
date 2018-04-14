@@ -479,13 +479,13 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator const typename pack<T, W>::array_t &() const
   {
-    return reinterpret_cast<const std::array<T,W>&>(v);
+    return reinterpret_cast<const array_t&>(v);
   }
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::operator typename pack<T, W>::array_t &()
   {
-    return reinterpret_cast<std::array<T,W>&>(v);
+    return reinterpret_cast<array_t&>(v);
   }
 
   template <typename T, int W>
