@@ -31,15 +31,7 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE pack<T, W> operator%(const pack<T, W> &p1, const pack<T, W> &p2)
   {
-    pack<T, W> result;
-
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
-    for (int i = 0; i < W; ++i)
-      result[i] = (p1[i] % p2[i]);
-
-    return result;
+    return p1 - ((p1 / p2) * p2);
   }
 
   // Inferred pack-pack promotion operators (e.g. 'vint' to 'vfloat') /////////
