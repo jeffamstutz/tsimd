@@ -43,5 +43,5 @@ elseif (TSIMD_BUILD_ISA STREQUAL "SSE4")
   set (ISA_FLAGS ${FLAGS_SSE42})
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${ISA_FLAGS} ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++11 -fno-strict-aliasing ${ISA_FLAGS} ${CMAKE_CXX_FLAGS}")
 

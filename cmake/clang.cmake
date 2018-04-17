@@ -42,7 +42,7 @@ elseif (TSIMD_BUILD_ISA STREQUAL "SSE4")
   set (ISA_FLAGS ${FLAGS_SSE42})
 endif()
 
-SET(CMAKE_CXX_FLAGS "-std=c++11 ${ISA_FLAGS} ${CMAKE_CXX_FLAGS}")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -fno-strict-aliasing ${ISA_FLAGS} ${CMAKE_CXX_FLAGS}")
 
 if (APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++") # link against C++11 stdlib
