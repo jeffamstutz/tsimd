@@ -288,9 +288,6 @@ namespace tsimd {
   template <typename T, int W>
   TSIMD_INLINE pack<T, W>::pack(T value)
   {
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < W; ++i)
       insert(value, i);
   }
