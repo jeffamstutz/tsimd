@@ -35,9 +35,6 @@ namespace tsimd {
   {
     auto *dst = (typename PACK_T::element_t *)_dst;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < PACK_T::static_size; ++i)
       dst[o[i]] = p[i];
   }
@@ -51,9 +48,6 @@ namespace tsimd {
   {
     auto *dst = (typename PACK_T::element_t *)_dst;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < PACK_T::static_size; ++i)
       if (m[i])
         dst[o[i]] = p[i];

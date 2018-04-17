@@ -56,9 +56,6 @@ namespace tsimd {
   {
     vint4 result;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < 4; ++i)
       result[i] = (p1[i] / p2[i]);
 
@@ -79,9 +76,6 @@ namespace tsimd {
   {
     vllong4 result;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < 4; ++i)
       result[i] = (p1[i] / p2[i]);
 

@@ -85,12 +85,6 @@
 #define DO_NOT_USE \
   static_assert(false, "This function should not be used in this context!");
 
-#if TSIMD_WIN
-#define TSIMD_USE_OPENMP 0
-#else
-#define TSIMD_USE_OPENMP 1
-#endif
-
 #if !defined(TSIMD_DEFAULT_NEAR_EQUAL_EPSILON)
 #define TSIMD_DEFAULT_NEAR_EQUAL_EPSILON 1e-6f
 #endif

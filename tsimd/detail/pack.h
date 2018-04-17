@@ -710,9 +710,6 @@ namespace tsimd {
   {
     pack<OTHER_T, W> to;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < W; ++i)
       to[i] = from[i];
 

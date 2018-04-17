@@ -37,9 +37,6 @@ namespace tsimd {
   {
     pack<T, W> result;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < W; ++i)
       result[i] = std::log(p[i]);
 

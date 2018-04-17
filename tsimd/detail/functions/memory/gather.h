@@ -35,9 +35,6 @@ namespace tsimd {
     auto *src = (const typename PACK_T::element_t *)_src;
     PACK_T result;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < PACK_T::static_size; ++i)
       result[i] = src[o[i]];
 
@@ -53,9 +50,6 @@ namespace tsimd {
     auto *src = (const typename PACK_T::element_t *)_src;
     PACK_T result;
 
-#if TSIMD_USE_OPENMP
-#  pragma omp simd
-#endif
     for (int i = 0; i < PACK_T::static_size; ++i)
       if (m[i])
         result[i] = src[o[i]];

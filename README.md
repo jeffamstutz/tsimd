@@ -13,5 +13,3 @@ Requirements:
 TODO:
 
 - use intrinsics for 64-bit element pack of widths > 1 (only stubbed at the moment)
-- replace ```#pragma omp simd``` loop implementations with intrinsics where
-  appropriate
