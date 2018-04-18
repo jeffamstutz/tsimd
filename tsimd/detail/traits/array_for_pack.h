@@ -41,6 +41,12 @@ namespace tsimd {
 
 #if defined(__AVX512F__)
     template <>
+    struct array_for_pack<bool64_t, 8>
+    {
+      using type = std::array<__mmask8, 1>;
+    };
+
+    template <>
     struct array_for_pack<bool32_t, 16>
     {
       using type = std::array<__mmask8, 2>;
@@ -53,6 +59,14 @@ namespace tsimd {
     };
 #endif
 
+#if defined(__AVX512VL__)
+    template <>
+    struct array_for_pack<bool32_t, 8>
+    {
+      using type = std::array<__mmask8, 1>;
+    };
+#endif
+
     // Half-sized array ///////////////////////////////////////////////////////
 
     template <typename T, int W>
@@ -62,6 +76,12 @@ namespace tsimd {
     };
 
 #if defined(__AVX512F__)
+    template <>
+    struct half_array_for_pack<bool64_t, 8>
+    {
+      using type = std::array<__mmask8, 1>;
+    };
+
     template <>
     struct half_array_for_pack<bool32_t, 16>
     {

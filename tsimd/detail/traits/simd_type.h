@@ -270,6 +270,26 @@ namespace tsimd {
     };
 #endif
 
+#if defined(__AVX512F__)
+    template <>
+    struct simd_or_array_type<double, 8>
+    {
+      using type = typename simd_type<double, 8>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<long long, 8>
+    {
+      using type = typename simd_type<long long, 8>::type;
+    };
+
+    template <>
+    struct simd_or_array_type<bool64_t, 8>
+    {
+      using type = typename simd_type<bool64_t, 8>::type;
+    };
+#endif
+
     // 16-wide //
 
 #if defined(__AVX512F__)

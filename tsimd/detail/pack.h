@@ -435,9 +435,9 @@ namespace tsimd {
                                 const typename pack<T, W>::half_array_t &b)
   {
     int i = 0;
-    for (int j = 0; j < W / 2; j++, i++)
+    for (int j = 0; j < int(a.size()); j++, i++)
       arr[i] = a[j];
-    for (int j = 0; j < W / 2; j++, i++)
+    for (int j = 0; j < int(b.size()); j++, i++)
       arr[i] = b[j];
   }
 
@@ -568,6 +568,10 @@ namespace tsimd {
   {
     return bit_iterator((void*)&v, 8);
   }
+#endif
+
+#if defined(__AVX512F__)
+  // 8-wide //
 
   template <>
   TSIMD_INLINE typename pack<bool64_t, 8>::iterator_t
@@ -596,9 +600,9 @@ namespace tsimd {
   {
     return bit_iterator((void*)&v, 8);
   }
-#endif
 
-#if defined(__AVX512F__)
+  // 16-wide //
+
   template <>
   TSIMD_INLINE typename pack<bool32_t, 16>::iterator_t
   pack<bool32_t, 16>::begin()

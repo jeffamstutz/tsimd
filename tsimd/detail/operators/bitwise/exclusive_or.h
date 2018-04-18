@@ -116,14 +116,22 @@ namespace tsimd {
 
   TSIMD_INLINE vllong8 operator^(const vllong8 &p1, const vllong8 &p2)
   {
+#if defined(__AVX512F__)
+    return _mm512_xor_epi64(p1, p2);
+#else
     return vllong8(vllong4(p1.vl) ^ vllong4(p2.vl),
                    vllong4(p1.vh) ^ vllong4(p2.vh));
+#endif
   }
 
   TSIMD_INLINE vboold8 operator^(const vboold8 &p1, const vboold8 &p2)
   {
+#if defined(__AVX512F__)
+    return _mm512_kxor(p1, p2);
+#else
     return vboold8(vboold4(p1.vl) ^ vboold4(p2.vl),
                    vboold4(p1.vh) ^ vboold4(p2.vh));
+#endif
   }
 
   // 16-wide //

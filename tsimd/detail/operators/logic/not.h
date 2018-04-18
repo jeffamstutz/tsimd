@@ -77,7 +77,7 @@ namespace tsimd {
 
   TSIMD_INLINE vboold8 operator!(const vboold8 &m)
   {
-#if defined(__AVX512VL__)
+#if defined(__AVX512F__)
     return _mm512_knot(m);
 #else
     return vboold8(!vboold4(m.vl), !vboold4(m.vh));

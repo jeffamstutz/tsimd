@@ -44,16 +44,16 @@ namespace tsimd {
     {
       using type = bit_iterator;
     };
+#endif
 
+
+#if defined(__AVX512F__)
     template <>
     struct pack_iterator<bool64_t, 8>
     {
       using type = bit_iterator;
     };
-#endif
 
-
-#if defined(__AVX512F__)
     template <>
     struct pack_iterator<bool32_t, 16>
     {
@@ -79,15 +79,15 @@ namespace tsimd {
     {
       using type = bit_iterator;
     };
+#endif
 
+#if defined(__AVX512F__)
     template <>
     struct const_pack_iterator<bool64_t, 8>
     {
       using type = bit_iterator;
     };
-#endif
 
-#if defined(__AVX512F__)
     template <>
     struct const_pack_iterator<bool32_t, 16>
     {

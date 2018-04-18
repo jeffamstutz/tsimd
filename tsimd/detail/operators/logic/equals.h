@@ -172,7 +172,7 @@ namespace tsimd {
 
   TSIMD_INLINE vboold8 operator==(const vboold8 &p1, const vboold8 &p2)
   {
-#if defined(__AVX512VL__)
+#if defined(__AVX512F__)
     return _mm512_kxnor(p1, p2);
 #else
     return vboold8(vboold4(p1.vl) == vboold4(p2.vl),
