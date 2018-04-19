@@ -70,22 +70,30 @@ namespace tsimd {
 
   TSIMD_INLINE vllong4 operator&(const vllong4 &p1, const vllong4 &p2)
   {
+#if defined(__AVX2__)
+    return _mm256_and_si256(p1, p2);
+#else
     vllong4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = p1[i] & p2[i];
 
     return result;
+#endif
   }
 
   TSIMD_INLINE vboold4 operator&(const vboold4 &p1, const vboold4 &p2)
   {
+#if defined(__AVX__)
+    return _mm256_and_pd(p1, p2);
+#else
     vboold4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = p1[i] & p2[i];
 
     return result;
+#endif
   }
 
   // 8-wide //
@@ -106,7 +114,7 @@ namespace tsimd {
   {
 #if defined(__AVX512VL__)
     return _mm512_kand(p1, p2);
-#elif defined(__AVX2__) || defined(__AVX__)
+#elif defined(__AVX__)
     return _mm256_and_ps(p1, p2);
 #else
     return vboolf8(vboolf4(p1.vl) & vboolf4(p2.vl),

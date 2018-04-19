@@ -89,6 +89,28 @@
 #define TSIMD_DEFAULT_NEAR_EQUAL_EPSILON 1e-6f
 #endif
 
+#if defined(__INTEL_COMPILER)
+# define TSIMD_COMPILER_INTEL 1
+# define TSIMD_COMPILER_CLANG 0
+# define TSIMD_COMPILER_GNU   0
+# define TSIMD_COMPILER_MSVC  0
+#elif defined(__clang__)
+# define TSIMD_COMPILER_INTEL 0
+# define TSIMD_COMPILER_CLANG 1
+# define TSIMD_COMPILER_GNU   0
+# define TSIMD_COMPILER_MSVC  0
+#elif defined(__GNUC__) || defined(__GNUG__)
+# define TSIMD_COMPILER_INTEL 0
+# define TSIMD_COMPILER_CLANG 0
+# define TSIMD_COMPILER_GNU   1
+# define TSIMD_COMPILER_MSVC  0
+#else
+# define TSIMD_COMPILER_INTEL 0
+# define TSIMD_COMPILER_CLANG 0
+# define TSIMD_COMPILER_GNU   0
+# define TSIMD_COMPILER_MSVC  1
+#endif
+
 namespace tsimd {
   namespace detail {
 

@@ -70,22 +70,30 @@ namespace tsimd {
 
   TSIMD_INLINE vllong4 operator^(const vllong4 &p1, const vllong4 &p2)
   {
+#if defined(__AVX2__)
+    return _mm256_xor_si256(p1, p2);
+#else
     vllong4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = p1[i] ^ p2[i];
 
     return result;
+#endif
   }
 
   TSIMD_INLINE vboold4 operator^(const vboold4 &p1, const vboold4 &p2)
   {
+#if defined(__AVX2__)
+    return _mm256_xor_pd(p1, p2);
+#else
     vboold4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = p1[i] ^ p2[i];
 
     return result;
+#endif
   }
 
   // 8-wide //
