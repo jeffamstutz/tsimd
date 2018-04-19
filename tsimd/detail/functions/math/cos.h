@@ -92,4 +92,39 @@ namespace tsimd {
     return formula;
   }
 
+#if TSIMD_COMPILER_INTEL
+
+#if defined(__SSE4_2__)
+  TSIMD_INLINE vfloat4 cos(const vfloat4 &p)
+  {
+    return _mm_cos_ps(p);
+  }
+#endif
+
+#if defined(__AVX__)
+  TSIMD_INLINE vdouble4 cos(const vdouble4 &p)
+  {
+    return _mm256_cos_pd(p);
+  }
+
+  TSIMD_INLINE vfloat8 cos(const vfloat8 &p)
+  {
+    return _mm256_cos_ps(p);
+  }
+#endif
+
+#if defined(__AVX512F__)
+  TSIMD_INLINE vdouble8 cos(const vdouble8 &p)
+  {
+    return _mm512_cos_pd(p);
+  }
+
+  TSIMD_INLINE vfloat16 cos(const vfloat16 &p)
+  {
+    return _mm512_cos_ps(p);
+  }
+#endif
+
+#endif
+
 }  // namespace tsimd

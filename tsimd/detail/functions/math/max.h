@@ -70,12 +70,16 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble4 max(const vdouble4 &p1, const vdouble4 &p2)
   {
+#if defined(__AVX__)
+    return _mm256_max_pd(p1, p2);
+#else
     vdouble4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = std::max(p1[i], p2[i]);
 
     return result;
+#endif
   }
 
   TSIMD_INLINE vllong4 max(const vllong4 &p1, const vllong4 &p2)
@@ -92,7 +96,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat8 max(const vfloat8 &p1, const vfloat8 &p2)
   {
-#if defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX__)
     return _mm256_max_ps(p1, p2);
 #else
     return vfloat8(max(vfloat4(p1.vl), vfloat4(p2.vl)),
@@ -114,14 +118,22 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble8 max(const vdouble8 &p1, const vdouble8 &p2)
   {
+#if defined(__AVX512F__)
+    return _mm512_max_pd(p1, p2);
+#else
     return vdouble8(max(vdouble4(p1.vl), vdouble4(p2.vl)),
                     max(vdouble4(p1.vh), vdouble4(p2.vh)));
+#endif
   }
 
   TSIMD_INLINE vllong8 max(const vllong8 &p1, const vllong8 &p2)
   {
+#if defined(__AVX512F__)
+    return _mm512_max_epi64(p1, p2);
+#else
     return vllong8(max(vllong4(p1.vl), vllong4(p2.vl)),
                    max(vllong4(p1.vh), vllong4(p2.vh)));
+#endif
   }
 
   // 16-wide //

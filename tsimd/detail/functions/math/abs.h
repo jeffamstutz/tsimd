@@ -92,7 +92,7 @@ namespace tsimd {
 
   TSIMD_INLINE vfloat8 abs(const vfloat8 &p)
   {
-#if defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX__)
     return _mm256_and_ps(p, _mm256_castsi256_ps(_mm256_set1_epi32(0x7fffffff)));
 #else
     return vfloat8(abs(vfloat4(p.vl)), abs(vfloat4(p.vh)));
@@ -112,12 +112,22 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble8 abs(const vdouble8 &p)
   {
+#if defined(__AVX512F__)
+    return _mm512_castsi512_pd(
+      _mm512_and_epi64(
+        _mm512_castpd_si512(p),_mm512_set1_epi64(0x7FFFFFFFFFFFFFFFLL)));
+#else
     return vdouble8(abs(vdouble4(p.vl)), abs(vdouble4(p.vh)));
+#endif
   }
 
   TSIMD_INLINE vllong8 abs(const vllong8 &p)
   {
+#if defined(__AVX512F__)
+    return _mm512_abs_epi64(p);
+#else
     return vllong8(abs(vllong4(p.vl)), abs(vllong4(p.vh)));
+#endif
   }
 
   // 16-wide //

@@ -97,4 +97,39 @@ namespace tsimd {
     return formula;
   }
 
+#if TSIMD_COMPILER_INTEL
+
+#if defined(__SSE4_2__)
+  TSIMD_INLINE vfloat4 sin(const vfloat4 &p)
+  {
+    return _mm_sin_ps(p);
+  }
+#endif
+
+#if defined(__AVX__)
+  TSIMD_INLINE vdouble4 sin(const vdouble4 &p)
+  {
+    return _mm256_sin_pd(p);
+  }
+
+  TSIMD_INLINE vfloat8 sin(const vfloat8 &p)
+  {
+    return _mm256_sin_ps(p);
+  }
+#endif
+
+#if defined(__AVX512F__)
+  TSIMD_INLINE vdouble8 sin(const vdouble8 &p)
+  {
+    return _mm512_sin_pd(p);
+  }
+
+  TSIMD_INLINE vfloat16 sin(const vfloat16 &p)
+  {
+    return _mm512_sin_ps(p);
+  }
+#endif
+
+#endif
+
 }  // namespace tsimd

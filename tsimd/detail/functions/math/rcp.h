@@ -85,7 +85,11 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble8 rcp(const vdouble8 &p)
   {
+#if defined(__AVX512F__)
+    return _mm512_rcp14_pd(p);
+#else
     return vdouble8(rcp(vdouble4(p.vl)), rcp(vdouble4(p.vh)));
+#endif
   }
 
   // 16-wide //

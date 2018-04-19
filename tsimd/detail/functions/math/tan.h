@@ -117,4 +117,39 @@ namespace tsimd {
     return select(xLt0, -z, z);
   }
 
+#if TSIMD_COMPILER_INTEL
+
+#if defined(__SSE4_2__)
+  TSIMD_INLINE vfloat4 tan(const vfloat4 &p)
+  {
+    return _mm_tan_ps(p);
+  }
+#endif
+
+#if defined(__AVX__)
+  TSIMD_INLINE vdouble4 tan(const vdouble4 &p)
+  {
+    return _mm256_tan_pd(p);
+  }
+
+  TSIMD_INLINE vfloat8 tan(const vfloat8 &p)
+  {
+    return _mm256_tan_ps(p);
+  }
+#endif
+
+#if defined(__AVX512F__)
+  TSIMD_INLINE vdouble8 tan(const vdouble8 &p)
+  {
+    return _mm512_tan_pd(p);
+  }
+
+  TSIMD_INLINE vfloat16 tan(const vfloat16 &p)
+  {
+    return _mm512_tan_ps(p);
+  }
+#endif
+
+#endif
+
 }  // namespace tsimd

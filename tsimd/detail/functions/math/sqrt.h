@@ -56,19 +56,23 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble4 sqrt(const vdouble4 &p)
   {
+#if defined(__AVX__)
+    return _mm256_sqrt_pd(p);
+#else
     vdouble4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = std::sqrt(p[i]);
 
     return result;
+#endif
   }
 
   // 8-wide //
 
   TSIMD_INLINE vfloat8 sqrt(const vfloat8 &p)
   {
-#if defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX__)
     return _mm256_sqrt_ps(p);
 #else
     return vfloat8(sqrt(vfloat4(p.vl)), sqrt(vfloat4(p.vh)));
@@ -77,7 +81,11 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble8 sqrt(const vdouble8 &p)
   {
+#if defined(__AVX512F__)
+    return _mm512_sqrt_pd(p);
+#else
     return vdouble8(sqrt(vdouble4(p.vl)), sqrt(vdouble4(p.vh)));
+#endif
   }
 
   // 16-wide //

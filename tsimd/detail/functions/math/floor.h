@@ -56,19 +56,23 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble4 floor(const vdouble4 &p)
   {
+#if defined(__AVX__)
+    return _mm256_round_pd(p, _MM_FROUND_TO_NEG_INF);
+#else
     vdouble4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = std::floor(p[i]);
 
     return result;
+#endif
   }
 
   // 8-wide //
 
   TSIMD_INLINE vfloat8 floor(const vfloat8 &p)
   {
-#if defined(__AVX2__) || defined(__AVX__)
+#if defined(__AVX__)
     return _mm256_round_ps(p, _MM_FROUND_TO_NEG_INF);
 #else
     return vfloat8(floor(vfloat4(p.vl)), floor(vfloat4(p.vh)));
@@ -77,7 +81,11 @@ namespace tsimd {
 
   TSIMD_INLINE vdouble8 floor(const vdouble8 &p)
   {
+#if defined(__AVX512F__)
+    return _mm512_floor_pd(p);
+#else
     return vdouble8(floor(vdouble4(p.vl)), floor(vdouble4(p.vh)));
+#endif
   }
 
   // 16-wide //
