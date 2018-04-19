@@ -82,7 +82,7 @@ namespace tsimd {
 
   TSIMD_INLINE vllong4 operator/(const vllong4 &p1, const vllong4 &p2)
   {
-#if TSIMD_COMPILER_INTEL && defined(__AVX__)
+#if TSIMD_COMPILER_INTEL && defined(__AVX2__)
     return _mm256_div_epi64(p1, p2);
 #else
     vllong4 result;
