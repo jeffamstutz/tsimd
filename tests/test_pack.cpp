@@ -549,6 +549,23 @@ TEST_CASE("foreach_active()", "[algorithms]")
   }
 }
 
+TEST_CASE("foreach_unique()", "[algorithms]")
+{
+  int checker = 0;
+  vint v(0);
+
+#if TEST_WIDTH > 1
+  v[0] = 2;
+  v[2] = 3;
+
+  tsimd::foreach_unique(v, [&](vbool, int_type) { checker++; });
+  REQUIRE(checker == 3);
+#else
+  tsimd::foreach_unique(v, [&](vbool, int_type) { checker++; });
+  REQUIRE(checker == 1);
+#endif
+}
+
 TEST_CASE("any()", "[algorithms]")
 {
   vbool m(false);

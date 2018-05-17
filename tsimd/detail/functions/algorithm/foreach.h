@@ -58,4 +58,26 @@ namespace tsimd {
         fcn(p[i]);
   }
 
+  template <typename T, int W, typename FCN_T>
+  inline void foreach_unique(mask<T, W> mask,
+                             pack<T, W> &p,
+                             FCN_T &&fcn)
+  {
+    for (int i = 0; i < W; i++) {
+      if (!mask[i]) continue;
+      const auto sValue = p[i];
+      const auto matching = (mask & (p == sValue));
+      fcn(matching, sValue);
+      // TODO: not implemented: mask ^= matchingMask;
+      // TODO: gives an error: mask = mask & ~matchingMask;
+      mask = mask ^ matching;
+    }
+  }
+
+  template <typename T, int W, typename FCN_T>
+  inline void foreach_unique(pack<T, W> &p, FCN_T &&fcn)
+  {
+    foreach_unique(mask<T, W>(true), p, fcn);
+  }
+
 }  // namespace tsimd
