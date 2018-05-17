@@ -10,6 +10,3 @@ Requirements:
 
 - C++11 (that's it!)
 
-TODO:
-
-- use intrinsics for 64-bit element pack of widths > 1 (only stubbed at the moment)
