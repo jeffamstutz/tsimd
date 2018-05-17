@@ -60,7 +60,7 @@ namespace tsimd {
 
   template <typename T, int W, typename FCN_T>
   inline void foreach_unique(mask<T, W> mask,
-                             pack<T, W> &p,
+                             const pack<T, W> &p,
                              FCN_T &&fcn)
   {
     for (int i = 0; i < W; i++) {
@@ -75,7 +75,7 @@ namespace tsimd {
   }
 
   template <typename T, int W, typename FCN_T>
-  inline void foreach_unique(pack<T, W> &p, FCN_T &&fcn)
+  inline void foreach_unique(const pack<T, W> &p, FCN_T &&fcn)
   {
     foreach_unique(mask<T, W>(true), p, fcn);
   }
