@@ -707,6 +707,20 @@ namespace tsimd {
     std::cout << p << std::endl;
   }
 
+  // pack<> free-form insert()/extract() //////////////////////////////////////
+
+  template <typename T, int W, typename = traits::valid_type_for_pack<T>>
+  TSIMD_INLINE void insert(pack<T, W> &p, int itemID, T v)
+  {
+    p.insert(v, itemID);
+  }
+
+  template <typename T, int W, typename = traits::valid_type_for_pack<T>>
+  TSIMD_INLINE T extract(const pack<T, W> &p, int itemID)
+  {
+    return p.extract(itemID);
+  }
+
   // pack<> cast definition ///////////////////////////////////////////////////
 
   template <typename OTHER_T, typename T, int W>
