@@ -721,6 +721,12 @@ namespace tsimd {
     return p.extract(itemID);
   }
 
+  template <typename T, int W, typename = traits::valid_type_for_pack<T>>
+  TSIMD_INLINE void insert(pack<T, W> &p, int itemID, const pack<T, 1> &v)
+  {
+    p.insert(v[0], itemID);
+  }
+
   // pack<> cast definition ///////////////////////////////////////////////////
 
   template <typename OTHER_T, typename T, int W>
