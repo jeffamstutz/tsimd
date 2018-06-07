@@ -30,7 +30,7 @@
 #include "config.h"
 #include "tsimd_traits.h"
 
-#include "bit_iterator.h"
+#include "utility/bit_iterator.h"
 
 namespace tsimd {
 

@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "../bool_t.h"
+#include "../utility/bool_t.h"
 #include "enable_if_t.h"
 
 namespace tsimd {

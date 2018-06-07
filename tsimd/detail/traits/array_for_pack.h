@@ -26,7 +26,7 @@
 
 #include <array>
 
-#include "../bool_t.h"
+#include "../utility/bool_t.h"
 
 namespace tsimd {
   namespace traits {

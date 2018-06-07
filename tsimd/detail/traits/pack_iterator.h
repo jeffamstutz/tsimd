@@ -25,7 +25,7 @@
 #pragma once
 
 #include "../config.h"
-#include "../bit_iterator.h"
+#include "../utility/bit_iterator.h"
 
 namespace tsimd {
   namespace traits {
