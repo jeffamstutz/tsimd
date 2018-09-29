@@ -24,10 +24,21 @@
 
 #pragma once
 
-#include "algorithm/all.h"
-#include "algorithm/any.h"
-#include "algorithm/foreach.h"
-#include "algorithm/lane_index.h"
-#include "algorithm/near_equal.h"
-#include "algorithm/select.h"
-#include "algorithm/set_if.h"
+#include "../../pack.h"
+
+#include <numeric>
+
+namespace tsimd {
+
+  template <typename PACK_T>
+  TSIMD_INLINE PACK_T lane_index()
+  {
+    static const vint lane_offset = [](){
+      vint result;
+      std::iota(result.begin(), result.end(), 0);
+      return result;
+    }();
+    return lane_offset;
+  }
+
+} // namespace tsimd
