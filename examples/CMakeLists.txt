@@ -22,17 +22,4 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-option(TSIMD_ENABLE_ISPC_COMPARISONS "Enable ISPC comparisons in examples" OFF)
-
-if(TSIMD_ENABLE_ISPC_COMPARISONS)
-  add_definitions(-DTSIMD_ENABLE_ISPC)
-endif()
-
-option(TSIMD_ENABLE_EMBREE_COMPARISONS
-       "Enable Embree comparisons in examples" OFF)
-
-if(TSIMD_ENABLE_EMBREE_COMPARISONS)
-  add_definitions(-DTSIMD_ENABLE_EMBREE)
-endif()
-
-subdirs(simple_example mandelbrot)
+add_executable(simple_example simple_example.cpp)

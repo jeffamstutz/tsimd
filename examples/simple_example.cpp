@@ -138,6 +138,14 @@ int main()
 
   std::cout << std::endl;
 
+  std::cout << "test tsimd::lane_index<int>()" << std::endl;
+
+  {
+    print(lane_index<vint>());
+  }
+
+  std::cout << std::endl;
+
   std::cout << "test foreach_active()" << std::endl;
 
   {

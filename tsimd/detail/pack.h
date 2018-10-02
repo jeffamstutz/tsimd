@@ -222,6 +222,9 @@ namespace tsimd {
 
   // pack<> aliases ///////////////////////////////////////////////////////////
 
+  /* element-independant shortcuts */
+  template <typename T> using vpack = pack<T, TSIMD_DEFAULT_WIDTH>;
+
   /* width-independant shortcuts */
   template <int W> using vfloatn = pack<float, W>;
   template <int W> using vintn   = pack<int, W>;

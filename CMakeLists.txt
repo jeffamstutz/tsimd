@@ -33,20 +33,28 @@ project(tsimd)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(tsimd)
 
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+
+##############################################################
+# Main tsimd library CMake target
+##############################################################
+
 add_library(tsimd INTERFACE)
 target_include_directories(tsimd INTERFACE
-	$<INSTALL_INTERFACE:include/tsimd>)
+  $<INSTALL_INTERFACE:include/tsimd>
+)
 
 install(DIRECTORY tsimd DESTINATION include)
 install(TARGETS tsimd
 	EXPORT tsimdConfig
 	RUNTIME DESTINATION bin/tsimd
 	ARCHIVE DESTINATION lib/tsimd
-	LIBRARY DESTINATION lib/tsimd)
+  LIBRARY DESTINATION lib/tsimd
+)
 install(EXPORT tsimdConfig DESTINATION lib/cmake/tsimd)
 
 ##############################################################
-# Build tests and examples
+# Build tests, examples, and benchmarks
 ##############################################################
 
 include(ispc)
@@ -60,10 +68,27 @@ if ((TSIMD_BUILD_ISA STREQUAL "NATIVE" OR TSIMD_BUILD_ISA STREQUAL "SCALAR")
           "You cannot use the 'NATIVE' or 'SCALAR' ISA target with ispc.")
 endif()
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-
 include_directories(${CMAKE_SOURCE_DIR})
 
-enable_testing()
+option(TSIMD_BUILD_TESTS "Build unit tests" OFF)
+option(TSIMD_BUILD_EXAMPLES "Build examples" ON)
+option(TSIMD_BUILD_BENCHMARKS "Build benchmarks" OFF)
 
-subdirs(examples tests)
+## Unit tests ##
+
+if (TSIMD_BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
+
+## Extra examples ##
+
+if (TSIMD_BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
+
+## Benchmarks ##
+
+if (TSIMD_BUILD_BENCHMARKS)
+  add_subdirectory(benchmarks)
+endif()

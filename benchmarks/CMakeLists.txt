@@ -22,4 +22,13 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-add_executable(simple_example simple_example.cpp)
+option(TSIMD_ENABLE_ISPC_COMPARISONS "Enable ISPC comparisons in benchmarks" OFF)
+
+ispc_add_executable(benchmark_mandelbrot
+  mandelbrot.cpp
+  mandelbrot.ispc
+)
+
+if(TSIMD_ENABLE_ISPC_COMPARISONS)
+  target_add_definitions(benchmark_mandelbrot -DTSIMD_ENABLE_ISPC)
+endif()
