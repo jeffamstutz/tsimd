@@ -54,6 +54,20 @@ int main()
 
   std::cout << std::endl;
 
+  std::cout << "test operator|(), operator&(), and operator^() on floats"
+            << std::endl;
+
+  {
+    vdouble v1(1.f), v2(-1.f);
+    v2[1] = 2.f;
+
+    std::cout << "#1: " << (v1 | v2) << std::endl;
+    std::cout << "#2: " << (v1 & v2) << std::endl;
+    std::cout << "#3: " << (v1 ^ v2) << std::endl;
+  }
+
+  std::cout << std::endl;
+
   std::cout << "test sin()/cos()/tan()" << std::endl;
 
   {

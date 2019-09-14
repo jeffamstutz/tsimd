@@ -40,6 +40,20 @@ namespace tsimd {
 
   // 4-wide //
 
+  TSIMD_INLINE vfloat4 operator&(const vfloat4 &p1, const vfloat4 &p2)
+  {
+#if defined(__SSE4_2__)
+    return _mm_and_ps(p1, p2);
+#else
+    vfloat4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (const int &)p1[i] & (const int &)p2[i];
+
+    return result;
+#endif
+  }
+
   TSIMD_INLINE vint4 operator&(const vint4 &p1, const vint4 &p2)
   {
 #if defined(__SSE4_2__)
@@ -63,6 +77,20 @@ namespace tsimd {
 
     for (int i = 0; i < 4; ++i)
       result[i] = p1[i] & p2[i];
+
+    return result;
+#endif
+  }
+
+  TSIMD_INLINE vdouble4 operator&(const vdouble4 &p1, const vdouble4 &p2)
+  {
+#if defined(__AVX__)
+    return _mm256_and_pd(p1, p2);
+#else
+    vdouble4 result;
+
+    for (int i = 0; i < 4; ++i)
+      result[i] = (const int64_t &)p1[i] & (const int64_t &)p2[i];
 
     return result;
 #endif
@@ -98,6 +126,16 @@ namespace tsimd {
 
   // 8-wide //
 
+  TSIMD_INLINE vfloat8 operator&(const vfloat8 &p1, const vfloat8 &p2)
+  {
+#if defined(__AVX__)
+    return _mm256_and_ps(p1, p2);
+#else
+    return vfloat8(vfloat4(p1.vl) & vfloat4(p2.vl),
+                   vfloat4(p1.vh) & vfloat4(p2.vh));
+#endif
+  }
+
   TSIMD_INLINE vint8 operator&(const vint8 &p1, const vint8 &p2)
   {
 #if defined(__AVX2__)
@@ -119,6 +157,16 @@ namespace tsimd {
 #else
     return vboolf8(vboolf4(p1.vl) & vboolf4(p2.vl),
                    vboolf4(p1.vh) & vboolf4(p2.vh));
+#endif
+  }
+
+  TSIMD_INLINE vdouble8 operator&(const vdouble8 &p1, const vdouble8 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_and_pd(p1, p2);
+#else
+    return vdouble8(vdouble4(p1.vl) & vdouble4(p2.vl),
+                    vdouble4(p1.vh) & vdouble4(p2.vh));
 #endif
   }
 
@@ -144,6 +192,16 @@ namespace tsimd {
 
   // 16-wide //
 
+  TSIMD_INLINE vfloat16 operator&(const vfloat16 &p1, const vfloat16 &p2)
+  {
+#if defined(__AVX512F__)
+    return _mm512_and_ps(p1, p2);
+#else
+    return vfloat16(vfloat8(p1.vl) & vfloat8(p2.vl),
+                    vfloat8(p1.vh) & vfloat8(p2.vh));
+#endif
+  }
+
   TSIMD_INLINE vint16 operator&(const vint16 &p1, const vint16 &p2)
   {
 #if defined(__AVX512F__)
@@ -161,6 +219,12 @@ namespace tsimd {
     return vboolf16(vboolf8(p1.vl) & vboolf8(p2.vl),
                     vboolf8(p1.vh) & vboolf8(p2.vh));
 #endif
+  }
+
+  TSIMD_INLINE vdouble16 operator&(const vdouble16 &p1, const vdouble16 &p2)
+  {
+    return vdouble16(vdouble8(p1.vl) & vdouble8(p2.vl),
+                     vdouble8(p1.vh) & vdouble8(p2.vh));
   }
 
   TSIMD_INLINE vllong16 operator&(const vllong16 &p1, const vllong16 &p2)
@@ -199,7 +263,8 @@ namespace tsimd {
     return pack<T, W>(v) & p1;
   }
 
-  // Inferred operator&=() ////////////////////////////////////////////////////
+  // Inferred operator&=()
+  // ////////////////////////////////////////////////////
 
   template <typename T, int W>
   TSIMD_INLINE pack<T, W> operator&=(pack<T, W> &p1, const pack<T, W> &p2)
