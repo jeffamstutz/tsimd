@@ -68,12 +68,16 @@ namespace tsimd {
 
   TSIMD_INLINE vboold4 operator>(const vdouble4 &p1, const vdouble4 &p2)
   {
+#if defined(__AVX__)
+    return _mm256_cmp_pd(p1, p2, _CMP_GT_OQ);
+#else
     vboold4 result;
 
     for (int i = 0; i < 4; ++i)
       result[i] = (p1[i] > p2[i]);
 
     return result;
+#endif
   }
 
   TSIMD_INLINE vboold4 operator>(const vllong4 &p1, const vllong4 &p2)
