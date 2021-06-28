@@ -22,13 +22,9 @@
 ## DEALINGS IN THE SOFTWARE.                                                  ##
 ## ========================================================================== ##
 
-option(TSIMD_ENABLE_ISPC_COMPARISONS "Enable ISPC comparisons in benchmarks" OFF)
+cmake_minimum_required(VERSION 3.19)
 
-ispc_add_executable(benchmark_mandelbrot
-  mandelbrot.cpp
-  mandelbrot.ispc
-)
+enable_language(ISPC)
 
-if(TSIMD_ENABLE_ISPC_COMPARISONS)
-  target_add_definitions(benchmark_mandelbrot -DTSIMD_ENABLE_ISPC)
-endif()
+add_executable(benchmark_mandelbrot mandelbrot.cpp mandelbrot.ispc)
+target_compile_definitions(benchmark_mandelbrot PRIVATE -DTSIMD_ENABLE_ISPC)
